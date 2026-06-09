@@ -44,23 +44,46 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 /* ── BOTTOM NAV ─────────────────────────────── */
 .nav{
-  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
-  width:100%;max-width:960px;
-  background:var(--bg2);border-top:1px solid var(--bd);
-  display:flex;align-items:center;
-  height:var(--nav-h);padding:0 8px 8px;
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:420px;
+  background:rgba(16,16,24,.60);
+  backdrop-filter:blur(28px) saturate(200%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);
+  border-radius:28px;
+  display:flex;align-items:center;justify-content:space-around;
+  height:68px;padding:0 10px;
   z-index:100;
 }
+[data-theme="light"] .nav{background:rgba(250,250,255,.72);border-color:rgba(0,0,0,.10);box-shadow:0 8px 32px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.95);}
 .nvi{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:3px;padding:6px 4px;
-  cursor:pointer;color:var(--t3);
-  font-size:9px;font-weight:700;letter-spacing:.04em;
-  text-transform:uppercase;transition:color .15s;border-radius:12px;
+  flex:1;height:52px;border-radius:18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;color:var(--t3);
+  font-size:9px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;transition:all .18s;
+  background:transparent;border:1px solid transparent;
 }
-.nvi.on{color:var(--acc)}
-.nvi-ic{font-size:22px;line-height:1}
+.nvi.on{
+  color:var(--acc);
+  background:rgba(26,143,255,.16);
+  border-color:rgba(26,143,255,.28);
+}
+.nvi:active{transform:scale(.91);opacity:.8}
+.nvi-ic{font-size:26px;line-height:1.1}
 .nvi-lbl{font-size:9px;font-weight:700}
+.nav-more-btn{
+  width:52px;height:52px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--t3);
+  font-size:30px;font-weight:200;line-height:1;
+  background:transparent;border:1px solid transparent;
+  transition:all .18s;font-family:'Inter',sans-serif;
+  padding-bottom:3px;
+}
+.nav-more-btn.on{color:var(--acc);background:rgba(26,143,255,.16);border-color:rgba(26,143,255,.28);}
+.nav-more-btn:active{transform:scale(.91);opacity:.8}
 
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
@@ -111,7 +134,147 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   cursor:pointer;border:1.5px solid transparent;display:flex;align-items:center;
   gap:5px;transition:all .13s;flex-shrink:0}
 .cfc.on{background:var(--bg3);border-color:var(--bd2);color:var(--tx)}
-.cdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* ── CAT INDICATOR (two-tone bar, no dots) ────── */
+.cbar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
+.cbar-sub{width:3px;height:11px;border-radius:2px;flex-shrink:0;opacity:.55}
+
+/* ── WEATHER ─────────────────────────────────── */
+.weather-pill{display:flex;align-items:center;gap:8px;
+  background:rgba(26,143,255,.13);border-radius:16px;padding:7px 13px;
+  border:1px solid rgba(26,143,255,.28);cursor:pointer;transition:all .2s;
+}
+.weather-pill:active{opacity:.7;transform:scale(.96)}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}40%{transform:translateY(-3px) rotate(-4deg)}70%{transform:translateY(-1px) rotate(2deg)}}
+@keyframes glow{0%,100%{box-shadow:0 4px 16px rgba(26,143,255,.18)}50%{box-shadow:0 4px 28px rgba(26,143,255,.38)}}
+.weather-pill{animation:glow 4s ease-in-out infinite}
+.weather-ic{font-size:30px;line-height:1;animation:float 4s ease-in-out infinite;display:inline-block}
+.weather-temp{font-size:22px;font-weight:900;line-height:1;color:var(--tx)}
+.weather-desc{font-size:10px;color:var(--t2);font-weight:700;margin-top:1px}
+
+/* ── MORE POPUP ──────────────────────────────── */
+.more-menu{
+  position:fixed;bottom:calc(var(--nav-h) + 20px);left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:420px;
+  border-radius:24px;padding:14px 12px;z-index:150;
+  background:rgba(16,16,24,.65);
+  backdrop-filter:blur(28px) saturate(200%);
+  -webkit-backdrop-filter:blur(28px) saturate(200%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  display:none;
+}
+[data-theme="light"] .more-menu{background:rgba(250,250,255,.82);border-color:rgba(0,0,0,.10);}
+.more-menu.on{display:block}
+.more-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.more-btn{
+  height:62px;border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  cursor:pointer;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+  transition:all .15s;
+}
+[data-theme="light"] .more-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
+.more-btn:active{transform:scale(.92);opacity:.8}
+.more-btn.on{background:rgba(26,143,255,.18);border-color:rgba(26,143,255,.30);}
+.more-ic{font-size:22px;line-height:1}
+.more-lbl{font-size:8px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;text-align:center}
+
+/* ── THEMES ─────────────────────────────────── */
+[data-theme="light"]{--bg:#f0f0f5;--bg2:#fff;--bg3:#f5f5fa;--bg4:#e8e8f0;--bd:rgba(0,0,0,.07);--bd2:rgba(0,0,0,.12);--tx:#1a1a2e;--t2:#555570;--t3:#9090a8;}
+[data-theme="sepia"]{--bg:#18140e;--bg2:#221c14;--bg3:#2a231a;--bg4:#332b1f;--bd:rgba(255,220,150,.07);--bd2:rgba(255,220,150,.14);--tx:#f0e6cc;--t2:#a09070;--t3:#6a5a40;}
+[data-theme="amoled"]{--bg:#000;--bg2:#0a0a0a;--bg3:#111;--bg4:#1a1a1a;--bd:rgba(255,255,255,.05);--bd2:rgba(255,255,255,.09);--tx:#fff;--t2:#808080;--t3:#404040;}
+[data-theme="ocean"]{--bg:#060e1a;--bg2:#0b1829;--bg3:#102035;--bg4:#162840;--bd:rgba(100,200,255,.07);--bd2:rgba(100,200,255,.13);--tx:#cce8ff;--t2:#6090b0;--t3:#304558;--acc:#00bfff;--blu:#00bfff;--bbg:rgba(0,191,255,.13);}
+[data-theme="forest"]{--bg:#080f08;--bg2:#101810;--bg3:#182018;--bg4:#202820;--bd:rgba(100,200,100,.07);--bd2:rgba(100,200,100,.13);--tx:#d0f0d0;--t2:#608060;--t3:#304030;--acc:#4caf50;--grn:#4caf50;--blu:#4caf50;--bbg:rgba(76,175,80,.13);--gbg:rgba(76,175,80,.13);}
+[data-theme="pink"]{--bg:#120a10;--bg2:#1c1018;--bg3:#241420;--bg4:#2e1a28;--bd:rgba(255,100,180,.07);--bd2:rgba(255,100,180,.14);--tx:#ffe0f0;--t2:#c080a8;--t3:#7a4060;--acc:#ff69b4;--blu:#ff69b4;--bbg:rgba(255,105,180,.13);}
+[data-theme="nord"]{--bg:#2e3440;--bg2:#3b4252;--bg3:#434c5e;--bg4:#4c566a;--bd:rgba(216,222,233,.08);--bd2:rgba(216,222,233,.14);--tx:#eceff4;--t2:#d8dee9;--t3:#9099aa;--acc:#88c0d0;--blu:#88c0d0;--bbg:rgba(136,192,208,.13);}
+[data-theme="mocha"]{--bg:#1e1e2e;--bg2:#181825;--bg3:#1e1e2e;--bg4:#313244;--bd:rgba(205,214,244,.06);--bd2:rgba(205,214,244,.12);--tx:#cdd6f4;--t2:#a6adc8;--t3:#6c7086;--acc:#cba6f7;--blu:#cba6f7;--bbg:rgba(203,166,247,.13);}
+[data-theme="sunset"]{--bg:#120810;--bg2:#1c1020;--bg3:#241828;--bg4:#2e2032;--bd:rgba(255,100,50,.07);--bd2:rgba(255,100,50,.13);--tx:#ffeedd;--t2:#c08070;--t3:#7a5040;--acc:#ff7043;--blu:#ff7043;--bbg:rgba(255,112,67,.13);}
+[data-theme="midnight"]{--bg:#05050f;--bg2:#0d0d1f;--bg3:#12122a;--bg4:#181833;--bd:rgba(120,80,255,.08);--bd2:rgba(120,80,255,.16);--tx:#e8e0ff;--t2:#8878cc;--t3:#443c77;--acc:#7c4dff;--blu:#7c4dff;--bbg:rgba(124,77,255,.13);}
+[data-theme="slate"]{--bg:#0f1117;--bg2:#171923;--bg3:#1e2130;--bg4:#262a3d;--bd:rgba(180,190,220,.07);--bd2:rgba(180,190,220,.13);--tx:#e2e8f0;--t2:#8090aa;--t3:#404858;--acc:#60a5fa;--blu:#60a5fa;--bbg:rgba(96,165,250,.13);}
+
+/* ── SPORT CARDS ─────────────────────────────── */
+.wk-card{border-radius:var(--r);margin-bottom:8px;border:1.5px solid var(--bd);overflow:hidden}
+.wk-hdr{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;background:var(--bg2);transition:background .13s}
+.wk-hdr:active{background:var(--bg3)}
+.wk-date{font-size:12px;font-weight:800;color:var(--t2);min-width:52px}
+.wk-type{font-size:14px;font-weight:700;flex:1;color:var(--tx)}
+.wk-cnt{font-size:11px;color:var(--t3);font-weight:600}
+.wk-dyn{font-size:14px;font-weight:900;margin-left:4px}
+.wk-chevron{font-size:14px;color:var(--t3);margin-left:4px;transition:transform .2s}
+.wk-chevron.open{transform:rotate(180deg)}
+.wk-body{background:var(--bg2);border-top:1px solid var(--bd);padding:10px 14px 12px;display:none}
+.wk-body.open{display:block}
+.wk-ex{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)}
+.wk-ex:last-child{border-bottom:none}
+.wk-ex-name{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px}
+.wk-ex-prev{font-size:12px;color:var(--t2);font-weight:500}
+.wk-pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:140px}
+.wpill{background:var(--bg3);border-radius:7px;padding:5px 10px;font-size:12px;font-weight:800;color:var(--t2)}
+.wpill.up{color:var(--grn);background:var(--gbg)}.wpill.dn{color:var(--red);background:var(--rbg)}
+.wk-edit-btn{width:100%;height:38px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit;margin-top:10px}
+
+/* ── AUTO ────────────────────────────────────── */
+.auto-task{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.auto-task:last-child{border-bottom:none}
+.auto-task:active{opacity:.7}
+.auto-pbar{width:3px;height:36px;border-radius:2px;flex-shrink:0}
+.auto-svc-entry{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd)}
+.auto-svc-km{font-size:16px;font-weight:900;color:var(--yel);background:var(--ybg);padding:3px 10px;border-radius:8px;white-space:nowrap}
+
+/* ── REPORT ──────────────────────────────────── */
+.rc{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:9px;border:1.5px solid var(--bd)}
+.rc-t{font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+.rs-row{display:flex;gap:7px}
+.rs{flex:1;background:var(--bg3);border-radius:10px;padding:9px 6px;text-align:center}
+.rs-n{font-size:20px;font-weight:900}
+.rs-l{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;margin-top:2px}
+.rbar{height:4px;border-radius:2px;background:var(--bg3);margin:6px 0;overflow:hidden}
+.rbar-f{height:100%;border-radius:2px}
+.ri{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd);cursor:pointer}
+.ri:last-child{border-bottom:none}
+.chart-wrap{overflow-x:auto;scrollbar-width:none;padding:4px 0 8px}
+.chart-wrap::-webkit-scrollbar{display:none}
+
+/* ── DONE CARD ───────────────────────────────── */
+.done-card{background:var(--bg2);border-radius:var(--r);padding:11px 13px;margin-bottom:6px;border:1.5px solid var(--bd);display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.done-chk{width:20px;height:20px;border-radius:6px;background:var(--gbg);border:1.5px solid var(--grn);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--grn);font-weight:900;margin-top:1px}
+.done-body{flex:1;min-width:0}
+.done-title{font-size:13px;font-weight:600;color:var(--t2);text-decoration:line-through;word-break:break-word}
+.done-meta{font-size:10px;color:var(--t3);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap}
+
+/* ── SETTINGS ────────────────────────────────── */
+.set-block{background:var(--bg2);border-radius:var(--r);padding:0 16px;border:1.5px solid var(--bd);margin-bottom:12px}
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--bd)}
+.set-row:last-child{border-bottom:none}
+.set-l{font-size:13px;font-weight:600}
+.set-s{font-size:11px;color:var(--t3);margin-top:2px}
+.cat-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.cat-row:last-child{border-bottom:none}
+.cat-del{width:26px;height:26px;border-radius:8px;background:var(--rbg);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;flex-shrink:0;font-weight:800;border:none}
+.tgl{width:42px;height:23px;border-radius:12px;background:var(--bg4);position:relative;cursor:pointer;transition:background .18s;flex-shrink:0}
+.tgl.on{background:var(--blu)}
+.tgl::after{content:'';width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .18s}
+.tgl.on::after{transform:translateX(19px)}
+.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:4px}
+.theme-btn{height:56px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:2px solid transparent;transition:all .13s}
+.theme-btn.on{border-color:var(--acc)}
+.theme-btn-l{font-size:10px;font-weight:700;color:var(--t2)}
+
+/* ── GUIDE ───────────────────────────────────── */
+.g-sec{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd)}
+.g-t{font-size:14px;font-weight:800;margin-bottom:9px}
+.g-p{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:5px}
+.g-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
+.g-num{width:20px;height:20px;border-radius:50%;background:var(--bbg);color:var(--blu);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.g-txt{font-size:12px;color:var(--t2);line-height:1.55;flex:1}
+
+/* ── TOAST ───────────────────────────────────── */
+.toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,20,28,.94);border:1px solid var(--bd2);color:var(--tx);padding:9px 16px;border-radius:12px;font-size:12px;font-weight:700;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(min-width:600px){:root{--nav-h:88px}.nav{width:calc(100% - 48px)}}
 
 /* ── CONTENT ─────────────────────────────────── */
 .pg{padding:10px 16px 0}
@@ -152,11 +315,19 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .empty-s{font-size:12px;color:var(--t3);line-height:1.5}
 
 /* ── FAB ─────────────────────────────────────── */
-.fab{position:fixed;bottom:calc(var(--nav-h) + 12px);right:16px;
-  width:52px;height:52px;border-radius:16px;background:var(--blu);color:#fff;
-  font-size:26px;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 20px rgba(26,143,255,.4);z-index:99;cursor:pointer;border:none}
-.fab:active{transform:scale(.92)}
+.fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:16px;
+  width:54px;height:54px;border-radius:18px;
+  background:rgba(26,143,255,.22);
+  backdrop-filter:blur(20px) saturate(200%);
+  -webkit-backdrop-filter:blur(20px) saturate(200%);
+  border:1px solid rgba(26,143,255,.50);
+  box-shadow:0 6px 24px rgba(26,143,255,.30),inset 0 1px 0 rgba(255,255,255,.15);
+  color:rgba(255,255,255,.95);font-size:28px;font-weight:300;
+  display:flex;align-items:center;justify-content:center;
+  z-index:99;cursor:pointer;transition:transform .13s,opacity .13s;
+  line-height:1;font-family:'Inter',sans-serif;
+}
+.fab:active{transform:scale(.91);opacity:.75}
 
 /* ── MODAL ───────────────────────────────────── */
 .ovl{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;
@@ -195,10 +366,13 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .btn-s:active{opacity:.85}
 .btn-d{margin:0 16px;width:calc(100% - 32px);height:40px;border-radius:10px;
   background:var(--rbg);color:var(--red);font-size:13px;font-weight:700;
-  border:1px solid rgba(255,59,80,.15);cursor:pointer}
+  border:1px solid rgba(255,59,80,.15);cursor:pointer;font-family:inherit}
 .btn-warn{margin:4px 16px 0;width:calc(100% - 32px);height:40px;border-radius:10px;
   background:var(--ybg);color:var(--yel);font-size:13px;font-weight:700;
-  border:1px solid rgba(255,170,0,.2);cursor:pointer}
+  border:1px solid rgba(255,170,0,.2);cursor:pointer;font-family:inherit}
+.btn-sec{margin:4px 16px 0;width:calc(100% - 32px);height:40px;border-radius:10px;
+  background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;
+  border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit}
 
 /* ── REPORT ──────────────────────────────────── */
 .rc{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:9px;border:1.5px solid var(--bd)}
@@ -295,7 +469,8 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 <body>
 <div id="app"></div>
 <nav class="nav" id="nav"></nav>
-<button class="fab" id="fab" onclick="openNew()">＋</button>
+<div id="moreMenu" class="more-menu"></div>
+<button class="fab" id="fab">＋</button>
 <div class="ovl" id="ovl"><div class="sht" id="sht"></div></div>
 <div class="toast" id="toast"></div>
 <script>
@@ -350,6 +525,11 @@ function fmtDT(ts){if(!ts)return'';const d=new Date(ts);return d.getDate()+' '+R
 function pad(n){return String(n).padStart(2,'0')}
 function isOver(t){return t.dl&&t.s!=='done'&&t.dl<today()}
 function plural(n,a,b,c){if(n%10===1&&n%100!==11)return a;if([2,3,4].includes(n%10)&&![12,13,14].includes(n%100))return b;return c;}
+function getMondayOf(dateStr){
+  const d=new Date(dateStr+'T00:00:00'),dow=d.getDay();
+  d.setDate(d.getDate()-(dow===0?6:dow-1));
+  return d.toISOString().slice(0,10);
+}
 
 // ═══════════════════════════════════════════════════════════
 // STATE
@@ -565,33 +745,64 @@ function getWeekLabel(offset){
 // ═══════════════════════════════════════════════════════════
 function render(){
   const app=$('app');
-  $('fab').style.display=A.nav==='tasks'?'flex':'none';
-  if(A.nav==='tasks')       app.innerHTML=pgTasks();
+  // FAB visible on tasks, workouts, auto, notes
+  const showFab=['tasks','workouts','auto','notes'].includes(A.nav);
+  $('fab').style.display=showFab?'flex':'none';
+  $('fab').onclick=
+    A.nav==='workouts'?openNewWorkout:
+    A.nav==='auto'?openAutoTask:
+    A.nav==='notes'?openNewIdea:openNew;
+
+  if(A.nav==='tasks')         app.innerHTML=pgTasks();
   else if(A.nav==='workouts') app.innerHTML=pgWorkouts();
-  else if(A.nav==='auto')   app.innerHTML=pgAuto();
-  else if(A.nav==='report') app.innerHTML=pgReport();
+  else if(A.nav==='auto')     app.innerHTML=pgAuto();
+  else if(A.nav==='report')   app.innerHTML=pgReport();
   else if(A.nav==='settings') app.innerHTML=pgSettings();
-  renderNav();bind();
+  else if(A.nav==='notes')    app.innerHTML=pgNotes();
+  else if(A.nav==='guide')    app.innerHTML=pgGuide();
+  renderNav();
+  renderMoreMenu();
+  bind();
 }
 
 function renderNav(){
-  const items=[
+  const mainItems=[
     {id:'tasks',    ic:'📋', l:'Задачи'},
     {id:'workouts', ic:'💪', l:'Спорт'},
-    {id:'auto',     ic:'🚗', l:'Авто'},
-    {id:'report',   ic:'📊', l:'Отчёт'},
-    {id:'settings', ic:'⚙️', l:'Ещё'},
   ];
-  $('nav').innerHTML=items.map(i=>
-    `<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
-      <span class="nvi-ic">${i.ic}</span><span class="nvi-lbl">${i.l}</span>
-    </div>`
-  ).join('');
+  const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
+  let h='';
+  mainItems.forEach(i=>{
+    h+=`<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
+      <span class="nvi-ic">${i.ic}</span><span class="nvi-lbl">${i.l}</span></div>`;
+  });
+  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()">›</button>`;
+  $('nav').innerHTML=h;
 }
 
-// ═══════════════════════════════════════════════════════════
-// PAGE: TASKS
-// ═══════════════════════════════════════════════════════════
+function renderMoreMenu(){
+  const items=[
+    {id:'notes',   ic:'💡', l:'Идеи'},
+    {id:'auto',    ic:'🚗', l:'Авто'},
+    {id:'report',  ic:'📊', l:'Стат.'},
+    {id:'settings',ic:'⚙️', l:'Настр.'},
+    {id:'guide',   ic:'📖', l:'Гайд'},
+  ];
+  const el=$('moreMenu');
+  el.innerHTML=`<div class="more-grid">${items.map(i=>`
+    <div class="more-btn${A.nav===i.id?' on':''}" onclick="setNavMore('${i.id}')">
+      <span class="more-ic">${i.ic}</span>
+      <span class="more-lbl">${i.l}</span>
+    </div>`).join('')}</div>`;
+  el.classList.toggle('on',!!A._moreOpen);
+}
+
+function toggleMore(){
+  A._moreOpen=!A._moreOpen;
+  renderNav();renderMoreMenu();
+}
+function setNavMore(n){A._moreOpen=false;setNav(n);}
+function setNav(n){A.nav=n;render();}
 function pgTasks(){
   const isToday=A.selDate===today();
   const weekDays=getWeekDates(A.weekOffset);
@@ -648,9 +859,10 @@ function pgTasks(){
   }
   cfHtml+=`</div>`;
 
-  // Filter & group tasks
+  // Filter & group tasks — exclude ideas from main task list
   let all=A.tasks.filter(t=>{
     if(t.s==='done')return false;
+    if(t.cat==='ideas')return false; // ideas go to notes page
     if(A.filterCat==='all')return true;
     const cat=A.cats.find(c=>c.id===A.filterCat);if(!cat)return false;
     if(!cat.parent)return t.cat===A.filterCat||A.cats.filter(c=>c.parent===A.filterCat).some(s=>s.id===t.cat);
@@ -678,31 +890,25 @@ function pgTasks(){
   if(!all.length) cnt+=`<div class="empty"><div class="empty-ic">✨</div><div class="empty-t">${isToday?'На сегодня всё готово!':'Задач нет'}</div><div class="empty-s">Нажми ＋ чтобы добавить.</div></div>`;
   cnt+=`</div>`;
 
-  // Ideas panel at bottom
-  const ideas=A.tasks.filter(t=>t.cat==='ideas'&&t.s!=='done');
-  let ideasPanel='';
-  if(ideas.length&&A.filterCat==='all'){
-    ideasPanel=`<div class="pg"><div class="gl" style="cursor:pointer" onclick="setFilter('ideas')"><span style="color:var(--grn)">💡 Размышления</span><span class="gl-n">${ideas.length}</span></div>
-    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">`;
-    ideas.slice(0,8).forEach(t=>{
-      ideasPanel+=`<div style="background:rgba(105,240,174,.1);border:1px solid rgba(105,240,174,.2);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#69f0ae;cursor:pointer" onclick="openEdit(${t.id})">${t.title}</div>`;
-    });
-    if(ideas.length>8) ideasPanel+=`<div style="background:var(--bg2);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--t3);cursor:pointer" onclick="setFilter('ideas')">ещё ${ideas.length-8}...</div>`;
-    ideasPanel+=`</div></div>`;
-  }
-
   const dayLabel=isToday?'Сегодня':RUDF[new Date(A.selDate+'T00:00:00').getDay()];
-  const weather=A.weather?`<div style="font-size:13px;color:var(--t2);display:flex;align-items:center;gap:4px"><span>${A.weather.icon}</span><span>${A.weather.temp}°</span></div>`:'<div class="ibtn" onclick="fetchWeather()" style="font-size:11px;color:var(--t3)">🌤</div>';
+  const weather=A.weather
+    ?`<div class="weather-pill" onclick="fetchWeather()">
+        <span class="weather-ic">${A.weather.icon}</span>
+        <div><div class="weather-temp">${A.weather.temp}°</div><div class="weather-desc">${A.weather.desc||''}</div></div>
+      </div>`
+    :`<div class="weather-pill" onclick="fetchWeather()" style="opacity:.55">
+        <span class="weather-ic" style="animation:none">🌤</span>
+        <div><div class="weather-temp">—°</div><div class="weather-desc">нажми</div></div>
+      </div>`;
 
   return `<div class="ph">
-    <div class="ph-row">
-      <span class="ph-label">Планировщик</span>
+    <div class="ph-row" style="margin-bottom:8px">
+      <div class="ph-h1">${dayLabel}</div>
       <div class="ph-acts">${weather}</div>
     </div>
-    <div class="ph-h1">${dayLabel}</div>
-    <div class="ph-sub">${fmtDFull(A.selDate)}</div>
+    <div class="ph-sub" style="margin-bottom:0">${fmtDFull(A.selDate)}</div>
   </div>
-  ${strip}${qsbar}${cfHtml}${cnt}${ideasPanel}`;
+  ${strip}${qsbar}${cfHtml}${cnt}`;
 }
 
 function setFilter(cat){ A.filterCat=cat; render(); }
@@ -747,139 +953,306 @@ function card(t){
 // PAGE: WORKOUTS
 // ═══════════════════════════════════════════════════════════
 function pgWorkouts(){
-  const tNames={chest:'💪 Грудь / Трицепс',back:'🔙 Спина / Бицепс',legs:'🦵 Ноги',arms:'💪 Руки',cardio:'🏃 Кардио'};
-  const byType={};
-  [...A.workouts].sort((a,b)=>b.date.localeCompare(a.date)).forEach(w=>{
-    if(!byType[w.type])byType[w.type]=[];byType[w.type].push(w);
-  });
-  const wk=addDays(-7),weekWs=A.workouts.filter(w=>w.date>=wk);
+  if(!A._expandedWk) A._expandedWk=new Set();
+
+  const wkMon=getMondayOf(today());
+  const wkSun=addDays(6,wkMon);
+
+  // Sort ALL workouts chronologically descending
+  const sorted=[...A.workouts].sort((a,b)=>b.date.localeCompare(a.date));
+  const thisWeek=sorted.filter(w=>w.date>=wkMon&&w.date<=wkSun);
+  const earlier=sorted.filter(w=>w.date<wkMon);
+
+  const WTYPE_MAP={chest:'Грудь / Трицепс',back:'Спина / Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
+
+  function buildCard(w, defaultOpen){
+    const isOpen=A._expandedWk.has(w.id)||defaultOpen;
+    const prev=A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
+    const volC=w.exs.reduce((s,e)=>s+e.s*e.r,0);
+    const volP=prev?prev.exs.reduce((s,e)=>s+e.s*e.r,0):0;
+    const dyn=prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:''):'';
+    const d=new Date(w.date+'T00:00:00');
+    const dateStr=d.getDate()+'.'+pad(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2);
+    const typeName=WTYPE_MAP[w.type]||w.type;
+
+    let body='';
+    if(isOpen){
+      body=`<div class="wk-body open">`;
+      w.exs.forEach(ex=>{
+        const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
+        const volEC=ex.s*ex.r,volEP=pe?pe.s*pe.r:0;
+        const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
+        const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
+        const arr={up:'↑',dn:'↓','':''};
+        body+=`<div class="wk-ex">
+          <div style="flex:1;min-width:0">
+            <div class="wk-ex-name">${ex.n}</div>
+            ${pe?`<div class="wk-ex-prev">Пред: ${pe.s}×${pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
+          </div>
+          <div class="wk-pills">
+            <span class="wpill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
+            ${ex.w>0?`<span class="wpill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
+          </div>
+        </div>`;
+      });
+      body+=`<button class="wk-edit-btn" onclick="event.stopPropagation();openEditWorkout('${w.id}')">✏️ Редактировать тренировку</button>`;
+      body+=`</div>`;
+    }
+
+    return `<div class="wk-card">
+      <div class="wk-hdr" onclick="toggleWkCard('${w.id}')">
+        <span class="wk-date">${dateStr}</span>
+        <span class="wk-type">${typeName}</span>
+        <span class="wk-cnt">${w.exs.length} упр.</span>
+        ${dyn}
+        <span class="wk-chevron${isOpen?' open':''}">∨</span>
+      </div>
+      ${body}
+    </div>`;
+  }
+
+  const wkCount=thisWeek.length;
+  const mnStart=new Date();mnStart.setDate(1);
+  const mnCount=A.workouts.filter(w=>w.date>=mnStart.toISOString().slice(0,10)).length;
 
   let html=`<div class="ph">
-    <div class="ph-row"><span class="ph-label">Тренировки</span>
-      <div class="ph-acts"><button class="ibtn" onclick="openNewWorkout()" style="opacity:.5;font-size:18px">✕</button><button class="ibtn" onclick="openNewWorkout()" style="font-size:18px;background:var(--blu);color:#fff">＋</button></div>
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">💪 Спорт</div>
     </div>
-    <div class="ph-h1">Прогресс</div>
-    <div class="ph-sub">История и динамика</div>
   </div><div class="pg">`;
 
-  html+=`<div class="rc"><div class="rc-t">Эта неделя</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${weekWs.length}</div><div class="rs-l">Тренировок</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--grn)">${weekWs.reduce((s,w)=>s+w.exs.length,0)}</div><div class="rs-l">Упражнений</div></div>
+  html+=`<div class="rc" style="margin-bottom:12px"><div class="rc-t">Активность</div><div class="rs-row">
+    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkCount}</div><div class="rs-l">Эта неделя</div></div>
+    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnCount}</div><div class="rs-l">Месяц</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
   </div></div>`;
 
-  Object.keys(byType).forEach(type=>{
-    const ws=byType[type],latest=ws[0],prev=ws[1];
-    html+=glHdr(tNames[type]||type,ws.length);
-    // Latest workout card (editable)
-    html+=`<div class="wc" onclick="openEditWorkout('${latest.id}')">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
-        <span style="font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.06em">${fmtD(latest.date)}</span>
-        ${prev?`<span style="font-size:10px;color:var(--t3)">пред: ${fmtD(prev.date)}</span>`:''}
-      </div>`;
-    latest.exs.forEach(ex=>{
-      const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
-      const volC=ex.s*ex.r,volP=pe?pe.s*pe.r:0;
-      const rCls=pe?(volC>volP?'up':volC<volP?'dn':''):'';
-      const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
-      const arr={up:'↑',dn:'↓','':''};
-      html+=`<div class="er">
-        <div><div class="en">${ex.n}</div>${pe?`<div class="ep">пред: ${pe.s}×${pe.r}${pe.w>0?' '+pe.w+'кг':''}</div>`:''}</div>
-        <div class="epills">
-          <span class="pill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
-          ${ex.w>0?`<span class="pill ${wCls}">${arr[wCls]||''}${ex.w}кг`:''}
-        </div>
-      </div>`;
-    });
-    html+=`</div>`;
-    // History list (previous workouts)
-    if(ws.length>1){
-      html+=`<div style="margin-bottom:14px">`;
-      ws.slice(1).forEach(w=>{
-        html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--bg2);border-radius:10px;margin-bottom:5px;cursor:pointer;border:1.5px solid var(--bd)" onclick="openEditWorkout('${w.id}')">
-          <span style="font-size:13px;font-weight:600">${fmtDFull(w.date)}</span>
-          <span style="font-size:11px;color:var(--t3)">${w.exs.length} упр.</span>
-        </div>`;
-      });
-      html+=`</div>`;
-    }
-  });
+  if(thisWeek.length){
+    html+=glHdr('Эта неделя',thisWeek.length,'var(--grn)');
+    thisWeek.forEach(w=>{html+=buildCard(w,true);});
+  }
+  if(earlier.length){
+    html+=glHdr('Ранее',earlier.length);
+    earlier.forEach(w=>{html+=buildCard(w,false);});
+  }
+  if(!sorted.length){
+    html+=`<div class="empty"><div class="empty-ic">💪</div><div class="empty-t">Нет тренировок</div><div class="empty-s">Нажми ＋ чтобы добавить первую</div></div>`;
+  }
   html+=`</div>`;
   return html;
+}
+
+function toggleWkCard(id){
+  if(!A._expandedWk) A._expandedWk=new Set();
+  if(A._expandedWk.has(id)) A._expandedWk.delete(id);
+  else A._expandedWk.add(id);
+  render();
 }
 
 // ═══════════════════════════════════════════════════════════
 // PAGE: AUTO
 // ═══════════════════════════════════════════════════════════
 function pgAuto(){
+  if(!A.autoTasks) A.autoTasks=seedAutoTasks();
+  if(!A.autoService) A.autoService=seedAutoService();
+
   const pColors={red:'var(--red)',yellow:'var(--yel)',blue:'var(--blu)',green:'var(--grn)'};
-  const todo=[
-    {t:'Коробка — детали и ремонт — цена',  p:'yellow'},
-    {t:'Коробка — прошивка',                p:'yellow'},
-    {t:'Свист при работе двигателя',        p:'yellow'},
-    {t:'Обороты плавают сразу после завода',p:'yellow'},
-    {t:'Топливный фильтр — поменять',       p:'yellow'},
-    {t:'Подогрев сидения',                  p:'blue'},
-  ];
-  const done=[
-    {t:'Диагностика'},{t:'Техосмотр !!!!!'},{t:'Рулевые тяги'},
-    {t:'Свечи поменять'},{t:'Тяги багажника'},
-  ];
-  const svc=[
-    {d:'19.12.2025',km:'179 800',items:['Рулевые наконечники','Свечи зажигания','Тяги багажника']},
-    {d:'28.09.2025',km:'175 520',items:['Дворники','Замена масла']},
-    {d:'03.08.2025',km:'172 550',items:['Масло в коробке','Фильтр салона','Фильтр воздушный']},
-  ];
+  const activeTasks=A.autoTasks.filter(t=>t.s!=='done');
 
   let html=`<div class="ph">
-    <div class="ph-row"><span class="ph-label">Авто</span>
-      <div class="ph-acts"><button class="ibtn" onclick="openAutoTask()" style="font-size:18px;background:var(--blu);color:#fff">＋</button></div>
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">🚗 Авто</div>
     </div>
-    <div class="ph-h1">Авто</div>
-    <div class="ph-sub">Задачи и история обслуживания</div>
   </div><div class="pg">`;
 
-  html+=glHdr('Нужно сделать',todo.length,'var(--yel)');
-  html+=`<div class="rc">`;
-  todo.forEach(i=>{
-    html+=`<div class="auto-item">
-      <div style="width:3px;align-self:stretch;border-radius:2px;background:${pColors[i.p]};flex-shrink:0"></div>
-      <span style="font-size:13px;font-weight:600;flex:1">${i.t}</span>
-    </div>`;
-  });
-  html+=`</div>`;
+  html+=glHdr('Задачи',activeTasks.length,'var(--yel)');
+  if(!activeTasks.length){
+    html+=`<div style="background:var(--bg2);border-radius:var(--r);padding:14px;border:1.5px solid var(--bd);text-align:center;color:var(--t3);font-size:13px">Задач нет 🎉</div>`;
+  } else {
+    html+=`<div class="rc">`;
+    activeTasks.forEach(t=>{
+      html+=`<div class="auto-task" onclick="openAutoEdit('${t.id}')">
+        <div class="auto-pbar" style="background:${pColors[t.p]||'var(--yel)'}"></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:600">${t.title}</div>
+          ${t.note?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${t.note}</div>`:''}
+        </div>
+        <span style="color:var(--t3);font-size:18px">›</span>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
 
-  html+=glHdr('Сделано',done.length,'var(--grn)');
-  html+=`<div class="rc">`;
-  done.forEach(i=>{
-    html+=`<div class="auto-item">
-      <span style="color:var(--grn);font-weight:900;font-size:14px;flex-shrink:0">✓</span>
-      <span style="font-size:13px;font-weight:600;text-decoration:line-through;color:var(--t3)">${i.t}</span>
-    </div>`;
-  });
-  html+=`</div>`;
-
-  html+=glHdr('История обслуживания',svc.length,'var(--blu)');
-  svc.forEach(s=>{
-    html+=`<div class="rc" style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
-        <span style="font-size:11px;font-weight:800;color:var(--t2)">${s.d}</span>
-        <span style="font-size:10px;color:var(--t3)">${s.km} км</span>
+  const sortedSvc=[...A.autoService].sort((a,b)=>b.date.localeCompare(a.date));
+  html+=glHdr('История обслуживания',sortedSvc.length,'var(--blu)');
+  sortedSvc.forEach(s=>{
+    const d=new Date(s.date+'T00:00:00');
+    const dateStr=d.getDate()+' '+RUM[d.getMonth()]+' '+d.getFullYear();
+    html+=`<div class="auto-svc-entry">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:700">${dateStr}</span>
+        <span class="auto-svc-km">${Number(s.km).toLocaleString('ru')} км</span>
       </div>`;
     s.items.forEach(item=>{
-      html+=`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd)">
-        <span style="color:var(--grn);font-size:13px;font-weight:800;flex-shrink:0">✓</span>
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd)">
+        <span style="color:var(--grn);font-size:14px;font-weight:900;flex-shrink:0">✓</span>
         <span style="font-size:13px;font-weight:600">${item}</span>
       </div>`;
     });
+    if(s.note) html+=`<div style="font-size:11px;color:var(--t3);margin-top:6px">${s.note}</div>`;
+    html+=`<button onclick="openServiceEdit('${s.id}')" style="margin-top:8px;width:100%;height:32px;border-radius:8px;background:var(--bg3);color:var(--t2);font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit">✏️ Редактировать</button>`;
     html+=`</div>`;
   });
   html+=`</div>`;
   return html;
 }
 
+function seedAutoTasks(){
+  return[
+    {id:'a1',title:'Коробка — детали и ремонт — цена',p:'yellow',s:'todo',note:''},
+    {id:'a2',title:'Коробка — прошивка',              p:'yellow',s:'todo',note:''},
+    {id:'a3',title:'Свист при работе двигателя',      p:'yellow',s:'todo',note:''},
+    {id:'a4',title:'Обороты плавают после завода',    p:'yellow',s:'todo',note:''},
+    {id:'a5',title:'Топливный фильтр — поменять',     p:'yellow',s:'todo',note:''},
+    {id:'a6',title:'Подогрев сидения',                p:'blue',  s:'todo',note:''},
+  ];
+}
+function seedAutoService(){
+  return[
+    {id:'s1',date:'2025-12-19',km:'179800',items:['Рулевые наконечники','Свечи зажигания','Тяги багажника'],note:''},
+    {id:'s2',date:'2025-09-28',km:'175520',items:['Дворники','Замена масла'],note:''},
+    {id:'s3',date:'2025-08-03',km:'172550',items:['Масло в коробке','Фильтр салона','Фильтр воздушный'],note:''},
+  ];
+}
+
+function openAutoEdit(id){
+  if(!A.autoTasks) A.autoTasks=seedAutoTasks();
+  const t=A.autoTasks.find(x=>x.id===id);if(!t)return;
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Задача по авто</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><div class="sl">Описание</div>
+      <textarea class="si" id="aeT" rows="2">${t.title}</textarea></div>
+    <div class="ss"><div class="sl">Тип</div>
+      <div class="pr2">
+        <div class="pch${(t.type||'task')==='repair'?' on':''}" onclick="selAutoType('repair')">🔧 Ремонт</div>
+        <div class="pch${t.type==='replace'?' on':''}" onclick="selAutoType('replace')">🔄 Замена</div>
+        <div class="pch${t.type==='task'||!t.type?' on':''}" onclick="selAutoType('task')">📋 Задача</div>
+      </div>
+      <input type="hidden" id="aeType" value="${t.type||'task'}">
+    </div>
+    <div class="ss"><div class="sl">Заметки</div>
+      <textarea class="si" id="aeN" rows="2" placeholder="Заметки...">${t.note||''}</textarea></div>
+    <div class="ss"><div class="sl">Километраж при выполнении</div>
+      <input class="si" id="aeKm" type="number" placeholder="например 180000" value="${t.km||''}"></div>
+    <div class="ss"><div class="sl">Дата выполнения</div>
+      <input type="date" class="si" id="aeDl" value="${t.dl||today()}"></div>
+    <button class="btn-s" onclick="completeAutoTask('${id}')">✓ Выполнено → в историю</button>
+    <button class="btn-sec" onclick="saveAutoEdit('${id}')">Сохранить без выполнения</button>
+    <button class="btn-d" onclick="delAutoTask('${id}')">🗑 Удалить задачу</button>`);
+}
+function selAutoType(type){
+  $('aeType').value=type;
+  document.querySelectorAll('#aeType').length;
+  // re-render just the type buttons
+  document.querySelectorAll('.pch').forEach(el=>{
+    const t=el.textContent.includes('Ремонт')?'repair':el.textContent.includes('Замена')?'replace':'task';
+    el.classList.toggle('on',t===type);
+  });
+}
+function saveAutoEdit(id){
+  if(!A.autoTasks) return;
+  const t=A.autoTasks.find(x=>x.id===id);if(!t)return;
+  t.title=($('aeT')?.value||t.title).trim();
+  t.note=($('aeN')?.value||'').trim();
+  t.km=$('aeKm')?.value||'';
+  t.dl=$('aeDl')?.value||'';
+  t.type=$('aeType')?.value||'task';
+  saveState();closeSheet();render();toast('Сохранено');
+}
+function completeAutoTask(id){
+  if(!A.autoTasks||!A.autoService) return;
+  const t=A.autoTasks.find(x=>x.id===id);if(!t)return;
+  const km=($('aeKm')?.value||'').trim();
+  const date=$('aeDl')?.value||today();
+  const note=($('aeN')?.value||'').trim();
+  const type=$('aeType')?.value||'task';
+  const label=(type==='repair'?'🔧 ':'type'==='replace'?'🔄 ':'')+t.title;
+  // Group with same date+km
+  const ex=A.autoService.find(s=>s.date===date&&s.km===km);
+  if(ex){ex.items.push(label);}
+  else{A.autoService.push({id:'s'+Date.now(),date,km:km||'—',items:[label],note});}
+  A.autoTasks=A.autoTasks.filter(x=>x.id!==id);
+  saveState();closeSheet();render();toast('✓ Выполнено → история обслуживания');
+}
+function delAutoTask(id){
+  if(!confirm('Удалить задачу?'))return;
+  A.autoTasks=(A.autoTasks||[]).filter(x=>x.id!==id);
+  saveState();closeSheet();render();toast('Удалено');
+}
+function openAutoTask(){
+  if(!A.autoTasks) A.autoTasks=[];
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Новая задача</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><div class="sl">Описание</div>
+      <textarea class="si" id="atT" rows="2" placeholder="Что нужно сделать?"></textarea></div>
+    <div class="ss"><div class="sl">Тип</div>
+      <div class="pr2">
+        <div class="pch" id="at_task on" onclick="selAtType('task')">📋 Задача</div>
+        <div class="pch" onclick="selAtType('repair')">🔧 Ремонт</div>
+        <div class="pch" onclick="selAtType('replace')">🔄 Замена</div>
+      </div>
+      <input type="hidden" id="atType" value="task"></div>
+    <div class="ss"><div class="sl">Приоритет</div>
+      <div style="display:flex;gap:8px">
+        <div class="pbtn on" id="at_y" onclick="selAtP('yellow')" style="background:var(--ybg)"><div class="psq" style="background:var(--yel)"></div></div>
+        <div class="pbtn" id="at_r" onclick="selAtP('red')" style="background:var(--rbg)"><div class="psq" style="background:var(--red)"></div></div>
+        <div class="pbtn" id="at_b" onclick="selAtP('blue')" style="background:var(--bbg)"><div class="psq" style="background:var(--blu)"></div></div>
+      </div>
+      <input type="hidden" id="atP" value="yellow"></div>
+    <button class="btn-s" onclick="saveAutoTask()">Добавить задачу</button>`);
+}
+function selAtType(type){$('atType').value=type;}
+function selAtP(p){
+  $('atP').value=p;
+  ['y','r','b'].forEach(k=>{const el=$('at_'+k);if(el)el.classList.remove('on');});
+  const map={yellow:'y',red:'r',blue:'b'};
+  const el=$('at_'+(map[p]||'y'));if(el)el.classList.add('on');
+}
+function saveAutoTask(){
+  const t=($('atT')?.value||'').trim();if(!t){toast('Введи описание');return;}
+  if(!A.autoTasks) A.autoTasks=[];
+  A.autoTasks.push({id:'a'+Date.now(),title:t,p:$('atP')?.value||'yellow',s:'todo',note:'',type:$('atType')?.value||'task'});
+  saveState();closeSheet();render();toast('Задача добавлена');
+}
+function openServiceEdit(id){
+  if(!A.autoService) return;
+  const s=A.autoService.find(x=>x.id===id);if(!s)return;
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Редактировать запись</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><div class="sl">Дата</div>
+      <input type="date" class="si" id="seDl" value="${s.date}"></div>
+    <div class="ss"><div class="sl">Километраж</div>
+      <input class="si" id="seKm" type="number" value="${s.km}"></div>
+    <div class="ss"><div class="sl">Работы (по одной на строку)</div>
+      <textarea class="si" id="seItems" rows="4">${s.items.join('\n')}</textarea></div>
+    <div class="ss"><div class="sl">Заметки</div>
+      <textarea class="si" id="seNote" rows="2">${s.note||''}</textarea></div>
+    <button class="btn-s" onclick="saveServiceEdit('${id}')">Сохранить</button>
+    <button class="btn-d" onclick="delService('${id}')">🗑 Удалить запись</button>`);
+}
+function saveServiceEdit(id){
+  const s=A.autoService.find(x=>x.id===id);if(!s)return;
+  s.date=$('seDl')?.value||s.date;
+  s.km=$('seKm')?.value||s.km;
+  s.items=($('seItems')?.value||'').split('\n').map(x=>x.trim()).filter(Boolean);
+  s.note=($('seNote')?.value||'').trim();
+  saveState();closeSheet();render();toast('Сохранено');
+}
+function delService(id){
+  if(!confirm('Удалить запись?'))return;
+  A.autoService=A.autoService.filter(x=>x.id!==id);
+  saveState();closeSheet();render();toast('Удалено');
+}
+
 // ═══════════════════════════════════════════════════════════
-// PAGE: REPORT
+// PAGE: REPORT (Статистика)
 // ═══════════════════════════════════════════════════════════
 function pgReport(){
   const wkD=new Date();wkD.setDate(wkD.getDate()-wkD.getDay()+1);const wk=wkD.toISOString().slice(0,10);
@@ -892,127 +1265,172 @@ function pgReport(){
   const pct=(a,b)=>b>0?Math.round(a/b*100):0;
 
   let html=`<div class="ph">
-    <div class="ph-row"><span class="ph-label">Отчёт</span></div>
-    <div class="ph-h1">Статистика</div>
-    <div class="ph-sub">Прогресс и динамика</div>
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">📊 Статистика</div>
+    </div>
   </div><div class="pg">`;
 
-  // ── Task stats
-  html+=`<div class="rc"><div class="rc-t">За эту неделю</div><div class="rs-row">
+  html+=`<div class="rc"><div class="rc-t">Задачи — эта неделя</div><div class="rs-row">
     <div class="rs"><div class="rs-n" style="color:var(--grn)">${wkDone}</div><div class="rs-l">Выполнено</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkAdded}</div><div class="rs-l">Добавлено</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(wkDone,wkAdded)}%</div><div class="rs-l">Закрыто</div></div>
   </div></div>`;
 
-  // Previous week comparison
-  const prevWkD=new Date(wkD);prevWkD.setDate(prevWkD.getDate()-7);
-  const prevWk=prevWkD.toISOString().slice(0,10);
-  const prevWkDone=done.filter(x=>x.doneAt&&x.doneAt>=prevWk&&x.doneAt<wk).length;
-  const prevWkAdded=tasks.filter(x=>x.dd&&x.dd>=prevWk&&x.dd<wk).length;
-  const wkDiff=wkDone-prevWkDone;
-  const wkArrow=wkDiff>0?'↑':wkDiff<0?'↓':'→';
-  const wkColor=wkDiff>0?'var(--grn)':wkDiff<0?'var(--red)':'var(--t3)';
-  html+=`<div class="rc" style="border-color:${wkDiff>0?'rgba(38,212,103,.2)':wkDiff<0?'rgba(255,59,80,.15)':'var(--bd)'}">
-    <div class="rc-t">Сравнение с прошлой неделей</div>
-    <div style="display:flex;align-items:center;justify-content:space-between">
-      <div style="font-size:12px;color:var(--t2)">Прошлая неделя: <b>${prevWkDone}</b> выполнено</div>
-      <div style="font-size:18px;font-weight:900;color:${wkColor}">${wkArrow} ${Math.abs(wkDiff)}</div>
-    </div>
-    <div class="rbar" style="margin-top:8px">
-      <div class="rbar-f" style="width:${pct(wkDone,Math.max(wkDone,prevWkDone,1))}%;background:${wkColor}"></div>
-    </div>
-  </div>`;
-
-  html+=`<div class="rc"><div class="rc-t">За этот месяц</div><div class="rs-row">
+  html+=`<div class="rc"><div class="rc-t">Задачи — этот месяц</div><div class="rs-row">
     <div class="rs"><div class="rs-n" style="color:var(--grn)">${mnDone}</div><div class="rs-l">Выполнено</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--blu)">${mnAdded}</div><div class="rs-l">Добавлено</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(mnDone,mnAdded)}%</div><div class="rs-l">Закрыто</div></div>
   </div></div>`;
 
-  // ── Done tasks (moved from separate tab)
-  const doneList=[...done].sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||'')).slice(0,30);
-  const groups={};
-  doneList.forEach(t=>{const k=t.doneAt||t.dd||'';if(!groups[k])groups[k]=[];groups[k].push(t);});
-
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 4px">
-    <div class="gl" style="padding:0;flex:1"><span style="color:var(--grn)">✅ Выполненные задачи (${done.length})</span></div>
-    ${done.length?`<button onclick="clearDone()" style="font-size:11px;font-weight:700;color:var(--red);padding:4px 10px;background:var(--rbg);border-radius:6px;border:none;cursor:pointer">Очистить</button>`:''}
+  // ── Collapsible done tasks
+  const doneOpen=A._doneOpen||false;
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 7px">
+    <span style="font-size:10px;font-weight:800;color:var(--t3);letter-spacing:.09em;text-transform:uppercase">✅ Выполнено (${done.length})</span>
+    <div style="display:flex;gap:8px">
+      ${done.length?`<button onclick="clearDone()" style="font-size:11px;font-weight:700;color:var(--red);padding:4px 8px;background:var(--rbg);border-radius:6px;border:none;cursor:pointer">Очистить</button>`:''}
+      <button onclick="A._doneOpen=!A._doneOpen;render()" style="font-size:11px;font-weight:700;color:var(--blu);padding:4px 10px;background:var(--bbg);border-radius:6px;border:none;cursor:pointer">${doneOpen?'Свернуть ∧':'Показать ∨'}</button>
+    </div>
   </div>`;
 
-  if(!done.length){
-    html+=`<div class="empty"><div class="empty-ic">✅</div><div class="empty-t">Пока ничего</div></div>`;
-  } else {
-    Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,ts])=>{
-      html+=glHdr(fmtD(date)||'Без даты',ts.length);
-      ts.forEach(t=>{
-        const cat=getCat(t.cat);
-        html+=`<div class="done-card" onclick="openEdit(${t.id})">
-          <div class="done-chk">✓</div>
-          <div class="done-body">
-            <div class="done-title">${t.title}</div>
-            <div class="done-meta">
-              <span style="background:${cat.bg};color:${cat.c};padding:1px 6px;border-radius:4px;font-weight:700">${cat.l}</span>
-              ${t.doneAt?`<span>✓ ${fmtDFull(t.doneAt)}</span>`:''}
+  if(doneOpen){
+    const doneList=[...done].sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||'')).slice(0,50);
+    const groups={};
+    doneList.forEach(t=>{const k=t.doneAt||t.dd||'';if(!groups[k])groups[k]=[];groups[k].push(t);});
+    if(!done.length){html+=`<div class="empty" style="padding:20px"><div class="empty-ic" style="font-size:28px">✅</div><div class="empty-t">Пока ничего</div></div>`;}
+    else{
+      Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,ts])=>{
+        html+=glHdr(fmtD(date)||'Без даты',ts.length);
+        ts.forEach(t=>{
+          const cat=getCat(t.cat);
+          html+=`<div class="done-card" onclick="openEdit(${t.id})">
+            <div class="done-chk">✓</div>
+            <div class="done-body">
+              <div class="done-title">${t.title}</div>
+              <div class="done-meta">
+                <span style="background:${cat.bg};color:${cat.c};padding:1px 6px;border-radius:4px;font-weight:700">${cat.l}</span>
+                ${t.doneAt?`<span>✓ ${fmtDFull(t.doneAt)}</span>`:''}
+              </div>
             </div>
-          </div>
-        </div>`;
+          </div>`;
+        });
       });
-    });
+    }
   }
 
   // ── Workout stats
-  const wkWorkouts=A.workouts.filter(w=>w.date>=wk);
-  const mnWorkouts=A.workouts.filter(w=>w.date>=mn);
-
+  const wkWs=A.workouts.filter(w=>w.date>=wk);
+  const mnWs=A.workouts.filter(w=>w.date>=mn);
   html+=glHdr('💪 Тренировки',A.workouts.length);
-  html+=`<div class="rc"><div class="rc-t">Статистика</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkWorkouts.length}</div><div class="rs-l">Эта неделя</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnWorkouts.length}</div><div class="rs-l">Этот месяц</div></div>
+  html+=`<div class="rc"><div class="rs-row">
+    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkWs.length}</div><div class="rs-l">Эта неделя</div></div>
+    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnWs.length}</div><div class="rs-l">Месяц</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
   </div></div>`;
 
-  // ── Workout chart (volume by date)
-  const last8=A.workouts.slice(-8);
-  if(last8.length){
-    const maxVol=Math.max(...last8.map(w=>w.exs.reduce((s,e)=>s+e.s*e.r,0)));
-    html+=`<div class="rc"><div class="rc-t">Объём тренировок</div><div class="chart-wrap"><div class="bar-chart">`;
-    last8.forEach(w=>{
-      const vol=w.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const h=maxVol>0?Math.round((vol/maxVol)*68):4;
-      const d=new Date(w.date+'T00:00:00');
-      const color=w.type==='chest'?'var(--blu)':'var(--pur)';
-      html+=`<div class="bar-col">
-        <div class="bar" style="height:${h}px;background:${color}"></div>
-        <div class="bar-lbl">${d.getDate()}.${d.getMonth()+1}</div>
-      </div>`;
+  // ── SVG Line chart
+  const last10=[...A.workouts].sort((a,b)=>a.date.localeCompare(b.date)).slice(-10);
+  if(last10.length>1){
+    const vols=last10.map(w=>({v:w.exs.reduce((s,e)=>s+e.s*e.r,0),d:w.date,t:w.type}));
+    const maxV=Math.max(...vols.map(x=>x.v));
+    const minV=Math.min(...vols.map(x=>x.v));
+    const W=320,H=90,padX=10,padY=14;
+    const pts=vols.map((x,i)=>{
+      const cx=padX+(i/(vols.length-1))*(W-padX*2);
+      const cy=padY+(1-(x.v-minV)/Math.max(maxV-minV,1))*(H-padY*2);
+      return[cx,cy,x];
     });
-    html+=`</div></div></div>`;
+    const path='M'+pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' L');
+    const area='M'+pts[0][0].toFixed(1)+','+(H-2)+' '+pts.map(p=>`L${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0].toFixed(1)},${H-2} Z`;
+    html+=`<div class="rc"><div class="rc-t">Объём тренировок (повторений × подходы)</div>
+      <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;margin:4px 0" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--blu)" stop-opacity=".35"/><stop offset="100%" stop-color="var(--blu)" stop-opacity="0"/></linearGradient></defs>
+        <path d="${area}" fill="url(#lg)"/>
+        <path d="${path}" fill="none" stroke="var(--blu)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        ${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="var(--blu)"/>`).join('')}
+        ${pts.map(p=>{const d=new Date(p[2].d+'T00:00:00');return`<text x="${p[0].toFixed(1)}" y="${H-1}" text-anchor="middle" font-size="8" fill="var(--t3)" font-family="Inter">${d.getDate()}.${pad(d.getMonth()+1)}</text>`;}).join('')}
+      </svg>
+    </div>`;
   }
 
-  // ── Workout dynamics
-  const tNames={chest:'Грудь',back:'Спина',legs:'Ноги',arms:'Руки'};
+  // ── Dynamics by type — collapsible with details
   const byType={};
   A.workouts.forEach(w=>{if(!byType[w.type])byType[w.type]=[];byType[w.type].push(w);});
+  const WTYPE_LABELS={chest:'Грудь/Трицепс',back:'Спина/Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
   if(Object.keys(byType).length){
-    html+=`<div class="rc"><div class="rc-t">Динамика по группам</div>`;
+    html+=glHdr('Динамика нагрузки',Object.keys(byType).length);
+    html+=`<div class="rc">`;
     Object.entries(byType).forEach(([type,ws])=>{
       const sorted=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
       const last=sorted[sorted.length-1],prev=sorted[sorted.length-2];
-      if(!prev){html+=`<div class="ri"><span style="font-size:13px;font-weight:600">${tNames[type]||type}</span><span style="font-size:11px;color:var(--t3)">1 тренировка</span></div>`;return;}
-      const volLast=last.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const volPrev=prev.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const diff=volLast-volPrev;
-      const sign=diff>0?'↑':diff<0?'↓':'→';
-      const col=diff>0?'var(--grn)':diff<0?'var(--red)':'var(--t3)';
-      html+=`<div class="ri">
-        <span style="font-size:13px;font-weight:600">${tNames[type]||type}</span>
-        <span style="font-size:12px;font-weight:800;color:${col}">${sign} ${Math.abs(diff)} повт.</span>
+      const lbl=WTYPE_LABELS[type]||type;
+      if(!prev){
+        html+=`<div class="ri"><span style="font-size:13px;font-weight:600">${lbl}</span><span style="font-size:11px;color:var(--t3)">1 тренировка</span></div>`;
+        return;
+      }
+      const volL=last.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const volP=prev.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const diffPct=volP>0?Math.round((volL-volP)/volP*100):0;
+      const col=diffPct>0?'var(--grn)':diffPct<0?'var(--red)':'var(--t3)';
+      const arrow=diffPct>0?'↑':diffPct<0?'↓':'→';
+      const isExp=A._expTypes?.has(type)||false;
+
+      // Details: what changed
+      const details=[];
+      last.exs.forEach(ex=>{
+        const pe=prev.exs.find(e=>e.n===ex.n);
+        if(!pe){details.push(`➕ ${ex.n} — новое упражнение`);return;}
+        if(ex.w>pe.w) details.push(`💪 ${ex.n}: вес ${pe.w}→${ex.w} кг (+${(ex.w-pe.w).toFixed(1)} кг)`);
+        else if(ex.s*ex.r>pe.s*pe.r) details.push(`🔁 ${ex.n}: объём ↑ (${pe.s}×${pe.r}→${ex.s}×${ex.r})`);
+        else if(ex.s>pe.s) details.push(`📈 ${ex.n}: подходы ${pe.s}→${ex.s}`);
+      });
+
+      html+=`<div style="border-bottom:1px solid var(--bd)">
+        <div class="ri" onclick="toggleTypeExp('${type}')">
+          <span style="font-size:13px;font-weight:700">${lbl}</span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:11px;color:var(--t3)">${fmtD(last.date)}</span>
+            <span style="font-size:15px;font-weight:900;color:${col}">${arrow} ${Math.abs(diffPct)}%</span>
+            <span style="font-size:12px;color:var(--t3)">${isExp?'∧':'∨'}</span>
+          </div>
+        </div>
+        ${isExp&&details.length?`<div style="padding:6px 0 10px;display:flex;flex-direction:column;gap:5px">
+          ${details.map(d=>`<span style="font-size:12px;color:var(--t2)">${d}</span>`).join('')}
+        </div>`:''}
       </div>`;
     });
     html+=`</div>`;
   }
+
+  // ── Muscle groups load
+  const muscleCount={};
+  A.workouts.forEach(w=>{muscleCount[w.type]=(muscleCount[w.type]||0)+1;});
+  const total=A.workouts.length||1;
+  const muscleIc={chest:'💪',back:'🔙',legs:'🦵',arms:'👊',cardio:'🏃',full:'🏋️'};
+  if(Object.keys(muscleCount).length){
+    html+=glHdr('Нагрузка по группам мышц',Object.keys(muscleCount).length);
+    html+=`<div class="rc">`;
+    Object.entries(muscleCount).sort((a,b)=>b[1]-a[1]).forEach(([type,count])=>{
+      const p=Math.round(count/total*100);
+      const lbl=WTYPE_LABELS[type]||type;
+      const ic=muscleIc[type]||'🏋️';
+      html+=`<div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px">
+          <span style="font-weight:700">${ic} ${lbl}</span>
+          <span style="color:var(--t3)">${count} тренировок · ${p}%</span>
+        </div>
+        <div class="rbar"><div class="rbar-f" style="width:${p}%;background:var(--blu)"></div></div>
+      </div>`;
+    });
+    html+=`</div>`;
+  }
+
   html+=`</div>`;
   return html;
+}
+function toggleTypeExp(type){
+  if(!A._expTypes) A._expTypes=new Set();
+  if(A._expTypes.has(type))A._expTypes.delete(type);else A._expTypes.add(type);
+  render();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1021,9 +1439,9 @@ function pgReport(){
 function pgSettings(){
   const n=A.notion;
   let html=`<div class="ph">
-    <div class="ph-row"><span class="ph-label">Настройки</span></div>
-    <div class="ph-h1">Настройки</div>
-    <div class="ph-sub">Тема, Notion, категории</div>
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">⚙️ Настройки</div>
+    </div>
   </div><div class="pg">`;
 
   // Theme
@@ -1403,7 +1821,68 @@ function deleteCat(id){
 }
 
 // ═══════════════════════════════════════════════════════════
-// GUIDE
+// ═══════════════════════════════════════════════════════════
+// PAGE: NOTES (Размышления — отдельный раздел)
+// ═══════════════════════════════════════════════════════════
+function pgNotes(){
+  const ideas=A.tasks.filter(t=>t.cat==='ideas');
+  const active=ideas.filter(t=>t.s!=='done');
+  const done=ideas.filter(t=>t.s==='done');
+  return `<div class="ph">
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">💡 Размышления</div>
+    </div>
+  </div>
+  <div class="pg">
+    ${active.length?glHdr('Идеи и варианты',active.length,'var(--grn)'):''}
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
+      ${active.map(t=>{
+        const bgMap={red:'var(--rbg)',yellow:'var(--ybg)',blue:'rgba(105,240,174,.1)',green:'var(--gbg)'};
+        const brdMap={red:'rgba(255,59,80,.25)',yellow:'rgba(255,170,0,.2)',blue:'rgba(105,240,174,.22)',green:'rgba(38,212,103,.2)'};
+        return`<div onclick="openEdit(${t.id})" style="background:${bgMap[t.p]||bgMap.blue};border:1px solid ${brdMap[t.p]||brdMap.blue};border-radius:11px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;line-height:1.4">
+          ${t.title}
+          ${t.note?`<div style="font-size:10px;color:var(--t3);margin-top:3px">${t.note.slice(0,50)}</div>`:''}
+        </div>`;
+      }).join('')}
+      ${!active.length?`<div class="empty" style="width:100%;padding:30px 0"><div class="empty-ic">💭</div><div class="empty-t">Пока пусто</div><div class="empty-s">Нажми ＋ чтобы добавить идею</div></div>`:''}
+    </div>
+    ${done.length?`${glHdr('Реализовано',done.length,'var(--grn)')}${done.map(t=>`<div onclick="openEdit(${t.id})" style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px 13px;margin-bottom:6px;cursor:pointer"><span style="font-size:12px;text-decoration:line-through;color:var(--t3)">${t.title}</span></div>`).join('')}`:''}
+  </div>`;
+}
+function openNewIdea(){
+  A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
+  showTaskSheet(false);
+}
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: GUIDE
+// ═══════════════════════════════════════════════════════════
+function pgGuide(){
+  return `<div class="ph">
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">📖 Инструкция</div>
+    </div>
+  </div><div class="pg">
+    <div class="g-sec"><div class="g-t">📋 Задачи</div>
+      <div class="g-step"><div class="g-num">1</div><div class="g-txt">Нажми ＋ → название → приоритет, статус, категорию</div></div>
+      <div class="g-step"><div class="g-num">2</div><div class="g-txt">Дедлайн — быстрые кнопки или выбор даты</div></div>
+      <div class="g-step"><div class="g-num">3</div><div class="g-txt">Нажми на задачу чтобы редактировать. Квадратик — отметить выполненной</div></div>
+    </div>
+    <div class="g-sec"><div class="g-t">💪 Спорт</div>
+      <div class="g-p">＋ → тип → упражнения. Текущая неделя открыта, остальные свёрнуты. Нажми на карточку чтобы раскрыть, внутри кнопка редактирования.</div>
+    </div>
+    <div class="g-sec"><div class="g-t">🚗 Авто</div>
+      <div class="g-p">＋ → добавляй задачи. При выполнении — задача уходит в историю обслуживания с датой и пробегом автоматически.</div>
+    </div>
+    <div class="g-sec"><div class="g-t">📱 На экран домой (iPhone)</div>
+      <div class="g-step"><div class="g-num">1</div><div class="g-txt">Открой planner-go.netlify.app в Safari</div></div>
+      <div class="g-step"><div class="g-num">2</div><div class="g-txt">Поделиться (□↑) → На экран «Домой»</div></div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GUIDE (sheet version from settings)
 // ═══════════════════════════════════════════════════════════
 function openGuide(){
   openSheet(`
