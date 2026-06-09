@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Планировщик">
-<meta name="theme-color" content="#0d0d10" id="themeColor">
+<meta name="theme-color" content="#0d0d10">
 <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Планировщик&quot;,&quot;short_name&quot;:&quot;Планы&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d0d10&quot;,&quot;theme_color&quot;:&quot;%230d0d10&quot;,&quot;start_url&quot;:&quot;.&quot;}">
 <title>Планировщик</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -44,47 +44,23 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 /* ── BOTTOM NAV ─────────────────────────────── */
 .nav{
-  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 24px);max-width:430px;
-  background:rgba(16,16,22,.55);
-  backdrop-filter:blur(32px) saturate(220%);
-  -webkit-backdrop-filter:blur(32px) saturate(220%);
-  border:1px solid rgba(255,255,255,.13);
-  box-shadow:0 8px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08);
-  border-radius:28px;
-  display:flex;align-items:center;justify-content:space-around;
-  height:70px;padding:0 8px;
+  position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+  width:100%;max-width:960px;
+  background:var(--bg2);border-top:1px solid var(--bd);
+  display:flex;align-items:center;
+  height:var(--nav-h);padding:0 8px 8px;
   z-index:100;
 }
-[data-theme="light"] .nav{background:rgba(248,248,252,.65);border-color:rgba(0,0,0,.10);box-shadow:0 8px 40px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.9);}
 .nvi{
-  flex:1;height:54px;border-radius:20px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;color:var(--t3);
-  font-size:9px;font-weight:700;letter-spacing:.03em;
-  text-transform:uppercase;transition:all .18s;
-  background:transparent;border:1px solid transparent;
-}
-.nvi.on{
-  color:var(--acc);
-  background:rgba(26,143,255,.18);
-  border-color:rgba(26,143,255,.30);
-  box-shadow:0 2px 12px rgba(26,143,255,.2);
-}
-.nvi:active{transform:scale(.92);opacity:.8}
-.nvi-ic{font-size:26px;line-height:1.1}
-.nvi-lbl{font-size:9px;font-weight:700}
-.nav-arrow{
-  width:54px;height:54px;border-radius:20px;
-  display:flex;align-items:center;justify-content:center;
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:3px;padding:6px 4px;
   cursor:pointer;color:var(--t3);
-  font-size:28px;font-weight:300;line-height:1;
-  background:transparent;transition:all .18s;
-  border:1px solid transparent;
-  font-family:'Inter',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;transition:color .15s;border-radius:12px;
 }
-.nav-arrow.on{color:var(--acc);background:rgba(26,143,255,.18);border-color:rgba(26,143,255,.30);}
-.nav-arrow:active{transform:scale(.92);opacity:.8}
+.nvi.on{color:var(--acc)}
+.nvi-ic{font-size:22px;line-height:1}
+.nvi-lbl{font-size:9px;font-weight:700}
 
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
@@ -175,50 +151,12 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .empty-t{font-size:15px;font-weight:700;color:var(--t2);margin-bottom:6px}
 .empty-s{font-size:12px;color:var(--t3);line-height:1.5}
 
-/* ── FAB (water glass effect) ────────────────── */
-.fab{
-  position:fixed;bottom:calc(var(--nav-h) + 20px);right:16px;
-  width:56px;height:56px;border-radius:18px;
-  background:rgba(26,143,255,.22);
-  backdrop-filter:blur(20px) saturate(200%);
-  -webkit-backdrop-filter:blur(20px) saturate(200%);
-  border:1px solid rgba(26,143,255,.50);
-  box-shadow:0 6px 24px rgba(26,143,255,.30),inset 0 1px 0 rgba(255,255,255,.15);
-  color:rgba(255,255,255,.95);font-size:28px;font-weight:300;
-  display:flex;align-items:center;justify-content:center;
-  z-index:99;cursor:pointer;transition:transform .13s,opacity .13s;
-  line-height:1;font-family:'Inter',sans-serif;
-}
-.fab:active{transform:scale(.91);opacity:.75}
-
-/* ── MORE POPUP ──────────────────────────────── */
-.more-menu{
-  position:fixed;bottom:calc(var(--nav-h) + 18px);left:50%;transform:translateX(-50%);
-  width:calc(100% - 28px);max-width:430px;
-  border-radius:22px;padding:14px;z-index:150;
-  background:rgba(20,20,28,.72);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 8px 32px rgba(0,0,0,.4);
-  display:none;
-}
-[data-theme="light"] .more-menu{background:rgba(245,245,250,.82);}
-.more-menu.on{display:block}
-.more-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.more-btn{
-  height:68px;border-radius:16px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
-  cursor:pointer;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.10);
-  transition:all .13s;
-}
-[data-theme="light"] .more-btn{background:rgba(0,0,0,.05);border-color:rgba(0,0,0,.08);}
-.more-btn.on{background:rgba(26,143,255,.18);border-color:rgba(26,143,255,.3);}
-.more-btn:active{transform:scale(.93)}
-.more-ic{font-size:24px}
-.more-lbl{font-size:9px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.04em}
+/* ── FAB ─────────────────────────────────────── */
+.fab{position:fixed;bottom:calc(var(--nav-h) + 12px);right:16px;
+  width:52px;height:52px;border-radius:16px;background:var(--blu);color:#fff;
+  font-size:26px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(26,143,255,.4);z-index:99;cursor:pointer;border:none}
+.fab:active{transform:scale(.92)}
 
 /* ── MODAL ───────────────────────────────────── */
 .ovl{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;
@@ -262,7 +200,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   background:var(--ybg);color:var(--yel);font-size:13px;font-weight:700;
   border:1px solid rgba(255,170,0,.2);cursor:pointer}
 
-/* ── REPORT / STATS ─────────────────────────── */
+/* ── REPORT ──────────────────────────────────── */
 .rc{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:9px;border:1.5px solid var(--bd)}
 .rc-t{font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
 .rs-row{display:flex;gap:7px}
@@ -270,41 +208,28 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .rs-n{font-size:20px;font-weight:900}
 .rs-l{font-size:9px;color:var(--t3);font-weight:700;text-transform:uppercase;margin-top:2px}
 .rbar{height:4px;border-radius:2px;background:var(--bg3);margin:6px 0;overflow:hidden}
-.rbar-f{height:100%;border-radius:2px}
+.rbar-f{height:100%;border-radius:2px;transition:width .5s}
 .ri{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--bd)}
 .ri:last-child{border-bottom:none}
 
-/* ── WORKOUT CARDS ───────────────────────────── */
-.wk-card{border-radius:14px;margin-bottom:8px;border:1.5px solid var(--bd);overflow:hidden}
-.wk-hdr{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;background:var(--bg2);transition:background .13s}
-.wk-hdr:active{background:var(--bg3)}
-.wk-date{font-size:13px;font-weight:800;color:var(--t2);min-width:46px}
-.wk-type{font-size:14px;font-weight:700;flex:1;color:var(--tx)}
-.wk-cnt{font-size:11px;color:var(--t3)}
-.wk-dyn{font-size:14px;font-weight:900;margin-left:4px}
-.wk-chevron{font-size:13px;color:var(--t3);margin-left:2px}
-.wk-body{background:var(--bg2);padding:0 14px 12px;border-top:1px solid var(--bd)}
-.wk-body.collapsed{display:none}
-.ex-row{display:flex;align-items:flex-start;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bd)}
-.ex-row:last-child{border-bottom:none}
-.ex-name{font-size:14px;font-weight:700;color:var(--tx)}
-.ex-prev{font-size:12px;color:var(--t2);margin-top:3px;font-weight:500}
-.ex-pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:140px}
-.ex-pill{background:var(--bg3);border-radius:7px;padding:4px 10px;font-size:12px;font-weight:800;color:var(--t2)}
-.ex-pill.up{color:var(--grn);background:var(--gbg)}.ex-pill.dn{color:var(--red);background:var(--rbg)}
-.wk-edit-btn{margin-top:10px;width:100%;height:38px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit}
+/* ── WORKOUT ─────────────────────────────────── */
+.wc{background:var(--bg2);border-radius:var(--r);padding:12px;margin-bottom:8px;border:1.5px solid var(--bd);cursor:pointer}
+.er{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)}
+.er:last-child{border-bottom:none}
+.en{font-size:13px;font-weight:600}.ep{font-size:10px;color:var(--t3);margin-top:2px}
+.epills{display:flex;gap:4px}
+.pill{background:var(--bg3);border-radius:5px;padding:3px 7px;font-size:10px;font-weight:800;color:var(--t2)}
+.pill.up{color:var(--grn);background:var(--gbg)}.pill.dn{color:var(--red);background:var(--rbg)}
 
 /* ── AUTO ────────────────────────────────────── */
-.auto-task{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);cursor:pointer}
-.auto-task:last-child{border-bottom:none}
-.auto-task:active{opacity:.7}
-.auto-pline{width:3px;border-radius:2px;align-self:stretch;flex-shrink:0;margin-top:2px}
-.auto-svc-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd)}
-.auto-svc-item:last-child{border-bottom:none}
+.auto-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.auto-item:last-child{border-bottom:none}
 
-/* ── DONE CARD ───────────────────────────────── */
-.done-card{background:var(--bg2);border-radius:var(--r);padding:11px 13px;margin-bottom:6px;border:1.5px solid var(--bd);display:flex;align-items:flex-start;gap:10px;cursor:pointer}
-.done-chk{width:20px;height:20px;border-radius:6px;background:var(--gbg);border:1.5px solid var(--grn);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--grn);font-weight:900;margin-top:1px}
+/* ── DONE PAGE ───────────────────────────────── */
+.done-card{background:var(--bg2);border-radius:var(--r);padding:11px 13px;margin-bottom:6px;
+  border:1.5px solid var(--bd);display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.done-chk{width:20px;height:20px;border-radius:6px;background:var(--gbg);border:1.5px solid var(--grn);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--grn);font-weight:900;margin-top:1px}
 .done-body{flex:1;min-width:0}
 .done-title{font-size:13px;font-weight:600;color:var(--t2);text-decoration:line-through;word-break:break-word}
 .done-meta{font-size:10px;color:var(--t3);margin-top:3px;display:flex;gap:6px;flex-wrap:wrap}
@@ -313,67 +238,63 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .set-block{background:var(--bg2);border-radius:var(--r);padding:0 16px;border:1.5px solid var(--bd);margin-bottom:12px}
 .set-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--bd)}
 .set-row:last-child{border-bottom:none}
-.set-l{font-size:13px;font-weight:600}.set-s{font-size:11px;color:var(--t3);margin-top:2px}
+.set-l{font-size:13px;font-weight:600}
+.set-s{font-size:11px;color:var(--t3);margin-top:2px}
 .cat-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd)}
 .cat-row:last-child{border-bottom:none}
-.cat-del{width:26px;height:26px;border-radius:8px;background:var(--rbg);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;flex-shrink:0;font-weight:800;border:none}
+.cat-del{width:26px;height:26px;border-radius:8px;background:var(--rbg);color:var(--red);
+  display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;font-weight:800;border:none}
 .tgl{width:42px;height:23px;border-radius:12px;background:var(--bg4);position:relative;cursor:pointer;transition:background .18s;flex-shrink:0}
 .tgl.on{background:var(--blu)}
 .tgl::after{content:'';width:17px;height:17px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;transition:transform .18s}
 .tgl.on::after{transform:translateX(19px)}
-.theme-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.theme-btn{height:58px;border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:2px solid transparent;transition:all .13s}
-.theme-btn.on{border-color:var(--acc)}
-.theme-lbl{font-size:9px;font-weight:800;color:var(--t2);text-transform:uppercase}
 
 /* ── GUIDE ───────────────────────────────────── */
 .g-sec{background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd)}
 .g-t{font-size:14px;font-weight:800;margin-bottom:9px}
 .g-p{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:5px}
 .g-step{display:flex;gap:9px;align-items:flex-start;margin-bottom:7px}
-.g-num{width:20px;height:20px;border-radius:50%;background:var(--bbg);color:var(--blu);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-num{width:20px;height:20px;border-radius:50%;background:var(--bbg);color:var(--blu);
+  font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .g-txt{font-size:12px;color:var(--t2);line-height:1.55;flex:1}
 
-/* ── WEATHER ─────────────────────────────────── */
-.weather-pill{display:flex;align-items:center;gap:9px;
-  background:rgba(26,143,255,.12);border-radius:16px;padding:8px 14px;
-  border:1px solid rgba(26,143,255,.25);cursor:pointer;transition:all .2s;
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-}
-.weather-pill:active{opacity:.7;transform:scale(.96)}
-.weather-ic{font-size:30px;line-height:1;animation:float 4s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-3px) rotate(-3deg)}66%{transform:translateY(-1px) rotate(2deg)}}
-@keyframes pulse-glow{0%,100%{box-shadow:0 4px 16px rgba(26,143,255,.2)}50%{box-shadow:0 4px 24px rgba(26,143,255,.4)}}
-.weather-pill{animation:pulse-glow 4s ease-in-out infinite}
-.weather-temp{font-size:22px;font-weight:900;line-height:1;color:var(--tx)}
-.weather-desc{font-size:10px;color:var(--t2);font-weight:700;margin-top:1px}
-
-/* ── THEMES ─────────────────────────────────── */
-[data-theme="light"]{--bg:#f0f0f5;--bg2:#fff;--bg3:#f5f5fa;--bg4:#e8e8f0;--bd:rgba(0,0,0,.07);--bd2:rgba(0,0,0,.12);--tx:#1a1a2e;--t2:#555570;--t3:#9090a8;}
-[data-theme="sepia"]{--bg:#18140e;--bg2:#221c14;--bg3:#2a231a;--bg4:#332b1f;--bd:rgba(255,220,150,.07);--bd2:rgba(255,220,150,.14);--tx:#f0e6cc;--t2:#a09070;--t3:#6a5a40;}
-[data-theme="amoled"]{--bg:#000;--bg2:#0a0a0a;--bg3:#111;--bg4:#1a1a1a;--bd:rgba(255,255,255,.05);--bd2:rgba(255,255,255,.09);--tx:#fff;--t2:#808080;--t3:#404040;}
-[data-theme="ocean"]{--bg:#060e1a;--bg2:#0b1829;--bg3:#102035;--bg4:#162840;--bd:rgba(100,200,255,.07);--bd2:rgba(100,200,255,.13);--tx:#cce8ff;--t2:#6090b0;--t3:#304558;--acc:#00bfff;--blu:#00bfff;--bbg:rgba(0,191,255,.13);}
-[data-theme="forest"]{--bg:#080f08;--bg2:#101810;--bg3:#182018;--bg4:#202820;--bd:rgba(100,200,100,.07);--bd2:rgba(100,200,100,.13);--tx:#d0f0d0;--t2:#608060;--t3:#304030;--acc:#4caf50;--grn:#4caf50;--blu:#4caf50;--bbg:rgba(76,175,80,.13);--gbg:rgba(76,175,80,.13);}
-[data-theme="pink"]{--bg:#120a10;--bg2:#1c1018;--bg3:#241420;--bg4:#2e1a28;--bd:rgba(255,100,180,.07);--bd2:rgba(255,100,180,.14);--tx:#ffe0f0;--t2:#c080a8;--t3:#7a4060;--acc:#ff69b4;--blu:#ff69b4;--bbg:rgba(255,105,180,.13);}
-[data-theme="nord"]{--bg:#2e3440;--bg2:#3b4252;--bg3:#434c5e;--bg4:#4c566a;--bd:rgba(216,222,233,.08);--bd2:rgba(216,222,233,.14);--tx:#eceff4;--t2:#d8dee9;--t3:#9099aa;--acc:#88c0d0;--blu:#88c0d0;--bbg:rgba(136,192,208,.13);}
-[data-theme="mocha"]{--bg:#1e1e2e;--bg2:#181825;--bg3:#1e1e2e;--bg4:#313244;--bd:rgba(205,214,244,.06);--bd2:rgba(205,214,244,.12);--tx:#cdd6f4;--t2:#a6adc8;--t3:#6c7086;--acc:#cba6f7;--blu:#cba6f7;--bbg:rgba(203,166,247,.13);}
-[data-theme="sunset"]{--bg:#120810;--bg2:#1c1020;--bg3:#241828;--bg4:#2e2032;--bd:rgba(255,100,50,.07);--bd2:rgba(255,100,50,.13);--tx:#ffeedd;--t2:#c08070;--t3:#7a5040;--acc:#ff7043;--blu:#ff7043;--bbg:rgba(255,112,67,.13);}
-
-/* ── CAT INDICATOR ───────────────────────────── */
-.cbar{width:3px;height:14px;border-radius:2px;flex-shrink:0}
-.cbar-sub{width:2px;height:10px;border-radius:2px;flex-shrink:0;opacity:.55}
+/* ── CHART ───────────────────────────────────── */
+.chart-wrap{padding:4px 0 8px;overflow-x:auto;scrollbar-width:none}
+.chart-wrap::-webkit-scrollbar{display:none}
+.bar-chart{display:flex;align-items:flex-end;gap:4px;height:80px;padding:0 4px}
+.bar-col{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;min-width:28px}
+.bar{border-radius:4px 4px 0 0;width:100%;transition:height .4s;min-height:3px}
+.bar-lbl{font-size:8px;color:var(--t3);font-weight:700;text-align:center}
 
 /* ── TOAST ───────────────────────────────────── */
-.toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,20,28,.94);border:1px solid var(--bd2);color:var(--tx);padding:9px 16px;border-radius:12px;font-size:12px;font-weight:700;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
+.toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-10px);
+  background:rgba(38,38,47,.96);border:1px solid var(--bd2);color:var(--tx);
+  padding:9px 16px;border-radius:12px;font-size:12px;font-weight:700;z-index:999;
+  opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-@media(min-width:600px){:root{--nav-h:72px}.nav{width:calc(100% - 48px)}}
+/* ── TABLET / DESKTOP ────────────────────────── */
+@media(min-width:600px){
+  :root{--nav-h:56px}
+  .dd{height:68px}
+  .ws-wrap{padding:16px 24px 0}
+  .qsbar{padding:10px 24px 0}
+  .cf-wrap .cf-inner{padding:0 24px}
+  .nav{padding:0 24px 8px}
+  .nvi-ic{font-size:24px}
+  .fab{right:24px}
+}
+@media(min-width:900px){
+  #app{display:grid;grid-template-columns:340px 1fr;grid-template-rows:auto 1fr;gap:0;align-items:start}
+  .ph{grid-column:1/-1}
+  .left-col{grid-column:1;grid-row:2}
+  .right-col{grid-column:2;grid-row:2;padding:0 24px 0 12px}
+}
 </style>
 </head>
 <body>
 <div id="app"></div>
 <nav class="nav" id="nav"></nav>
-<div class="more-menu" id="moreMenu"></div>
 <button class="fab" id="fab" onclick="openNew()">＋</button>
 <div class="ovl" id="ovl"><div class="sht" id="sht"></div></div>
 <div class="toast" id="toast"></div>
@@ -454,55 +375,27 @@ function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
 function loadState(){
   try{
-    const d=JSON.parse(localStorage.getItem('pln6')||'{}');
+    const d=JSON.parse(localStorage.getItem('pln5')||'{}');
     A.tasks=d.tasks||seedTasks();
     A.workouts=d.workouts||seedWorkouts();
     A.reminders=d.reminders||{};
     A.cats=d.cats&&d.cats.length?d.cats:[...DEFAULT_CATS];
     A.notion=d.notion||{key:'',dbId:''};
     A.theme=d.theme||'dark';
-    A.autoService=d.autoService||seedAutoService();
-    A.workoutTypes=d.workoutTypes||[
-      {id:'chest',l:'Грудь / Трицепс',ic:'💪'},{id:'back',l:'Спина / Бицепс',ic:'🔙'},
-      {id:'legs',l:'Ноги',ic:'🦵'},{id:'arms',l:'Руки',ic:'💪'},{id:'cardio',l:'Кардио',ic:'🏃'},
-    ];
-    // Ensure auto tasks exist in main tasks
-    if(!A.tasks.some(t=>t.cat==='auto')){ seedAutoTasksIntoMain().forEach(t=>A.tasks.push(t)); }
-  }catch(e){A.tasks=seedTasks();A.workouts=seedWorkouts();A.autoService=seedAutoService();}
-  applyTheme(A.theme,false);
+  }catch(e){A.tasks=seedTasks();A.workouts=seedWorkouts();}
+  applyTheme(A.theme);
 }
 function saveState(){
-  localStorage.setItem('pln6',JSON.stringify({
+  localStorage.setItem('pln5',JSON.stringify({
     tasks:A.tasks,workouts:A.workouts,reminders:A.reminders,
-    cats:A.cats,notion:A.notion,theme:A.theme,
-    autoService:A.autoService,workoutTypes:A.workoutTypes,
+    cats:A.cats,notion:A.notion,theme:A.theme
   }));
 }
-function applyTheme(t,save=true){
+function applyTheme(t){
   A.theme=t;
   document.body.dataset.theme=t==='dark'?'':t;
-  const th=THEMES_LIST.find(x=>x.id===t);
-  document.querySelector('#themeColor')?.setAttribute('content',th?.bg||'#0d0d10');
-  if(save){saveState();render();}
-}
-
-function seedAutoService(){
-  return[
-    {id:'s1',date:'2025-12-19',km:'179800',items:['Рулевые наконечники','Свечи зажигания','Тяги багажника'],note:''},
-    {id:'s2',date:'2025-09-28',km:'175520',items:['Дворники','Замена масла'],note:''},
-    {id:'s3',date:'2025-08-03',km:'172550',items:['Масло в коробке','Фильтр салона','Фильтр воздушный'],note:''},
-  ];
-}
-function seedAutoTasksIntoMain(){
-  const t=today();
-  return[
-    {id:Date.now()+1,title:'Коробка — детали и ремонт — цена',cat:'auto',p:'yellow',s:'todo',dl:'',note:'',dd:t},
-    {id:Date.now()+2,title:'Коробка — прошивка',cat:'auto',p:'yellow',s:'todo',dl:'',note:'',dd:t},
-    {id:Date.now()+3,title:'Свист при работе двигателя',cat:'auto',p:'yellow',s:'todo',dl:'',note:'',dd:t},
-    {id:Date.now()+4,title:'Обороты плавают после завода',cat:'auto',p:'yellow',s:'todo',dl:'',note:'',dd:t},
-    {id:Date.now()+5,title:'Топливный фильтр — поменять',cat:'auto',p:'yellow',s:'todo',dl:'',note:'',dd:t},
-    {id:Date.now()+6,title:'Подогрев сидения',cat:'auto',p:'blue',s:'todo',dl:'',note:'',dd:t},
-  ];
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',t==='light'?'#f5f5f7':'#0d0d10');
+  saveState();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -672,80 +565,29 @@ function getWeekLabel(offset){
 // ═══════════════════════════════════════════════════════════
 function render(){
   const app=$('app');
-  const showFab=['tasks','auto','workouts','notes'].includes(A.nav);
-  $('fab').style.display=showFab?'flex':'none';
-  $('fab').onclick=A.nav==='workouts'?openNewWorkout:A.nav==='auto'?openAutoTask:A.nav==='notes'?openNewIdea:openNew;
-  if(A.nav==='tasks')         app.innerHTML=pgTasks();
+  $('fab').style.display=A.nav==='tasks'?'flex':'none';
+  if(A.nav==='tasks')       app.innerHTML=pgTasks();
   else if(A.nav==='workouts') app.innerHTML=pgWorkouts();
-  else if(A.nav==='auto')     app.innerHTML=pgAuto();
-  else if(A.nav==='report')   app.innerHTML=pgReport();
+  else if(A.nav==='auto')   app.innerHTML=pgAuto();
+  else if(A.nav==='report') app.innerHTML=pgReport();
   else if(A.nav==='settings') app.innerHTML=pgSettings();
-  else if(A.nav==='notes')    app.innerHTML=pgNotes();
-  else if(A.nav==='guide')    app.innerHTML=pgGuide();
-  renderNav();
-  renderMoreMenu();
-  bind();
-}
-
-const THEMES_LIST=[
-  {id:'dark',   l:'Тёмная',  ic:'🌑', bg:'#0d0d10'},
-  {id:'light',  l:'Светлая', ic:'☀️', bg:'#f0f0f5'},
-  {id:'sepia',  l:'Сепия',   ic:'🌅', bg:'#18140e'},
-  {id:'amoled', l:'AMOLED',  ic:'⬛', bg:'#000'},
-  {id:'ocean',  l:'Океан',   ic:'🌊', bg:'#060e1a'},
-  {id:'forest', l:'Лес',     ic:'🌿', bg:'#080f08'},
-  {id:'pink',   l:'Пинк',    ic:'🌸', bg:'#120a10'},
-  {id:'nord',   l:'Норд',    ic:'❄️', bg:'#2e3440'},
-  {id:'mocha',  l:'Мокко',   ic:'☕', bg:'#1e1e2e'},
-  {id:'sunset', l:'Закат',   ic:'🌇', bg:'#120810'},
-];
-
-function applyTheme(t,save=true){
-  A.theme=t;
-  document.body.dataset.theme=t==='dark'?'':t;
-  const th=THEMES_LIST.find(x=>x.id===t);
-  $('themeColor')?.setAttribute('content',th?.bg||'#0d0d10');
-  if(save){saveState();render();}
+  renderNav();bind();
 }
 
 function renderNav(){
-  const mainItems=[
+  const items=[
     {id:'tasks',    ic:'📋', l:'Задачи'},
     {id:'workouts', ic:'💪', l:'Спорт'},
+    {id:'auto',     ic:'🚗', l:'Авто'},
+    {id:'report',   ic:'📊', l:'Отчёт'},
+    {id:'settings', ic:'⚙️', l:'Ещё'},
   ];
-  const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
-  let h='';
-  mainItems.forEach(i=>{
-    h+=`<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
-      <span class="nvi-ic">${i.ic}</span><span class="nvi-lbl">${i.l}</span></div>`;
-  });
-  h+=`<button class="nav-arrow${moreActive||A._moreOpen?' on':''}" onclick="toggleMore()">›</button>`;
-  $('nav').innerHTML=h;
+  $('nav').innerHTML=items.map(i=>
+    `<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
+      <span class="nvi-ic">${i.ic}</span><span class="nvi-lbl">${i.l}</span>
+    </div>`
+  ).join('');
 }
-
-function renderMoreMenu(){
-  const items=[
-    {id:'auto',    ic:'🚗', l:'Авто'},
-    {id:'report',  ic:'📊', l:'Статист.'},
-    {id:'notes',   ic:'💡', l:'Размышл.'},
-    {id:'settings',ic:'⚙️', l:'Настройки'},
-    {id:'guide',   ic:'📖', l:'Гайд'},
-  ];
-  $('moreMenu').innerHTML=`<div class="more-grid">
-    ${items.map(i=>`<div class="more-btn${A.nav===i.id?' on':''}" onclick="setNavMore('${i.id}')">
-      <span class="more-ic">${i.ic}</span>
-      <span class="more-lbl">${i.l}</span>
-    </div>`).join('')}
-  </div>`;
-  $('moreMenu').classList.toggle('on', !!A._moreOpen);
-}
-
-function toggleMore(){
-  A._moreOpen=!A._moreOpen;
-  renderNav();renderMoreMenu();
-}
-function setNavMore(n){A._moreOpen=false;setNav(n);}
-function setNav(n){A.nav=n;render();}
 
 // ═══════════════════════════════════════════════════════════
 // PAGE: TASKS
@@ -792,7 +634,7 @@ function pgTasks(){
   cfHtml+=`<div class="cfc${A.filterCat==='all'?' on':''}" data-fc="all">Все</div>`;
   mainCats().forEach(c=>{
     const on=A.filterCat===c.id;
-    cfHtml+=`<div class="cfc${on?' on':''}" data-fc="${c.id}" style="${on?'border-color:'+c.c+';color:'+c.c:''}"><span class="cbar" style="background:${c.c}"></span>${c.l}</div>`;
+    cfHtml+=`<div class="cfc${on?' on':''}" data-fc="${c.id}" style="${on?'border-color:'+c.c+';color:'+c.c:''}"><span class="cdot" style="background:${c.c}"></span>${c.l}</div>`;
   });
   cfHtml+=`</div>`;
   // Subcats row
@@ -800,18 +642,16 @@ function pgTasks(){
   if(subs.length&&A.filterCat!=='all'){
     const par=A.cats.find(c=>c.id===parentId);
     cfHtml+=`<div class="cf-inner" style="padding-top:6px">`;
-    cfHtml+=`<div class="cfc${A.filterCat===parentId?' on':''}" data-fc="${parentId}" style="${A.filterCat===parentId?'border-color:'+(par?.c||'#fff')+';color:'+(par?.c||'#fff'):''}">Все</div>`;
-    subs.forEach(s=>{ cfHtml+=`<div class="cfc${A.filterCat===s.id?' on':''}" data-fc="${s.id}" style="${A.filterCat===s.id?'border-color:'+s.c+';color:'+s.c:''}"><span class="cbar-sub" style="background:${s.c}"></span>${s.l}</div>`; });
+    cfHtml+=`<div class="cfc${A.filterCat===parentId?' on':''}" data-fc="${parentId}" style="${A.filterCat===parentId?'border-color:'+(par?.c||'#fff')+';color:'+(par?.c||'#fff'):''}">Все ${par?.l||''}</div>`;
+    subs.forEach(s=>{ cfHtml+=`<div class="cfc${A.filterCat===s.id?' on':''}" data-fc="${s.id}" style="${A.filterCat===s.id?'border-color:'+s.c+';color:'+s.c:''}"><span class="cdot" style="background:${s.c}"></span>${s.l}</div>`; });
     cfHtml+=`</div>`;
   }
   cfHtml+=`</div>`;
 
-  // Filter tasks — exclude ideas from main tasks
+  // Filter & group tasks
   let all=A.tasks.filter(t=>{
     if(t.s==='done')return false;
-    if(t.cat==='ideas')return false; // ideas are in Notes tab
     if(A.filterCat==='all')return true;
-    if(A.filterCat==='ideas')return false;
     const cat=A.cats.find(c=>c.id===A.filterCat);if(!cat)return false;
     if(!cat.parent)return t.cat===A.filterCat||A.cats.filter(c=>c.parent===A.filterCat).some(s=>s.id===t.cat);
     return t.cat===A.filterCat;
@@ -838,24 +678,31 @@ function pgTasks(){
   if(!all.length) cnt+=`<div class="empty"><div class="empty-ic">✨</div><div class="empty-t">${isToday?'На сегодня всё готово!':'Задач нет'}</div><div class="empty-s">Нажми ＋ чтобы добавить.</div></div>`;
   cnt+=`</div>`;
 
+  // Ideas panel at bottom
+  const ideas=A.tasks.filter(t=>t.cat==='ideas'&&t.s!=='done');
+  let ideasPanel='';
+  if(ideas.length&&A.filterCat==='all'){
+    ideasPanel=`<div class="pg"><div class="gl" style="cursor:pointer" onclick="setFilter('ideas')"><span style="color:var(--grn)">💡 Размышления</span><span class="gl-n">${ideas.length}</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">`;
+    ideas.slice(0,8).forEach(t=>{
+      ideasPanel+=`<div style="background:rgba(105,240,174,.1);border:1px solid rgba(105,240,174,.2);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:600;color:#69f0ae;cursor:pointer" onclick="openEdit(${t.id})">${t.title}</div>`;
+    });
+    if(ideas.length>8) ideasPanel+=`<div style="background:var(--bg2);border-radius:8px;padding:5px 10px;font-size:12px;color:var(--t3);cursor:pointer" onclick="setFilter('ideas')">ещё ${ideas.length-8}...</div>`;
+    ideasPanel+=`</div></div>`;
+  }
+
   const dayLabel=isToday?'Сегодня':RUDF[new Date(A.selDate+'T00:00:00').getDay()];
-  const wth=A.weather
-    ?`<div class="weather-pill" onclick="fetchWeather()">
-        <span class="weather-ic">${A.weather.icon}</span>
-        <div><div class="weather-temp">${A.weather.temp}°</div><div class="weather-desc">${A.weather.desc||''}</div></div>
-      </div>`
-    :`<div class="weather-pill" onclick="fetchWeather()" style="opacity:.55">
-        <span style="font-size:22px">🌤</span><div><div class="weather-temp">—°</div><div class="weather-desc">нажми</div></div>
-      </div>`;
+  const weather=A.weather?`<div style="font-size:13px;color:var(--t2);display:flex;align-items:center;gap:4px"><span>${A.weather.icon}</span><span>${A.weather.temp}°</span></div>`:'<div class="ibtn" onclick="fetchWeather()" style="font-size:11px;color:var(--t3)">🌤</div>';
 
   return `<div class="ph">
-    <div class="ph-row" style="margin-bottom:8px">
-      <div class="ph-h1">${dayLabel}</div>
-      <div class="ph-acts">${wth}</div>
+    <div class="ph-row">
+      <span class="ph-label">Планировщик</span>
+      <div class="ph-acts">${weather}</div>
     </div>
-    <div class="ph-sub" style="margin-bottom:0">${fmtDFull(A.selDate)}</div>
+    <div class="ph-h1">${dayLabel}</div>
+    <div class="ph-sub">${fmtDFull(A.selDate)}</div>
   </div>
-  ${strip}${qsbar}${cfHtml}${cnt}`;
+  ${strip}${qsbar}${cfHtml}${cnt}${ideasPanel}`;
 }
 
 function setFilter(cat){ A.filterCat=cat; render(); }
@@ -900,139 +747,65 @@ function card(t){
 // PAGE: WORKOUTS
 // ═══════════════════════════════════════════════════════════
 function pgWorkouts(){
-  if(!A._expandedWk) A._expandedWk = new Set();
-  const wkMon = getMondayOf(today());
-  const wkSun = addDays(6, wkMon);
-  // Sort all workouts chronologically descending
-  const sorted = [...A.workouts].sort((a,b)=>b.date.localeCompare(a.date));
-  const thisWeek = sorted.filter(w=>w.date>=wkMon&&w.date<=wkSun);
-  const earlier  = sorted.filter(w=>w.date<wkMon);
-  const wkCount  = A.workouts.filter(w=>w.date>=addDays(-7)).length;
-  const tNames   = Object.fromEntries((A.workoutTypes||[{id:'chest',l:'Грудь/Трицепс',ic:'💪'},{id:'back',l:'Спина/Бицепс',ic:'🔙'},{id:'legs',l:'Ноги',ic:'🦵'},{id:'arms',l:'Руки',ic:'💪'},{id:'cardio',l:'Кардио',ic:'🏃'}]).map(t=>[t.id,t.ic+' '+t.l]));
+  const tNames={chest:'💪 Грудь / Трицепс',back:'🔙 Спина / Бицепс',legs:'🦵 Ноги',arms:'💪 Руки',cardio:'🏃 Кардио'};
+  const byType={};
+  [...A.workouts].sort((a,b)=>b.date.localeCompare(a.date)).forEach(w=>{
+    if(!byType[w.type])byType[w.type]=[];byType[w.type].push(w);
+  });
+  const wk=addDays(-7),weekWs=A.workouts.filter(w=>w.date>=wk);
 
-  let html=`<div class="ph"><div class="ph-row"><div class="ph-h1">💪 Спорт</div></div></div><div class="pg">`;
-  html+=`<div class="rc"><div class="rc-t">Активность</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkCount}</div><div class="rs-l">Эта неделя</div></div>
+  let html=`<div class="ph">
+    <div class="ph-row"><span class="ph-label">Тренировки</span>
+      <div class="ph-acts"><button class="ibtn" onclick="openNewWorkout()" style="opacity:.5;font-size:18px">✕</button><button class="ibtn" onclick="openNewWorkout()" style="font-size:18px;background:var(--blu);color:#fff">＋</button></div>
+    </div>
+    <div class="ph-h1">Прогресс</div>
+    <div class="ph-sub">История и динамика</div>
+  </div><div class="pg">`;
+
+  html+=`<div class="rc"><div class="rc-t">Эта неделя</div><div class="rs-row">
+    <div class="rs"><div class="rs-n" style="color:var(--blu)">${weekWs.length}</div><div class="rs-l">Тренировок</div></div>
+    <div class="rs"><div class="rs-n" style="color:var(--grn)">${weekWs.reduce((s,w)=>s+w.exs.length,0)}</div><div class="rs-l">Упражнений</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--grn)">${A.workouts.filter(w=>w.date>=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().slice(0,10)).length}</div><div class="rs-l">Месяц</div></div>
   </div></div>`;
 
-  function buildCard(w, defaultOpen){
-    const isOpen = A._expandedWk.has(w.id) || defaultOpen;
-    const prev = A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
-    const volC = w.exs.reduce((s,e)=>s+e.s*e.r,0);
-    const volP = prev?prev.exs.reduce((s,e)=>s+e.s*e.r,0):0;
-    const dyn = prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:`<span class="wk-dyn" style="color:var(--t3)">→</span>`):'';
-    const d = new Date(w.date+'T00:00:00');
-    const dateStr = d.getDate()+'.'+pad(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2);
-    const typeName = tNames[w.type]||w.type;
-
-    let body = '';
-    if(isOpen){
-      body = `<div class="wk-body" id="wb_${w.id}">`;
-      w.exs.forEach(ex=>{
-        const pe = prev?prev.exs.find(e=>e.n===ex.n):null;
-        const volEC=ex.s*ex.r, volEP=pe?pe.s*pe.r:0;
-        const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
-        const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
-        const arr={up:'↑',dn:'↓','':''};
-        body+=`<div class="ex-row">
-          <div style="flex:1;min-width:0">
-            <div class="ex-name">${ex.n}</div>
-            ${pe?`<div class="ex-prev">пред: ${pe.s}×${pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
-          </div>
-          <div class="ex-pills">
-            <span class="ex-pill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
-            ${ex.w>0?`<span class="ex-pill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
-          </div>
+  Object.keys(byType).forEach(type=>{
+    const ws=byType[type],latest=ws[0],prev=ws[1];
+    html+=glHdr(tNames[type]||type,ws.length);
+    // Latest workout card (editable)
+    html+=`<div class="wc" onclick="openEditWorkout('${latest.id}')">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px">
+        <span style="font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.06em">${fmtD(latest.date)}</span>
+        ${prev?`<span style="font-size:10px;color:var(--t3)">пред: ${fmtD(prev.date)}</span>`:''}
+      </div>`;
+    latest.exs.forEach(ex=>{
+      const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
+      const volC=ex.s*ex.r,volP=pe?pe.s*pe.r:0;
+      const rCls=pe?(volC>volP?'up':volC<volP?'dn':''):'';
+      const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
+      const arr={up:'↑',dn:'↓','':''};
+      html+=`<div class="er">
+        <div><div class="en">${ex.n}</div>${pe?`<div class="ep">пред: ${pe.s}×${pe.r}${pe.w>0?' '+pe.w+'кг':''}</div>`:''}</div>
+        <div class="epills">
+          <span class="pill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
+          ${ex.w>0?`<span class="pill ${wCls}">${arr[wCls]||''}${ex.w}кг`:''}
+        </div>
+      </div>`;
+    });
+    html+=`</div>`;
+    // History list (previous workouts)
+    if(ws.length>1){
+      html+=`<div style="margin-bottom:14px">`;
+      ws.slice(1).forEach(w=>{
+        html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:var(--bg2);border-radius:10px;margin-bottom:5px;cursor:pointer;border:1.5px solid var(--bd)" onclick="openEditWorkout('${w.id}')">
+          <span style="font-size:13px;font-weight:600">${fmtDFull(w.date)}</span>
+          <span style="font-size:11px;color:var(--t3)">${w.exs.length} упр.</span>
         </div>`;
       });
-      body+=`<button class="wk-edit-btn" onclick="event.stopPropagation();openEditWorkout('${w.id}')">✏️ Редактировать тренировку</button></div>`;
-    } else {
-      body=`<div class="wk-body collapsed" id="wb_${w.id}">`;
-      w.exs.forEach(ex=>{
-        const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
-        const volEC=ex.s*ex.r,volEP=pe?pe.s*pe.r:0;
-        const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
-        const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
-        const arr={up:'↑',dn:'↓',''  :''};
-        body+=`<div class="ex-row">
-          <div style="flex:1;min-width:0">
-            <div class="ex-name">${ex.n}</div>
-            ${pe?`<div class="ex-prev">пред: ${pe.s}×${pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
-          </div>
-          <div class="ex-pills">
-            <span class="ex-pill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
-            ${ex.w>0?`<span class="ex-pill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
-          </div>
-        </div>`;
-      });
-      body+=`<button class="wk-edit-btn" onclick="event.stopPropagation();openEditWorkout('${w.id}')">✏️ Редактировать тренировку</button></div>`;
+      html+=`</div>`;
     }
-
-    return `<div class="wk-card">
-      <div class="wk-hdr" onclick="toggleWkCard('${w.id}')">
-        <span class="wk-date">${dateStr}</span>
-        <span class="wk-type">${typeName}</span>
-        <span class="wk-cnt">${w.exs.length} упр.</span>
-        ${dyn}
-        <span class="wk-chevron">${isOpen?'∧':'∨'}</span>
-      </div>
-      ${body}
-    </div>`;
-  }
-
-  if(thisWeek.length){
-    html+=glHdr('Эта неделя', thisWeek.length, 'var(--grn)');
-    thisWeek.forEach(w=>{html+=buildCard(w, true);});
-  }
-  if(earlier.length){
-    html+=glHdr('Ранее', earlier.length);
-    earlier.forEach(w=>{html+=buildCard(w, false);});
-  }
-  if(!sorted.length){
-    html+=`<div class="empty"><div class="empty-ic">💪</div><div class="empty-t">Тренировок пока нет</div><div class="empty-s">Нажми ＋ чтобы добавить.</div></div>`;
-  }
+  });
   html+=`</div>`;
   return html;
-}
-
-function getMondayOf(dateStr){
-  const d=new Date(dateStr+'T00:00:00'),dow=d.getDay();
-  d.setDate(d.getDate()-(dow===0?6:dow-1));
-  return d.toISOString().slice(0,10);
-}
-function toggleWkCard(id){
-  if(!A._expandedWk)A._expandedWk=new Set();
-  if(A._expandedWk.has(id))A._expandedWk.delete(id);
-  else A._expandedWk.add(id);
-  render();
-}
-
-// ═══════════════════════════════════════════════════════════
-// PAGE: NOTES (Размышления)
-// ═══════════════════════════════════════════════════════════
-function pgNotes(){
-  const ideas=A.tasks.filter(t=>t.cat==='ideas');
-  const active=ideas.filter(t=>t.s!=='done');
-  const done=ideas.filter(t=>t.s==='done');
-  const pColors={red:'var(--red)',yellow:'var(--yel)',green:'var(--grn)',blue:'var(--grn)'};
-  return `<div class="ph"><div class="ph-row"><div class="ph-h1">💡 Размышления</div></div></div>
-  <div class="pg">
-    ${active.length?glHdr('Идеи и планы',active.length,'var(--grn)'):''}
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
-      ${active.map(t=>`<div onclick="openEdit(${t.id})" style="background:${t.p==='red'?'var(--rbg)':t.p==='yellow'?'var(--ybg)':'rgba(105,240,174,.1)'};border:1.5px solid ${t.p==='red'?'rgba(255,59,80,.25)':t.p==='yellow'?'rgba(255,170,0,.2)':'rgba(105,240,174,.2)'};border-radius:12px;padding:10px 14px;cursor:pointer;transition:opacity .13s" ontouchstart="this.style.opacity=.7" ontouchend="this.style.opacity=1">
-        <div style="font-size:14px;font-weight:700;margin-bottom:${t.note?'4px':'0'}">${t.title}</div>
-        ${t.note?`<div style="font-size:11px;color:var(--t3)">${t.note.slice(0,50)}</div>`:''}
-      </div>`).join('')}
-      ${!active.length?`<div class="empty" style="padding:30px 0;width:100%"><div class="empty-ic">💭</div><div class="empty-t">Пока пусто</div><div class="empty-s">Нажми ＋ чтобы добавить идею.</div></div>`:''}
-    </div>
-    ${done.length?`${glHdr('Реализовано',done.length,'var(--t3)')}${done.map(t=>`<div onclick="openEdit(${t.id})" style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:9px 13px;margin-bottom:6px;cursor:pointer"><span style="font-size:13px;text-decoration:line-through;color:var(--t3)">${t.title}</span></div>`).join('')}`:''}
-  </div>`;
-}
-function openNewIdea(){
-  A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
-  showTaskSheet(false);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1040,54 +813,70 @@ function openNewIdea(){
 // ═══════════════════════════════════════════════════════════
 function pgAuto(){
   const pColors={red:'var(--red)',yellow:'var(--yel)',blue:'var(--blu)',green:'var(--grn)'};
-  // Get auto tasks from main tasks list (cat='auto')
-  const autoTasks=A.tasks.filter(t=>t.cat==='auto'&&t.s!=='done');
-  const svc=[...A.autoService].sort((a,b)=>b.date.localeCompare(a.date));
+  const todo=[
+    {t:'Коробка — детали и ремонт — цена',  p:'yellow'},
+    {t:'Коробка — прошивка',                p:'yellow'},
+    {t:'Свист при работе двигателя',        p:'yellow'},
+    {t:'Обороты плавают сразу после завода',p:'yellow'},
+    {t:'Топливный фильтр — поменять',       p:'yellow'},
+    {t:'Подогрев сидения',                  p:'blue'},
+  ];
+  const done=[
+    {t:'Диагностика'},{t:'Техосмотр !!!!!'},{t:'Рулевые тяги'},
+    {t:'Свечи поменять'},{t:'Тяги багажника'},
+  ];
+  const svc=[
+    {d:'19.12.2025',km:'179 800',items:['Рулевые наконечники','Свечи зажигания','Тяги багажника']},
+    {d:'28.09.2025',km:'175 520',items:['Дворники','Замена масла']},
+    {d:'03.08.2025',km:'172 550',items:['Масло в коробке','Фильтр салона','Фильтр воздушный']},
+  ];
 
-  let html=`<div class="ph"><div class="ph-row"><div class="ph-h1">🚗 Авто</div></div></div><div class="pg">`;
+  let html=`<div class="ph">
+    <div class="ph-row"><span class="ph-label">Авто</span>
+      <div class="ph-acts"><button class="ibtn" onclick="openAutoTask()" style="font-size:18px;background:var(--blu);color:#fff">＋</button></div>
+    </div>
+    <div class="ph-h1">Авто</div>
+    <div class="ph-sub">Задачи и история обслуживания</div>
+  </div><div class="pg">`;
 
-  html+=glHdr('Задачи', autoTasks.length, 'var(--yel)');
+  html+=glHdr('Нужно сделать',todo.length,'var(--yel)');
   html+=`<div class="rc">`;
-  if(!autoTasks.length){
-    html+=`<div style="text-align:center;padding:14px;color:var(--t3);font-size:13px">Задач нет 🎉</div>`;
-  }
-  autoTasks.forEach(t=>{
-    html+=`<div class="auto-task" onclick="openAutoEdit('${t.id}')">
-      <div class="auto-pline" style="background:${pColors[t.p]||'var(--yel)'}"></div>
-      <div style="flex:1">
-        <div style="font-size:14px;font-weight:600">${t.title}</div>
-        ${t.dl?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${fmtD(t.dl)}</div>`:''}
-        ${t.note?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${t.note.slice(0,50)}</div>`:''}
-      </div>
-      <span style="color:var(--t3);font-size:18px">›</span>
+  todo.forEach(i=>{
+    html+=`<div class="auto-item">
+      <div style="width:3px;align-self:stretch;border-radius:2px;background:${pColors[i.p]};flex-shrink:0"></div>
+      <span style="font-size:13px;font-weight:600;flex:1">${i.t}</span>
     </div>`;
   });
   html+=`</div>`;
 
-  html+=glHdr('История обслуживания', svc.length, 'var(--blu)');
+  html+=glHdr('Сделано',done.length,'var(--grn)');
+  html+=`<div class="rc">`;
+  done.forEach(i=>{
+    html+=`<div class="auto-item">
+      <span style="color:var(--grn);font-weight:900;font-size:14px;flex-shrink:0">✓</span>
+      <span style="font-size:13px;font-weight:600;text-decoration:line-through;color:var(--t3)">${i.t}</span>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  html+=glHdr('История обслуживания',svc.length,'var(--blu)');
   svc.forEach(s=>{
-    const d=new Date(s.date+'T00:00:00');
-    const dateStr=d.getDate()+' '+RUM[d.getMonth()]+' '+d.getFullYear();
     html+=`<div class="rc" style="margin-bottom:8px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <span style="font-size:13px;font-weight:800">${dateStr}</span>
-        <span style="font-size:15px;font-weight:900;color:var(--yel);background:var(--ybg);padding:3px 10px;border-radius:8px">${Number(s.km||0).toLocaleString('ru')} км</span>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+        <span style="font-size:11px;font-weight:800;color:var(--t2)">${s.d}</span>
+        <span style="font-size:10px;color:var(--t3)">${s.km} км</span>
       </div>`;
     s.items.forEach(item=>{
-      html+=`<div class="auto-svc-item">
-        <span style="color:var(--grn);font-size:13px;font-weight:900;flex-shrink:0">✓</span>
+      html+=`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--bd)">
+        <span style="color:var(--grn);font-size:13px;font-weight:800;flex-shrink:0">✓</span>
         <span style="font-size:13px;font-weight:600">${item}</span>
       </div>`;
     });
-    if(s.note) html+=`<div style="font-size:12px;color:var(--t3);margin-top:6px">${s.note}</div>`;
-    html+=`<button onclick="openServiceEdit('${s.id}')" style="margin-top:8px;width:100%;height:30px;border-radius:8px;background:var(--bg3);color:var(--t3);font-size:11px;font-weight:700;border:none;cursor:pointer;font-family:inherit">✏️ Редактировать</button>`;
     html+=`</div>`;
   });
-  if(!svc.length) html+=`<div style="text-align:center;padding:16px;color:var(--t3);font-size:13px">История пуста</div>`;
   html+=`</div>`;
   return html;
 }
-
 
 // ═══════════════════════════════════════════════════════════
 // PAGE: REPORT
@@ -1102,7 +891,11 @@ function pgReport(){
   const mnAdded=tasks.filter(x=>x.dd&&x.dd>=mn).length;
   const pct=(a,b)=>b>0?Math.round(a/b*100):0;
 
-  let html=`<div class="ph"><div class="ph-row"><div class="ph-h1">📊 Статистика</div></div></div><div class="pg">`;
+  let html=`<div class="ph">
+    <div class="ph-row"><span class="ph-label">Отчёт</span></div>
+    <div class="ph-h1">Статистика</div>
+    <div class="ph-sub">Прогресс и динамика</div>
+  </div><div class="pg">`;
 
   // ── Task stats
   html+=`<div class="rc"><div class="rc-t">За эту неделю</div><div class="rs-row">
@@ -1111,6 +904,24 @@ function pgReport(){
     <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(wkDone,wkAdded)}%</div><div class="rs-l">Закрыто</div></div>
   </div></div>`;
 
+  // Previous week comparison
+  const prevWkD=new Date(wkD);prevWkD.setDate(prevWkD.getDate()-7);
+  const prevWk=prevWkD.toISOString().slice(0,10);
+  const prevWkDone=done.filter(x=>x.doneAt&&x.doneAt>=prevWk&&x.doneAt<wk).length;
+  const prevWkAdded=tasks.filter(x=>x.dd&&x.dd>=prevWk&&x.dd<wk).length;
+  const wkDiff=wkDone-prevWkDone;
+  const wkArrow=wkDiff>0?'↑':wkDiff<0?'↓':'→';
+  const wkColor=wkDiff>0?'var(--grn)':wkDiff<0?'var(--red)':'var(--t3)';
+  html+=`<div class="rc" style="border-color:${wkDiff>0?'rgba(38,212,103,.2)':wkDiff<0?'rgba(255,59,80,.15)':'var(--bd)'}">
+    <div class="rc-t">Сравнение с прошлой неделей</div>
+    <div style="display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:12px;color:var(--t2)">Прошлая неделя: <b>${prevWkDone}</b> выполнено</div>
+      <div style="font-size:18px;font-weight:900;color:${wkColor}">${wkArrow} ${Math.abs(wkDiff)}</div>
+    </div>
+    <div class="rbar" style="margin-top:8px">
+      <div class="rbar-f" style="width:${pct(wkDone,Math.max(wkDone,prevWkDone,1))}%;background:${wkColor}"></div>
+    </div>
+  </div>`;
 
   html+=`<div class="rc"><div class="rc-t">За этот месяц</div><div class="rs-row">
     <div class="rs"><div class="rs-n" style="color:var(--grn)">${mnDone}</div><div class="rs-l">Выполнено</div></div>
@@ -1118,143 +929,84 @@ function pgReport(){
     <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(mnDone,mnAdded)}%</div><div class="rs-l">Закрыто</div></div>
   </div></div>`;
 
-  // ── Done tasks collapsible
+  // ── Done tasks (moved from separate tab)
   const doneList=[...done].sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||'')).slice(0,30);
   const groups={};
   doneList.forEach(t=>{const k=t.doneAt||t.dd||'';if(!groups[k])groups[k]=[];groups[k].push(t);});
-  const doneOpen=A._doneOpen||false;
 
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px">
-    <div class="gl" style="padding:0;flex:1"><span style="color:var(--grn)">✅ Выполненные (${done.length})</span></div>
-    <div style="display:flex;gap:8px">
-      ${done.length?`<button onclick="clearDone()" style="font-size:11px;font-weight:700;color:var(--red);padding:4px 8px;background:var(--rbg);border-radius:6px;border:none;cursor:pointer">Очистить</button>`:''}
-      <button onclick="toggleDoneSection()" style="font-size:11px;font-weight:700;color:var(--blu);padding:4px 8px;background:var(--bbg);border-radius:6px;border:none;cursor:pointer">${doneOpen?'Свернуть ∧':'Показать ∨'}</button>
-    </div>
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0 4px">
+    <div class="gl" style="padding:0;flex:1"><span style="color:var(--grn)">✅ Выполненные задачи (${done.length})</span></div>
+    ${done.length?`<button onclick="clearDone()" style="font-size:11px;font-weight:700;color:var(--red);padding:4px 10px;background:var(--rbg);border-radius:6px;border:none;cursor:pointer">Очистить</button>`:''}
   </div>`;
 
-  if(doneOpen){
-    if(!done.length){html+=`<div class="empty" style="padding:20px"><div class="empty-ic">✅</div><div class="empty-t">Пока ничего</div></div>`;}
-    else{
-      Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,ts])=>{
-        html+=glHdr(fmtD(date)||'Без даты',ts.length);
-        ts.forEach(t=>{
-          const cat=getCat(t.cat);
-          html+=`<div class="done-card" onclick="openEdit(${t.id})">
-            <div class="done-chk">✓</div>
-            <div class="done-body">
-              <div class="done-title">${t.title}</div>
-              <div class="done-meta">
-                <span style="background:${cat.bg};color:${cat.c};padding:1px 6px;border-radius:4px;font-weight:700">${cat.l}</span>
-                ${t.doneAt?`<span>✓ ${fmtDFull(t.doneAt)}</span>`:''}
-              </div>
+  if(!done.length){
+    html+=`<div class="empty"><div class="empty-ic">✅</div><div class="empty-t">Пока ничего</div></div>`;
+  } else {
+    Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,ts])=>{
+      html+=glHdr(fmtD(date)||'Без даты',ts.length);
+      ts.forEach(t=>{
+        const cat=getCat(t.cat);
+        html+=`<div class="done-card" onclick="openEdit(${t.id})">
+          <div class="done-chk">✓</div>
+          <div class="done-body">
+            <div class="done-title">${t.title}</div>
+            <div class="done-meta">
+              <span style="background:${cat.bg};color:${cat.c};padding:1px 6px;border-radius:4px;font-weight:700">${cat.l}</span>
+              ${t.doneAt?`<span>✓ ${fmtDFull(t.doneAt)}</span>`:''}
             </div>
-          </div>`;
-        });
+          </div>
+        </div>`;
       });
-    }
+    });
   }
 
   // ── Workout stats
   const wkWorkouts=A.workouts.filter(w=>w.date>=wk);
   const mnWorkouts=A.workouts.filter(w=>w.date>=mn);
+
   html+=glHdr('💪 Тренировки',A.workouts.length);
-  html+=`<div class="rc"><div class="rs-row">
+  html+=`<div class="rc"><div class="rc-t">Статистика</div><div class="rs-row">
     <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkWorkouts.length}</div><div class="rs-l">Эта неделя</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnWorkouts.length}</div><div class="rs-l">Месяц</div></div>
+    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnWorkouts.length}</div><div class="rs-l">Этот месяц</div></div>
     <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
   </div></div>`;
 
-  // ── Line chart of volume
-  const last10=[...A.workouts].sort((a,b)=>a.date.localeCompare(b.date)).slice(-10);
-  if(last10.length>1){
-    const vols=last10.map(w=>({v:w.exs.reduce((s,e)=>s+e.s*e.r,0),d:w.date,tp:w.type}));
-    const maxV=Math.max(...vols.map(x=>x.v),1);
-    const W=300,H=80,P=10;
-    const pts=vols.map((x,i)=>{
-      const cx=P+(i/(vols.length-1))*(W-P*2);
-      const cy=H-P-(x.v/maxV)*(H-P*2);
-      return[cx,cy,x];
+  // ── Workout chart (volume by date)
+  const last8=A.workouts.slice(-8);
+  if(last8.length){
+    const maxVol=Math.max(...last8.map(w=>w.exs.reduce((s,e)=>s+e.s*e.r,0)));
+    html+=`<div class="rc"><div class="rc-t">Объём тренировок</div><div class="chart-wrap"><div class="bar-chart">`;
+    last8.forEach(w=>{
+      const vol=w.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const h=maxVol>0?Math.round((vol/maxVol)*68):4;
+      const d=new Date(w.date+'T00:00:00');
+      const color=w.type==='chest'?'var(--blu)':'var(--pur)';
+      html+=`<div class="bar-col">
+        <div class="bar" style="height:${h}px;background:${color}"></div>
+        <div class="bar-lbl">${d.getDate()}.${d.getMonth()+1}</div>
+      </div>`;
     });
-    const linePath=pts.map((p,i)=>(i===0?`M${p[0].toFixed(1)},${p[1].toFixed(1)}`:`L${p[0].toFixed(1)},${p[1].toFixed(1)}`)).join(' ');
-    const areaPath=`M${pts[0][0].toFixed(1)},${H} `+pts.map(p=>`L${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0].toFixed(1)},${H} Z`;
-    const typeColors={chest:'var(--blu)',back:'var(--pur)',legs:'var(--yel)',arms:'var(--grn)',cardio:'var(--red)'};
-    html+=`<div class="rc"><div class="rc-t">Объём нагрузки (повторений)</div>
-      <svg viewBox="0 0 ${W} ${H+18}" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="agrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--blu)" stop-opacity=".25"/><stop offset="100%" stop-color="var(--blu)" stop-opacity="0"/></linearGradient></defs>
-        <path d="${areaPath}" fill="url(#agrad)"/>
-        <path d="${linePath}" fill="none" stroke="var(--blu)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        ${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="${typeColors[p[2].tp]||'var(--blu)'}"/>`).join('')}
-        ${pts.filter((_,i)=>i%Math.ceil(pts.length/5)===0||i===pts.length-1).map(p=>{
-          const d=new Date(p[2].d+'T00:00:00');
-          return `<text x="${p[0].toFixed(1)}" y="${H+16}" text-anchor="middle" font-size="8" fill="var(--t3)" font-family="Inter,sans-serif">${d.getDate()}.${pad(d.getMonth()+1)}</text>`;
-        }).join('')}
-      </svg>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
-        ${[...new Set(last10.map(w=>w.type))].map(tp=>`<div style="display:flex;align-items:center;gap:4px"><div style="width:8px;height:8px;border-radius:50%;background:${typeColors[tp]||'var(--blu)'}"></div><span style="font-size:10px;color:var(--t2)">${(A.workoutTypes||[]).find(t=>t.id===tp)?.l||tp}</span></div>`).join('')}
-      </div>
-    </div>`;
+    html+=`</div></div></div>`;
   }
 
-  // ── Workout dynamics with expandable details
-  const tNamesMap=Object.fromEntries((A.workoutTypes||[]).map(t=>[t.id,t.l]));
+  // ── Workout dynamics
+  const tNames={chest:'Грудь',back:'Спина',legs:'Ноги',arms:'Руки'};
   const byType={};
   A.workouts.forEach(w=>{if(!byType[w.type])byType[w.type]=[];byType[w.type].push(w);});
   if(Object.keys(byType).length){
-    html+=`<div class="rc"><div class="rc-t">Прирост нагрузки по типам</div>`;
+    html+=`<div class="rc"><div class="rc-t">Динамика по группам</div>`;
     Object.entries(byType).forEach(([type,ws])=>{
       const sorted=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
       const last=sorted[sorted.length-1],prev=sorted[sorted.length-2];
-      if(!prev){
-        html+=`<div class="ri"><span style="font-size:13px;font-weight:600">${tNamesMap[type]||type}</span><span style="font-size:11px;color:var(--t3)">1 тренировка</span></div>`;
-        return;
-      }
-      const volL=last.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const volP=prev.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const diff=volL-volP;
-      const pct2=volP>0?Math.round(Math.abs(diff)/volP*100):0;
-      const col=diff>0?'var(--grn)':diff<0?'var(--red)':'var(--t3)';
+      if(!prev){html+=`<div class="ri"><span style="font-size:13px;font-weight:600">${tNames[type]||type}</span><span style="font-size:11px;color:var(--t3)">1 тренировка</span></div>`;return;}
+      const volLast=last.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const volPrev=prev.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const diff=volLast-volPrev;
       const sign=diff>0?'↑':diff<0?'↓':'→';
-      const details=[];
-      last.exs.forEach(ex=>{
-        const pe=prev.exs.find(e=>e.n===ex.n);
-        if(!pe){details.push(`+ ${ex.n} (новое упражнение)`);return;}
-        if(ex.w>pe.w) details.push(`${ex.n}: вес ${pe.w}→${ex.w}кг (+${(ex.w-pe.w).toFixed(1)}кг)`);
-        else if(ex.s>pe.s) details.push(`${ex.n}: подходы ${pe.s}→${ex.s}`);
-        else if(ex.r>pe.r) details.push(`${ex.n}: повт. ${pe.r}→${ex.r}`);
-      });
-      const isExp=A._expTypes?.has(type);
-      html+=`<div>
-        <div class="ri" onclick="toggleTypeStat('${type}')" style="cursor:pointer">
-          <span style="font-size:13px;font-weight:700">${tNamesMap[type]||type}</span>
-          <div style="display:flex;align-items:center;gap:8px">
-            <span style="font-size:11px;color:var(--t3)">${fmtD(last.date)}</span>
-            <span style="font-size:15px;font-weight:900;color:${col}">${sign} ${pct2}%</span>
-            <span style="font-size:11px;color:var(--t3)">${isExp?'∧':'∨'}</span>
-          </div>
-        </div>
-        ${isExp&&details.length?`<div style="padding:6px 0 10px;display:flex;flex-direction:column;gap:5px">
-          ${details.map(d=>`<div style="font-size:12px;color:var(--t2);padding:3px 8px;background:var(--bg3);border-radius:7px">${d}</div>`).join('')}
-        </div>`:''}
-      </div>`;
-    });
-    html+=`</div>`;
-  }
-
-  // ── Muscle groups
-  const muscleMap=Object.fromEntries((A.workoutTypes||[]).map(t=>[t.id,t.ic+' '+t.l]));
-  const muscleCnt={};
-  A.workouts.forEach(w=>{muscleCnt[w.type]=(muscleCnt[w.type]||0)+1;});
-  const total=A.workouts.length||1;
-  if(Object.keys(muscleCnt).length>1){
-    html+=`<div class="rc"><div class="rc-t">Нагрузка по группам мышц</div>`;
-    Object.entries(muscleCnt).sort((a,b)=>b[1]-a[1]).forEach(([type,cnt])=>{
-      const p=Math.round(cnt/total*100);
-      html+=`<div style="margin-bottom:8px">
-        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-          <span style="font-size:13px;font-weight:600">${muscleMap[type]||type}</span>
-          <span style="font-size:12px;color:var(--t3)">${cnt} тр · ${p}%</span>
-        </div>
-        <div class="rbar"><div class="rbar-f" style="width:${p}%;background:var(--blu)"></div></div>
+      const col=diff>0?'var(--grn)':diff<0?'var(--red)':'var(--t3)';
+      html+=`<div class="ri">
+        <span style="font-size:13px;font-weight:600">${tNames[type]||type}</span>
+        <span style="font-size:12px;font-weight:800;color:${col}">${sign} ${Math.abs(diff)} повт.</span>
       </div>`;
     });
     html+=`</div>`;
@@ -1263,24 +1015,25 @@ function pgReport(){
   return html;
 }
 
-function toggleDoneSection(){A._doneOpen=!A._doneOpen;render();}
-function toggleTypeStat(t){if(!A._expTypes)A._expTypes=new Set();if(A._expTypes.has(t))A._expTypes.delete(t);else A._expTypes.add(t);render();}
-
 // ═══════════════════════════════════════════════════════════
 // PAGE: SETTINGS
 // ═══════════════════════════════════════════════════════════
 function pgSettings(){
   const n=A.notion;
-  let html=`<div class="ph"><div class="ph-row"><div class="ph-h1">⚙️ Настройки</div></div></div><div class="pg">`;
+  let html=`<div class="ph">
+    <div class="ph-row"><span class="ph-label">Настройки</span></div>
+    <div class="ph-h1">Настройки</div>
+    <div class="ph-sub">Тема, Notion, категории</div>
+  </div><div class="pg">`;
 
-  // Themes
-  html+=`<div style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">Тема оформления</div>
-  <div class="rc" style="padding:10px">
-    <div class="theme-grid">`;
-  THEMES_LIST.forEach(th=>{
-    html+=`<div class="theme-btn${A.theme===th.id?' on':''}" onclick="applyTheme('${th.id}')" style="background:${th.bg}">
-      <span style="font-size:20px">${th.ic}</span>
-      <span class="theme-lbl">${th.l}</span>
+  // Theme
+  html+=`<div style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">Тема</div>
+  <div class="rc" style="padding:8px">
+    <div style="display:flex;gap:8px">`;
+  [{id:'dark',l:'Тёмная',ic:'🌑'},{id:'light',l:'Светлая',ic:'☀️'},{id:'sepia',l:'Сепия',ic:'🌅'}].forEach(th=>{
+    html+=`<div onclick="applyTheme('${th.id}')" style="flex:1;padding:10px 6px;border-radius:10px;background:var(--bg3);text-align:center;cursor:pointer;border:2px solid ${A.theme===th.id?'var(--blu)':'transparent'}">
+      <div style="font-size:20px">${th.ic}</div>
+      <div style="font-size:11px;font-weight:700;margin-top:4px">${th.l}</div>
     </div>`;
   });
   html+=`</div></div>`;
@@ -1289,22 +1042,17 @@ function pgSettings(){
   html+=`<div style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;margin:14px 0 8px">Notion</div>
   <div class="rc">
     <div class="ss" style="padding:0 0 10px"><div class="sl">API-ключ</div>
-      <input class="si" id="nKey" type="password" placeholder="secret_..." value="${n.key||''}"></div>
+      <input class="si" id="nKey" type="password" placeholder="secret_..." value="${n.key||''}">
+    </div>
     <div class="ss" style="padding:0 0 10px"><div class="sl">ID базы данных</div>
-      <input class="si" id="nDb" placeholder="xxxxxxxx-xxxx-..." value="${n.dbId||''}"></div>
-    <button onclick="saveNotion()" style="width:100%;height:40px;border-radius:10px;background:var(--bbg);color:var(--blu);font-size:13px;font-weight:800;border:1.5px solid var(--blu);cursor:pointer;font-family:inherit;margin-bottom:8px">Сохранить</button>
+      <input class="si" id="nDb" placeholder="xxxxxxxx-xxxx-..." value="${n.dbId||''}">
+    </div>
+    <button onclick="saveNotion()" style="width:100%;height:40px;border-radius:10px;background:var(--bbg);color:var(--blu);font-size:13px;font-weight:800;border:1.5px solid var(--blu);cursor:pointer;font-family:inherit;margin-bottom:8px">Сохранить настройки</button>
     <div style="display:flex;gap:8px">
-      <button onclick="syncToNotion()" style="flex:1;height:40px;border-radius:10px;background:var(--gbg);color:var(--grn);font-size:12px;font-weight:800;border:1.5px solid var(--grn);cursor:pointer;font-family:inherit">↑ В Notion</button>
-      <button onclick="syncFromNotion()" style="flex:1;height:40px;border-radius:10px;background:var(--pbg);color:var(--pur);font-size:12px;font-weight:800;border:1.5px solid var(--pur);cursor:pointer;font-family:inherit">↓ Из Notion</button>
+      <button onclick="syncToNotion()" style="flex:1;height:40px;border-radius:10px;background:var(--gbg);color:var(--grn);font-size:12px;font-weight:800;border:1.5px solid var(--grn);cursor:pointer;font-family:inherit">${A._syncing?'⏳ Синхр...':'↑ В Notion'}</button>
+      <button onclick="syncFromNotion()" style="flex:1;height:40px;border-radius:10px;background:var(--pbg);color:var(--pur);font-size:12px;font-weight:800;border:1.5px solid var(--pur);cursor:pointer;font-family:inherit">${A._syncing?'⏳ Синхр...':'↓ Из Notion'}</button>
     </div>
   </div>
-  <div class="rc" style="font-size:12px;color:var(--t2);line-height:1.8">
-    <div style="font-weight:800;color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Как подключить Notion</div>
-    <div>1. notion.so → Settings → My connections</div>
-    <div>2. New integration → скопируй токен</div>
-    <div>3. В базе: ··· → Connect to → выбери интеграцию</div>
-    <div>4. ID из URL: notion.so/<b style="color:var(--yel)">xxxxxx</b>?v=...</div>
-  </div>`;
   <div class="rc" style="font-size:12px;color:var(--t2);line-height:1.8">
     <div style="font-weight:800;color:var(--t3);font-size:10px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Как получить ключ Notion</div>
     <div><b>1.</b> notion.so → Настройки → My connections</div>
@@ -1577,113 +1325,28 @@ function delWorkout(id){
 function openAutoTask(){
   openSheet(`<div class="sht-hdr"><span class="sht-ttl">Задача по авто</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
     <div class="ss"><div class="sl">Описание</div>
-      <textarea class="si" id="atT" rows="2" placeholder="Что нужно сделать?"></textarea></div>
+      <textarea class="si" id="atT" rows="2" placeholder="Что нужно сделать?"></textarea>
+    </div>
     <div class="ss"><div class="sl">Приоритет</div>
       <div style="display:flex;gap:8px">
         <div class="pbtn on" id="at_y" onclick="selAtP('yellow')" style="background:var(--ybg)"><div class="psq" style="background:var(--yel)"></div></div>
         <div class="pbtn" id="at_r" onclick="selAtP('red')" style="background:var(--rbg)"><div class="psq" style="background:var(--red)"></div></div>
         <div class="pbtn" id="at_b" onclick="selAtP('blue')" style="background:var(--bbg)"><div class="psq" style="background:var(--blu)"></div></div>
       </div>
-      <input type="hidden" id="atP" value="yellow"></div>
+      <input type="hidden" id="atP" value="yellow">
+    </div>
     <button class="btn-s" onclick="saveAutoTask()">Добавить задачу</button>`);
 }
 function selAtP(p){
   $('atP').value=p;
   ['y','r','b'].forEach(k=>{const el=$('at_'+k);if(el)el.classList.remove('on');});
   const map={yellow:'y',red:'r',blue:'b'};
-  const el=$('at_'+(map[p]||'y'));if(el)el.classList.add('on');
+  const el=$('at_'+map[p]);if(el)el.classList.add('on');
 }
 function saveAutoTask(){
   const t=($('atT')?.value||'').trim();if(!t){toast('Введи описание');return;}
   A.tasks.push({id:Date.now(),title:t,cat:'auto',p:$('atP')?.value||'yellow',s:'todo',dl:'',note:'',dd:today()});
   saveState();closeSheet();render();toast('Задача по авто добавлена');
-}
-
-function openAutoEdit(id){
-  const t=A.tasks.find(x=>String(x.id)===String(id));if(!t)return;
-  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Задача по авто</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
-    <div class="ss"><div class="sl">Описание</div>
-      <textarea class="si" id="aeT" rows="2">${t.title}</textarea></div>
-    <div class="ss"><div class="sl">Тип работы</div>
-      <div class="pr2">
-        <div class="pch${t.workType==='repair'?' on':''}" onclick="setAutoType('repair')">🔧 Ремонт</div>
-        <div class="pch${t.workType==='replace'?' on':''}" onclick="setAutoType('replace')">🔄 Замена</div>
-        <div class="pch${t.workType==='diag'?' on':''}" onclick="setAutoType('diag')">🔍 Диагностика</div>
-      </div>
-      <input type="hidden" id="aeWT" value="${t.workType||''}"></div>
-    <div class="ss"><div class="sl">Заметки</div>
-      <textarea class="si" id="aeN" rows="2" placeholder="Доп. инфо...">${t.note||''}</textarea></div>
-    <div class="ss"><div class="sl">Километраж при выполнении</div>
-      <input class="si" id="aeKm" type="number" placeholder="179800" value="${t.km||''}"></div>
-    <div class="ss"><div class="sl">Дата выполнения</div>
-      <input type="date" class="si" id="aeDt" value="${t.doneDate||today()}"></div>
-    <button class="btn-s" onclick="completeAutoTask('${id}')">✓ Выполнено → история обслуживания</button>
-    <button style="margin:0 18px;width:calc(100% - 36px);height:40px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit;margin-bottom:6px" onclick="saveAutoEditOnly('${id}')">Сохранить без выполнения</button>
-    <button class="btn-d" onclick="delAutoTask('${id}')">🗑 Удалить задачу</button>`);
-}
-function setAutoType(tp){
-  $('aeWT').value=tp;
-  document.querySelectorAll('#aeWT').forEach(()=>{});
-  const pchips=document.querySelectorAll('.sht .pch');
-  pchips.forEach(el=>el.classList.remove('on'));
-  const map={'repair':0,'replace':1,'diag':2};
-  pchips[map[tp]]?.classList.add('on');
-}
-function saveAutoEditOnly(id){
-  const t=A.tasks.find(x=>String(x.id)===String(id));if(!t)return;
-  t.title=($('aeT')?.value||t.title).trim();
-  t.note=($('aeN')?.value||'').trim();
-  t.km=$('aeKm')?.value||'';
-  t.workType=$('aeWT')?.value||'';
-  saveState();closeSheet();render();toast('Сохранено');
-}
-function completeAutoTask(id){
-  const t=A.tasks.find(x=>String(x.id)===String(id));if(!t)return;
-  const note=($('aeN')?.value||'').trim();
-  const km=$('aeKm')?.value||'—';
-  const date=$('aeDt')?.value||today();
-  const type=$('aeWT')?.value||'';
-  const itemLabel=(type==='repair'?'🔧 Ремонт: ':type==='replace'?'🔄 Замена: ':type==='diag'?'🔍 Диагностика: ':'')+t.title;
-  // Add to service history (group by date+km)
-  const existing=A.autoService.find(s=>s.date===date&&s.km===km);
-  if(existing){existing.items.push(itemLabel);}
-  else{A.autoService.push({id:'s'+Date.now(),date,km,items:[itemLabel],note});}
-  // Mark task done
-  t.s='done';t.doneAt=date;
-  saveState();closeSheet();render();toast('✓ Выполнено → история обслуживания');
-}
-function delAutoTask(id){
-  if(!confirm('Удалить задачу?'))return;
-  A.tasks=A.tasks.filter(x=>String(x.id)!==String(id));
-  saveState();closeSheet();render();toast('Задача удалена');
-}
-function openServiceEdit(id){
-  const s=A.autoService.find(x=>x.id===id);if(!s)return;
-  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Запись обслуживания</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
-    <div class="ss"><div class="sl">Дата</div>
-      <input type="date" class="si" id="seDt" value="${s.date||today()}"></div>
-    <div class="ss"><div class="sl">Километраж</div>
-      <input class="si" id="seKm" type="number" placeholder="179800" value="${s.km||''}"></div>
-    <div class="ss"><div class="sl">Работы (каждая с новой строки)</div>
-      <textarea class="si" id="seItems" rows="5">${(s.items||[]).join('\n')}</textarea></div>
-    <div class="ss"><div class="sl">Заметки</div>
-      <textarea class="si" id="seNote" rows="2">${s.note||''}</textarea></div>
-    <button class="btn-s" onclick="saveServiceEdit('${id}')">Сохранить</button>
-    <button class="btn-d" onclick="delService('${id}')">🗑 Удалить запись</button>`);
-}
-function saveServiceEdit(id){
-  const s=A.autoService.find(x=>x.id===id);if(!s)return;
-  s.date=$('seDt')?.value||s.date;
-  s.km=$('seKm')?.value||s.km;
-  const raw=$('seItems')?.value||'';
-  s.items=raw.split('\n').map(x=>x.trim()).filter(Boolean);
-  s.note=($('seNote')?.value||'').trim();
-  saveState();closeSheet();render();toast('Сохранено');
-}
-function delService(id){
-  if(!confirm('Удалить запись?'))return;
-  A.autoService=A.autoService.filter(x=>x.id!==id);
-  saveState();closeSheet();render();toast('Удалено');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1882,19 +1545,16 @@ async function fullSync(){
 // ═══════════════════════════════════════════════════════════
 async function fetchWeather(){
   try{
-    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:6000}));
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:5000}));
     const {latitude:lat,longitude:lon}=pos.coords;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=precipitation_probability&forecast_days=1`);
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
     const data=await r.json();
     const wc=data.current_weather.weathercode;
     const temp=Math.round(data.current_weather.temperature);
-    const WC={0:['☀️','Ясно'],1:['🌤','Малооблачно'],2:['⛅','Облачно'],3:['☁️','Пасмурно'],
-      45:['🌫','Туман'],48:['🌫','Изморозь'],51:['🌦','Морось'],61:['🌧','Дождь'],
-      63:['🌧','Дождь'],71:['🌨','Снег'],80:['🌦','Ливень'],95:['⛈','Гроза'],99:['⛈','Гроза']};
-    const entry=WC[wc]||WC[Math.floor(wc/10)*10]||['🌡','Данные'];
-    A.weather={temp,icon:entry[0],desc:entry[1]};
-    render();
-  }catch(e){toast('Геолокация недоступна');}
+    const icons={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',61:'🌧',71:'🌨',80:'🌦',95:'⛈',99:'⛈'};
+    const icon=icons[wc]||icons[Math.floor(wc/10)*10]||'🌡';
+    A.weather={temp,icon};render();
+  }catch(e){toast('Не удалось получить погоду');}
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1923,6 +1583,7 @@ function restoreRems(){
     if(t&&ts>now)schedRem(id,t.title,ts);
   });
 }
+function setNav(n){A.nav=n;render();}
 function toast(msg){
   const el=$('toast');el.textContent=msg;el.classList.add('on');
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2400);
@@ -1935,10 +1596,6 @@ function bind(){
     el.addEventListener('click',()=>{A.filterCat=el.dataset.fc;render();});
   });
   $('ovl')?.addEventListener('click',e=>{if(e.target===$('ovl'))closeSheet();});
-  // Close more menu on app tap
-  $('app')?.addEventListener('click',()=>{
-    if(A._moreOpen){A._moreOpen=false;$('moreMenu')?.classList.remove('on');renderNav();}
-  },{passive:true});
 }
 
 // ═══════════════════════════════════════════════════════════
