@@ -1843,7 +1843,11 @@ function showTaskSheet(isEdit){
   sHtml+='</div>';
 
   let cHtml='<div class="pr2" style="max-height:120px;overflow-y:auto">';
-  A.cats.filter(c=>c.id!=='auto'&&c.id!=='ideas').forEach(c=>{
+  // Для идей показываем только категорию ideas, для остальных — без auto и ideas
+  const catList = cat==='ideas'
+    ? A.cats.filter(c=>c.id==='ideas')
+    : A.cats.filter(c=>c.id!=='auto'&&c.id!=='ideas');
+  catList.forEach(c=>{
     const on=cat===c.id, pfx=c.parent?'↳ ':'';
     cHtml+=`<div class="pch${on?' on':''}" data-cat="${c.id}" onclick="eSel('cat','${c.id}')" style="${on?'border-color:'+c.c+';color:'+c.c+';background:'+c.bg:''}"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${c.c};margin-right:4px;vertical-align:middle"></span>${pfx}${c.l}</div>`;
   });
