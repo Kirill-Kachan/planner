@@ -614,7 +614,7 @@ let A={
 function getCat(id){return A.cats.find(c=>c.id===id)||A.cats[A.cats.length-1]}
 function getPrio(id){return PRIOS.find(p=>p.id===id)||PRIOS[1]}
 function getStat(id){return STATS.find(s=>s.id===id)||STATS[0]}
-function mainCats(){return A.cats.filter(c=>!c.parent)}
+function mainCats(){return A.cats.filter(c=>!c.parent&&c.id!=='auto'&&c.id!=='ideas')}
 function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
 function loadState(){
