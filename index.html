@@ -1196,18 +1196,20 @@ function fmtExPrev(ex){
   return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
 }
 
-// Объём упражнения для динамики
+// Объём упражнения = сумма повторений (для динамики)
 function exVol(ex){
-  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r*x.w,0);
-  if(Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0)*(ex.w||1);
-  return ex.s*ex.r*(ex.w||1)||ex.s*ex.r;
+  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r,0);
+  if(ex.mixed&&Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0);
+  return ex.s*ex.r;
 }
+// Полный объём тренировки
+function wVol(w){return w.exs.reduce((s,e)=>s+exVol(e),0);}
 
   function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
     const prev=A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
-    const volC=w.exs.reduce((s,e)=>s+e.s*e.r,0);
-    const volP=prev?prev.exs.reduce((s,e)=>s+e.s*e.r,0):0;
+    const volC=wVol(w);
+    const volP=prev?wVol(prev):0;
     const dyn=prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:''):'';
     const d=new Date(w.date+'T00:00:00');
     const dateStr=d.getDate()+'.'+pad(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2);
@@ -1569,7 +1571,7 @@ function pgReport(){
   // ── SVG Line chart
   const last10=[...A.workouts].sort((a,b)=>a.date.localeCompare(b.date)).slice(-10);
   if(last10.length>1){
-    const vols=last10.map(w=>({v:w.exs.reduce((s,e)=>s+e.s*e.r,0),d:w.date,t:w.type}));
+    const vols=last10.map(w=>({v:wVol(w),d:w.date,t:w.type}));
     const maxV=Math.max(...vols.map(x=>x.v));
     const minV=Math.min(...vols.map(x=>x.v));
     const W=320,H=90,padX=10,padY=14;
@@ -1606,8 +1608,8 @@ function pgReport(){
         html+=`<div class="ri"><span style="font-size:13px;font-weight:600">${lbl}</span><span style="font-size:11px;color:var(--t3)">1 тренировка</span></div>`;
         return;
       }
-      const volL=last.exs.reduce((s,e)=>s+e.s*e.r,0);
-      const volP=prev.exs.reduce((s,e)=>s+e.s*e.r,0);
+      const volL=wVol(last);
+      const volP=wVol(prev);
       const diffPct=volP>0?Math.round((volL-volP)/volP*100):0;
       const col=diffPct>0?'var(--grn)':diffPct<0?'var(--red)':'var(--t3)';
       const arrow=diffPct>0?'↑':diffPct<0?'↓':'→';
@@ -1653,8 +1655,8 @@ function pgReport(){
       const lbl=WTYPE_LABELS[type]||type;
       const ic=muscleIc[type]||'full';
       html+=`<div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px">
-          <span style="font-weight:700">${ic} ${lbl}</span>
+        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px;align-items:center">
+          <span style="display:flex;align-items:center;gap:6px;font-weight:700">${svgIcon(ic,14)}<span>${lbl}</span></span>
           <span style="color:var(--t3)">${count} тренировок · ${p}%</span>
         </div>
         <div class="rbar"><div class="rbar-f" style="width:${p}%;background:var(--blu)"></div></div>
