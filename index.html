@@ -1696,7 +1696,6 @@ function delWorkoutType(id){
 function openNewWorkout(){
   if(!A.workoutTypes||!A.workoutTypes.length) A.workoutTypes=[...WORKOUT_TYPES];
   const types=A.workoutTypes;
-  const types=[{id:'chest',l:'💪 Грудь / Трицепс'},{id:'back',l:'🔙 Спина / Бицепс'},{id:'legs',l:'🦵 Ноги'},{id:'arms',l:'💪 Руки'}];
   let html=`<div class="sht-hdr"><span class="sht-ttl">Тип тренировки</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
   <div class="ss"><div class="pr2" style="flex-direction:column">`;
   types.forEach(tp=>{
@@ -2193,54 +2192,27 @@ setInterval(()=>{
   if(A.nav==='tasks') render();
 }, 60000);
 
-// Weather on load
-if(navigator.geolocation) fetchWeather().catch(()=>{});
-
 // Request notification permission proactively
 if('Notification' in window && Notification.permission==='default'){
-  // Don't ask immediately - ask when user adds first reminder
+  // Ask when user sets first reminder
 }
 
 // PWA Service Worker
 if('serviceWorker' in navigator){
-  const sw=`
-self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  e.respondWith(caches.open('pln-v3').then(async c=>{
-    try{const r=await fetch(e.request);c.put(e.request,r.clone());return r;}
-    catch{return await c.match(e.request)||new Response('Offline',{status:503});}
-  }));
-});
-// Handle push notifications (for future server push support)
-self.addEventListener('push',e=>{
-  const d=e.data?.json()||{title:'Планировщик',body:'Напоминание'};
-  e.waitUntil(self.registration.showNotification(d.title,{body:d.body,icon:'/icon.png',badge:'/icon.png'}));
-});
-`;
+  const swLines=[
+    "self.addEventListener('install',e=>self.skipWaiting());",
+    "self.addEventListener('activate',e=>e.waitUntil(clients.claim()));",
+    "self.addEventListener('fetch',e=>{",
+    "  if(e.request.method!=='GET')return;",
+    "  e.respondWith(caches.open('pln-v3').then(async c=>{",
+    "    try{const r=await fetch(e.request);c.put(e.request,r.clone());return r;}",
+    "    catch{return await c.match(e.request)||new Response('Offline',{status:503});}",
+    "  }));",
+    "});"
+  ];
+  const sw=swLines.join('\n');
   const blob=new Blob([sw],{type:'application/javascript'});
   navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-}
-if(navigator.geolocation) fetchWeather().catch(()=>{});
-
-// ── PWA Service Worker (inline) ──────────────────────────
-if('serviceWorker' in navigator){
-  const swCode=`
-self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
-self.addEventListener('fetch',e=>{
-  if(e.request.method!=='GET')return;
-  e.respondWith(caches.open('pln-v1').then(async cache=>{
-    const cached=await cache.match(e.request);
-    if(cached)return cached;
-    try{const res=await fetch(e.request);cache.put(e.request,res.clone());return res;}
-    catch{return cached||new Response('Offline',{status:503});}
-  }));
-});`;
-  const blob=new Blob([swCode],{type:'application/javascript'});
-  const swUrl=URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl).catch(()=>{});
 }
 </script>
 </body>
