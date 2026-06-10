@@ -2095,35 +2095,6 @@ function delWorkout(id){
 }
 
 // ═══════════════════════════════════════════════════════════
-// AUTO TASK
-// ═══════════════════════════════════════════════════════════
-function openAutoTask(){
-  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Задача по авто</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
-    <div class="ss"><div class="sl">Описание</div>
-      <textarea class="si" id="atT" rows="2" placeholder="Что нужно сделать?"></textarea>
-    </div>
-    <div class="ss"><div class="sl">Приоритет</div>
-      <div style="display:flex;gap:8px">
-        <div class="pbtn on" id="at_y" onclick="selAtP('yellow')" style="background:var(--ybg)"><div class="psq" style="background:var(--yel)"></div></div>
-        <div class="pbtn" id="at_r" onclick="selAtP('red')" style="background:var(--rbg)"><div class="psq" style="background:var(--red)"></div></div>
-        <div class="pbtn" id="at_b" onclick="selAtP('blue')" style="background:var(--bbg)"><div class="psq" style="background:var(--blu)"></div></div>
-      </div>
-      <input type="hidden" id="atP" value="yellow">
-    </div>
-    <button class="btn-s" onclick="saveAutoTask()">Добавить задачу</button>`);
-}
-function selAtP(p){
-  $('atP').value=p;
-  ['y','r','b'].forEach(k=>{const el=$('at_'+k);if(el)el.classList.remove('on');});
-  const map={yellow:'y',red:'r',blue:'b'};
-  const el=$('at_'+map[p]);if(el)el.classList.add('on');
-}
-function saveAutoTask(){
-  const t=($('atT')?.value||'').trim();if(!t){toast('Введи описание');return;}
-  A.tasks.push({id:Date.now(),title:t,cat:'auto',p:$('atP')?.value||'yellow',s:'todo',dl:'',note:'',dd:today()});
-  saveState();closeSheet();render();toast('Задача по авто добавлена');
-}
-
 // ═══════════════════════════════════════════════════════════
 // CATEGORIES
 // ═══════════════════════════════════════════════════════════
