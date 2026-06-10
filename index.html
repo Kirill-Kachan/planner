@@ -619,25 +619,29 @@ function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
 function loadState(){
   try{
-    // Пробуем все ключи по порядку
-    let d={};
-    const keys=['pln6','pln5','pln4','pln3'];
-    for(const k of keys){
-      const raw=localStorage.getItem(k);
-      if(raw){try{d=JSON.parse(raw);break;}catch(e){}}
-    }
-    A.tasks=d.tasks||seedTasks();
-    A.workouts=d.workouts||seedWorkouts();
+    // Читаем все возможные ключи — берём тот где больше задач
+    let best={};
+    let bestTasks=0;
+    ['pln6','pln5','pln4','pln3','pln2','pln1'].forEach(k=>{
+      try{
+        const raw=localStorage.getItem(k);
+        if(!raw) return;
+        const d=JSON.parse(raw);
+        const cnt=(d.tasks||[]).length;
+        if(cnt>bestTasks){bestTasks=cnt;best=d;}
+      }catch(e){}
+    });
+    const d=best;
+    A.tasks=d.tasks&&d.tasks.length?d.tasks:seedTasks();
+    A.workouts=d.workouts&&d.workouts.length?d.workouts:seedWorkouts();
     A.reminders=d.reminders||{};
     A.cats=d.cats&&d.cats.length?d.cats:[...DEFAULT_CATS];
     A.notion=d.notion||{key:'',dbId:''};
     A.theme=d.theme||'dark';
-    A.autoTasks=d.autoTasks||seedAutoTasks();
-    A.autoService=d.autoService||seedAutoService();
-    A.workoutTypes=d.workoutTypes||[...WORKOUT_TYPES];
+    A.autoTasks=d.autoTasks&&d.autoTasks.length?d.autoTasks:seedAutoTasks();
+    A.autoService=d.autoService&&d.autoService.length?d.autoService:seedAutoService();
+    A.workoutTypes=d.workoutTypes&&d.workoutTypes.length?d.workoutTypes:[...WORKOUT_TYPES];
     A.memos=d.memos||[];
-    // Сразу пересохраняем в pln6
-    saveState();
   }catch(e){
     A.tasks=seedTasks();A.workouts=seedWorkouts();
     A.autoTasks=seedAutoTasks();A.autoService=seedAutoService();
