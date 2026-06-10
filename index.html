@@ -619,20 +619,30 @@ function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
 function loadState(){
   try{
-    const d=JSON.parse(localStorage.getItem('pln5')||'{}');
+    const d=JSON.parse(localStorage.getItem('pln6')||'{}');
     A.tasks=d.tasks||seedTasks();
     A.workouts=d.workouts||seedWorkouts();
     A.reminders=d.reminders||{};
     A.cats=d.cats&&d.cats.length?d.cats:[...DEFAULT_CATS];
     A.notion=d.notion||{key:'',dbId:''};
     A.theme=d.theme||'dark';
-  }catch(e){A.tasks=seedTasks();A.workouts=seedWorkouts();}
+    A.autoTasks=d.autoTasks||seedAutoTasks();
+    A.autoService=d.autoService||seedAutoService();
+    A.workoutTypes=d.workoutTypes||[...WORKOUT_TYPES];
+    A.memos=d.memos||[];
+  }catch(e){
+    A.tasks=seedTasks();A.workouts=seedWorkouts();
+    A.autoTasks=seedAutoTasks();A.autoService=seedAutoService();
+    A.workoutTypes=[...WORKOUT_TYPES];A.memos=[];
+  }
   applyTheme(A.theme);
 }
 function saveState(){
-  localStorage.setItem('pln5',JSON.stringify({
-    tasks:A.tasks,workouts:A.workouts,reminders:A.reminders,memos:A.memos||[],
-    cats:A.cats,notion:A.notion,theme:A.theme
+  localStorage.setItem('pln6',JSON.stringify({
+    tasks:A.tasks,workouts:A.workouts,reminders:A.reminders,
+    cats:A.cats,notion:A.notion,theme:A.theme,
+    autoTasks:A.autoTasks||[],autoService:A.autoService||[],
+    workoutTypes:A.workoutTypes||[],memos:A.memos||[],
   }));
 }
 function applyTheme(t){
