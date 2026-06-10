@@ -1134,17 +1134,33 @@ function pgWorkouts(){
   }
 
 
-// Объединяет дублирующиеся упражнения в одну строку с разными повторениями
-// [{n:'Скамья',s:1,r:12,w:25},{n:'Скамья',s:1,r:10,w:25},{n:'Скамья',s:1,r:8,w:25}]
-// → [{n:'Скамья',s:3,r:[12,10,8],w:25,mixed:true}]
+// Объединяет дублирующиеся упражнения подряд в одну строку
+// Одинаковый вес: [{n,s:1,r:12,w:25},{n,s:1,r:10,w:25}] → {n,s:2,r:[12,10],w:25,mixed:true}
+// Разный вес:    [{n,s:1,r:12,w:20},{n,s:1,r:10,w:25}] → {n,s:2,sets:[{r:12,w:20},{r:10,w:25}],mixed:true,mixedW:true}
 function groupExs(exs){
   const result=[];
   exs.forEach(ex=>{
     const last=result[result.length-1];
-    if(last&&last.n===ex.n&&last.w===ex.w){
-      // Объединяем
-      if(!last.mixed){last.mixed=true;last.r=[last.r];}
-      last.r.push(ex.r);
+    if(last&&last.n===ex.n){
+      if(!last.mixed){
+        last.mixed=true;
+        // Проверяем был ли вес разный уже
+        if(last.w!==ex.w){
+          last.mixedW=true;
+          last.sets=[{r:last.r,w:last.w},{r:ex.r,w:ex.w}];
+        } else {
+          last.r=[last.r,ex.r];
+        }
+      } else if(last.mixedW){
+        last.sets.push({r:ex.r,w:ex.w});
+      } else if(last.w!==ex.w){
+        // Стал разный вес
+        last.mixedW=true;
+        last.sets=last.r.map(r=>({r,w:last.w}));
+        last.sets.push({r:ex.r,w:ex.w});
+      } else {
+        last.r.push(ex.r);
+      }
       last.s=(last.s||1)+1;
     } else {
       result.push({...ex});
@@ -1153,13 +1169,32 @@ function groupExs(exs){
   return result;
 }
 
-// Форматирует повторения: [12,10,8] → "12/10/8" или 10 → "10"
-function fmtReps(r){return Array.isArray(r)?r.join('/'):''+r;}
+// Форматирует одно упражнение для отображения
+function fmtEx(ex){
+  if(ex.mixedW&&ex.sets){
+    // Разный вес и повторения: "3 подх: 12×20 / 10×25 / 8×30"
+    return ex.s+' подх: '+ex.sets.map(s=>s.r+'×'+s.w+'кг').join(' / ');
+  }
+  if(ex.mixed&&Array.isArray(ex.r)){
+    // Одинаковый вес, разные повторения: "3 подх: 12/10/8"
+    return ex.s+' подх: '+ex.r.join('/')+' повт'+(ex.w>0?' · '+ex.w+'кг':'');
+  }
+  // Обычный: "3×10 · 25кг"
+  return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
+}
+
+// Форматирует для "Пред" строки
+function fmtExPrev(ex){
+  if(ex.mixedW&&ex.sets) return ex.s+' подх: '+ex.sets.map(s=>s.r+'×'+s.w+'кг').join('/');
+  if(ex.mixed&&Array.isArray(ex.r)) return ex.s+' подх: '+ex.r.join('/')+(ex.w>0?' · '+ex.w+'кг':'');
+  return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
+}
 
 // Объём упражнения для динамики
 function exVol(ex){
-  if(Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0)*ex.w;
-  return ex.s*ex.r;
+  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r*x.w,0);
+  if(Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0)*(ex.w||1);
+  return ex.s*ex.r*(ex.w||1)||ex.s*ex.r;
 }
 
   function buildCard(w, defaultOpen){
@@ -1177,18 +1212,18 @@ function exVol(ex){
       body=`<div class="wk-body open">`;
       groupExs(w.exs).forEach(ex=>{
         const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
-        const volEC=Array.isArray(ex.r)?ex.r.reduce((s,r)=>s+r,0):ex.s*ex.r;const volEP=pe?(Array.isArray(pe.r)?pe.r.reduce((s,r)=>s+r,0):pe.s*pe.r):0;
+        const volEC=exVol(ex);const volEP=pe?exVol(pe):0;
         const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
         const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
         const arr={up:'↑',dn:'↓','':''};
         body+=`<div class="wk-ex">
           <div style="flex:1;min-width:0">
             <div class="wk-ex-name">${ex.n}</div>
-            ${pe?`<div class="wk-ex-prev">Пред: ${Array.isArray(pe.r)?pe.r.join('/')+' повт':pe.s+'×'+pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
+            ${pe?`<div class="wk-ex-prev">Пред: ${fmtExPrev(pe)}</div>`:''}
           </div>
           <div class="wk-pills">
-            <span class="wpill ${rCls}">${arr[rCls]||''}${Array.isArray(ex.r)?ex.s+' подх: '+ex.r.join('/')+' повт':ex.s+'×'+ex.r}</span>
-            ${ex.w>0?`<span class="wpill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
+            <span class="wpill ${rCls}">${arr[rCls]||''}${ex.mixedW?fmtEx(ex):Array.isArray(ex.r)?ex.s+' подх: '+ex.r.join('/')+' повт':ex.s+'×'+ex.r}</span>
+            ${!ex.mixedW&&ex.w>0?`<span class="wpill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
           </div>
         </div>`;
       });
