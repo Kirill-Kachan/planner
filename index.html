@@ -631,7 +631,7 @@ function loadState(){
 }
 function saveState(){
   localStorage.setItem('pln5',JSON.stringify({
-    tasks:A.tasks,workouts:A.workouts,reminders:A.reminders,
+    tasks:A.tasks,workouts:A.workouts,reminders:A.reminders,memos:A.memos||[],
     cats:A.cats,notion:A.notion,theme:A.theme
   }));
 }
@@ -813,12 +813,12 @@ function getWeekLabel(offset){
 function render(){
   const app=$('app');
   // FAB visible on tasks, workouts, auto, notes
-  const showFab=['tasks','workouts','auto','notes'].includes(A.nav);
+  const showFab=['tasks','workouts','auto','notes','memos'].includes(A.nav);
   $('fab').style.display=showFab?'flex':'none';
   $('fab').onclick=
     A.nav==='workouts'?openNewWorkout:
     A.nav==='auto'?openAutoTask:
-    A.nav==='notes'?openNewIdea:openNew;
+    A.nav==='notes'?openNewIdea:A.nav==='memos'?openNewMemo:openNew;
 
   if(A.nav==='tasks')         app.innerHTML=pgTasks();
   else if(A.nav==='workouts') app.innerHTML=pgWorkouts();
@@ -827,6 +827,7 @@ function render(){
   else if(A.nav==='settings') app.innerHTML=pgSettings();
   else if(A.nav==='notes')    app.innerHTML=pgNotes();
   else if(A.nav==='guide')    app.innerHTML=pgGuide();
+  else if(A.nav==='memos')    app.innerHTML=pgMemos();
   renderNav();
   renderMoreMenu();
   bind();
@@ -869,7 +870,7 @@ function svgIcon(id,size){
 }
 
 function renderNav(){
-  const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
+  const moreActive=['auto','report','settings','guide','notes','memos'].includes(A.nav);
   const items=[
     {id:'tasks',    svgKey:'task',    l:'Задачи'},
     {id:'workouts', svgKey:'workout', l:'Спорт'},
@@ -887,13 +888,13 @@ function renderNav(){
 
 
 function renderMoreMenu(){
-  const moreMap={notes:'idea',auto:'auto',report:'report',settings:'settings',guide:'guide'};
+  const moreMap={notes:'idea',auto:'auto',memos:'guide',report:'report',settings:'settings'};
   const items=[
     {id:'notes',   l:'Идеи'},
     {id:'auto',    l:'Авто'},
+    {id:'memos',   l:'Заметки'},
     {id:'report',  l:'Стат.'},
     {id:'settings',l:'Настр.'},
-    {id:'guide',   l:'Гайд'},
   ];
   const el=$('moreMenu');
   el.innerHTML=items.map(i=>
@@ -2051,7 +2052,7 @@ function pgNotes(){
   const done=ideas.filter(t=>t.s==='done');
   let html=`<div class="ph">
     <div class="ph-row" style="margin-bottom:4px">
-      <div class="ph-h1">💡 Размышления</div>
+      <div class="ph-h1">Размышления</div>
     </div>
   </div><div class="pg">`;
   if(active.length){
@@ -2068,6 +2069,94 @@ function pgNotes(){
   return html;
 }
 function openNewIdea(){
+  A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
+  showTaskSheet(false);
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// PAGE: MEMOS (Заметки)
+// ═══════════════════════════════════════════════════════════
+function pgMemos(){
+  if(!A.memos) A.memos=[];
+  const memos=A.memos;
+  let html=`<div class="ph">
+    <div class="ph-row" style="margin-bottom:4px">
+      <div class="ph-h1">Заметки</div>
+    </div>
+  </div><div class="pg">`;
+
+  // Быстрое текстовое поле для новой заметки
+  html+=`<div style="background:var(--bg2);border-radius:var(--r);border:1.5px solid var(--bd);margin-bottom:12px;overflow:hidden">
+    <textarea id="memoInput" rows="3" placeholder="Напиши заметку..." style="width:100%;background:transparent;border:none;outline:none;padding:14px;font-size:14px;font-weight:500;color:var(--tx);font-family:inherit;resize:none;line-height:1.5"></textarea>
+    <div style="display:flex;gap:8px;padding:0 12px 12px">
+      <button onclick="saveMemo()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--blu);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit">Сохранить</button>
+      <button onclick="openNew()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit">+ Задача</button>
+    </div>
+  </div>`;
+
+  if(!memos.length && !A.tasks.filter(t=>t.cat==='ideas'&&t.s!=='done').length){
+    html+=`<div class="empty"><div class="empty-ic" style="font-size:36px">📝</div><div class="empty-t">Пока пусто</div><div class="empty-s">Напиши заметку или создай задачу</div></div>`;
+  }
+
+  // Заметки (свободный текст)
+  if(memos.length){
+    html+=glHdr('Заметки',memos.length);
+    [...memos].reverse().forEach((m,ri)=>{
+      const idx=memos.length-1-ri;
+      html+=`<div style="background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd);cursor:pointer" onclick="editMemo(${idx})">
+        <div style="font-size:13px;font-weight:500;color:var(--tx);line-height:1.5;white-space:pre-wrap">${m.text}</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:6px">${fmtDFull(m.date)}</div>
+      </div>`;
+    });
+  }
+
+  // Задачи-идеи
+  const ideas=A.tasks.filter(t=>t.cat==='ideas'&&t.s!=='done');
+  if(ideas.length){
+    html+=glHdr('Задачи из заметок',ideas.length,'var(--grn)');
+    ideas.forEach(t=>{html+=card(t);});
+  }
+
+  html+=`</div>`;
+  return html;
+}
+
+function saveMemo(){
+  const inp=$('memoInput');
+  const text=(inp?.value||'').trim();
+  if(!text){toast('Введи текст');return;}
+  if(!A.memos) A.memos=[];
+  A.memos.push({id:Date.now(),text,date:today()});
+  saveState();render();toast('Заметка сохранена');
+}
+
+function editMemo(idx){
+  if(!A.memos||idx<0||idx>=A.memos.length) return;
+  const m=A.memos[idx];
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Заметка</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss">
+      <textarea class="si" id="memoEditText" rows="6" style="font-size:14px;line-height:1.6">${m.text}</textarea>
+    </div>
+    <button class="btn-s" onclick="updateMemo(${idx})">Сохранить</button>
+    <button class="btn-d" onclick="deleteMemo(${idx})">🗑 Удалить заметку</button>`);
+}
+
+function updateMemo(idx){
+  const text=($('memoEditText')?.value||'').trim();
+  if(!text){toast('Нельзя сохранить пустую заметку');return;}
+  A.memos[idx].text=text;
+  A.memos[idx].date=today();
+  saveState();closeSheet();render();toast('Обновлено');
+}
+
+function deleteMemo(idx){
+  if(!confirm('Удалить заметку?')) return;
+  A.memos.splice(idx,1);
+  saveState();closeSheet();render();toast('Заметка удалена');
+}
+
+function openNewMemo(){
   A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
   showTaskSheet(false);
 }
