@@ -827,9 +827,7 @@ function seedWorkouts(){
       {n:'Подтягивания лесенка до 7',s:1,r:7,w:0},
       {n:'Подтягивания',s:5,r:5,w:0},
       {n:'Хаммер спина',s:3,r:12,w:15},
-      {n:'Скамья Скотта',s:1,r:12,w:25},
-      {n:'Скамья Скотта',s:1,r:10,w:25},
-      {n:'Скамья Скотта',s:1,r:8,w:25},
+      {n:'Скамья Скотта',s:3,r:[12,10,8],w:25,mixed:true},
       {n:'Молотки с гантелями',s:3,r:8,w:10},
     ]},
   ];
@@ -1135,6 +1133,35 @@ function pgWorkouts(){
     return{svgId,label};
   }
 
+
+// Объединяет дублирующиеся упражнения в одну строку с разными повторениями
+// [{n:'Скамья',s:1,r:12,w:25},{n:'Скамья',s:1,r:10,w:25},{n:'Скамья',s:1,r:8,w:25}]
+// → [{n:'Скамья',s:3,r:[12,10,8],w:25,mixed:true}]
+function groupExs(exs){
+  const result=[];
+  exs.forEach(ex=>{
+    const last=result[result.length-1];
+    if(last&&last.n===ex.n&&last.w===ex.w){
+      // Объединяем
+      if(!last.mixed){last.mixed=true;last.r=[last.r];}
+      last.r.push(ex.r);
+      last.s=(last.s||1)+1;
+    } else {
+      result.push({...ex});
+    }
+  });
+  return result;
+}
+
+// Форматирует повторения: [12,10,8] → "12/10/8" или 10 → "10"
+function fmtReps(r){return Array.isArray(r)?r.join('/'):''+r;}
+
+// Объём упражнения для динамики
+function exVol(ex){
+  if(Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0)*ex.w;
+  return ex.s*ex.r;
+}
+
   function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
     const prev=A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
@@ -1148,19 +1175,19 @@ function pgWorkouts(){
     let body='';
     if(isOpen){
       body=`<div class="wk-body open">`;
-      w.exs.forEach(ex=>{
+      groupExs(w.exs).forEach(ex=>{
         const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
-        const volEC=ex.s*ex.r,volEP=pe?pe.s*pe.r:0;
+        const volEC=Array.isArray(ex.r)?ex.r.reduce((s,r)=>s+r,0):ex.s*ex.r;const volEP=pe?(Array.isArray(pe.r)?pe.r.reduce((s,r)=>s+r,0):pe.s*pe.r):0;
         const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
         const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
         const arr={up:'↑',dn:'↓','':''};
         body+=`<div class="wk-ex">
           <div style="flex:1;min-width:0">
             <div class="wk-ex-name">${ex.n}</div>
-            ${pe?`<div class="wk-ex-prev">Пред: ${pe.s}×${pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
+            ${pe?`<div class="wk-ex-prev">Пред: ${Array.isArray(pe.r)?pe.r.join('/')+' повт':pe.s+'×'+pe.r}${pe.w>0?' · '+pe.w+'кг':''}</div>`:''}
           </div>
           <div class="wk-pills">
-            <span class="wpill ${rCls}">${arr[rCls]||''}${ex.s}×${ex.r}</span>
+            <span class="wpill ${rCls}">${arr[rCls]||''}${Array.isArray(ex.r)?ex.s+' подх: '+ex.r.join('/')+' повт':ex.s+'×'+ex.r}</span>
             ${ex.w>0?`<span class="wpill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
           </div>
         </div>`;
@@ -1174,7 +1201,7 @@ function pgWorkouts(){
         <span class="wk-date">${dateStr}</span>
         <span style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:7px;flex-shrink:0">${svgIcon(svgId,15)}</span>
         <span class="wk-type">${typeName}</span>
-        <span class="wk-cnt">${w.exs.length} упр.</span>
+        <span class="wk-cnt">${groupExs(w.exs).length} упр.</span>
         ${dyn}
         <span class="wk-chevron${isOpen?' open':''}">∨</span>
       </div>
