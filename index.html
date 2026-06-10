@@ -1045,10 +1045,11 @@ function pgTasks(){
   }
   cfHtml+=`</div>`;
 
-  // Filter & group tasks — exclude ideas from main task list
+  // Filter & group tasks — exclude ideas и auto из основного списка
   let all=A.tasks.filter(t=>{
     if(t.s==='done')return false;
-    if(t.cat==='ideas')return false; // ideas go to notes page
+    if(t.cat==='ideas')return false;
+    if(t.cat==='auto')return false; // auto задачи — только в разделе Авто
     if(A.filterCat==='all')return true;
     const cat=A.cats.find(c=>c.id===A.filterCat);if(!cat)return false;
     if(!cat.parent)return t.cat===A.filterCat||A.cats.filter(c=>c.parent===A.filterCat).some(s=>s.id===t.cat);
