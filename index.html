@@ -46,7 +46,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .nav{
   position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
   width:calc(100% - 44px);max-width:390px;
-  background:rgba(8,8,14,.38);
+  background:rgba(8,8,14,.18);
   backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
   -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
   border:1px solid rgba(255,255,255,.09);
@@ -56,7 +56,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   height:64px;padding:0 8px;
   z-index:100;
 }
-[data-theme="light"] .nav{background:rgba(255,255,255,.32);border-color:rgba(0,0,0,.07);box-shadow:0 8px 40px rgba(0,0,0,.09),inset 0 1px 0 rgba(255,255,255,.9);}
+[data-theme="light"] .nav{background:rgba(255,255,255,.18);border-color:rgba(0,0,0,.05);box-shadow:0 8px 40px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7);}
 .nvi{
   flex:1;height:50px;border-radius:16px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
@@ -68,7 +68,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 [data-theme="light"] .nvi{color:rgba(0,0,0,.32);}
 .nvi.on{color:var(--acc);background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.24);}
 .nvi:active{transform:scale(.88)}
-.nvi-ic{font-size:24px;line-height:1.1;transition:transform .24s cubic-bezier(.4,0,.2,1)}
+.nvi-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:transform .24s cubic-bezier(.4,0,.2,1)}.nvi-ic svg,.more-ic svg{width:100%;height:100%}
 .nvi.on .nvi-ic{transform:scale(1.1)}
 .nvi-lbl{font-size:9px;font-weight:700}
 .nav-more-btn{
@@ -86,6 +86,9 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
+/* Page transition */
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pg,.ph,.ws-wrap,.qsbar,.cf-wrap{animation:pgIn .2s cubic-bezier(.4,0,.2,1)}
 @media(min-width:600px){.ph{padding:24px 24px 0}}
 .ph-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 .ph-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
@@ -132,7 +135,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   font-size:12px;font-weight:700;color:var(--t3);white-space:nowrap;
   cursor:pointer;border:1.5px solid transparent;display:flex;align-items:center;
   gap:5px;transition:all .13s;flex-shrink:0}
-.cfc.on{background:var(--bg3);border-color:var(--bd2);color:var(--tx)}
+.cfc.on{background:var(--bbg);border-color:var(--acc);color:var(--acc);font-weight:800}
 
 /* ── CAT INDICATOR (two-tone bar, no dots) ────── */
 .cbar{width:3px;height:16px;border-radius:2px;flex-shrink:0}
@@ -161,7 +164,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   position:fixed;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);
   width:calc(100% - 44px);max-width:390px;
   border-radius:26px;padding:12px 10px;z-index:150;
-  background:rgba(8,8,14,.38);
+  background:rgba(8,8,14,.18);
   backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
   -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
   border:1px solid rgba(255,255,255,.09);
@@ -170,7 +173,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   animation:slideUp .2s cubic-bezier(.4,0,.2,1);
 }
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-[data-theme="light"] .more-menu{background:rgba(255,255,255,.32);border-color:rgba(0,0,0,.07);}
+[data-theme="light"] .more-menu{background:rgba(255,255,255,.18);border-color:rgba(0,0,0,.05);}
 .more-menu.on{display:block}
 .more-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .more-btn{
@@ -500,6 +503,14 @@ const DEFAULT_CATS=[
   {id:'questions',l:'Вопросы',       c:'#64b5f6',bg:'rgba(100,181,246,.13)',parent:'work'},
   {id:'finance',  l:'Финансы',       c:'#ffd54f',bg:'rgba(255,213,79,.13)', parent:'work'},
 ];
+const WORKOUT_TYPES=[
+  {id:'chest', l:'Грудь / Трицепс', ic:'💪'},
+  {id:'back',  l:'Спина / Бицепс',  ic:'🔙'},
+  {id:'legs',  l:'Ноги',            ic:'🦵'},
+  {id:'arms',  l:'Руки',            ic:'👊'},
+  {id:'cardio',l:'Кардио',          ic:'🏃'},
+  {id:'full',  l:'Фулл-боди',       ic:'🏋️'},
+];
 const PRIOS=[
   {id:'red',   c:'#ff3b50',bg:'rgba(255,59,80,.15)',  l:'Высокий'},
   {id:'yellow',c:'#ffaa00',bg:'rgba(255,170,0,.15)',  l:'Средний'},
@@ -782,28 +793,36 @@ function renderNav(){
   ];
   const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
   let h='';
+  const NAV_SVG={
+    tasks:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><circle cx="17" cy="17" r="4" fill="currentColor" stroke="none" opacity=".3"/><path d="M15 17l1.5 1.5L19 15" stroke="currentColor" stroke-width="1.6"/></svg>`,
+    workouts:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 4v16M18 4v16M3 9h3M18 9h3M3 15h3M18 15h3M6 9h12M6 15h12"/></svg>`,
+  };
   mainItems.forEach(i=>{
     h+=`<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
-      <span class="nvi-ic">${i.ic}</span><span class="nvi-lbl">${i.l}</span></div>`;
+      <span class="nvi-ic">${NAV_SVG[i.id]||i.ic}</span><span class="nvi-lbl">${i.l}</span></div>`;
   });
-  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()">›</button>`;
+  const MORE_SVG=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()">${MORE_SVG}</button>`;
   $('nav').innerHTML=h;
 }
 
 function renderMoreMenu(){
+  const MORE_SVGS={
+    notes:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20z" opacity=".3" fill="currentColor" stroke="none"/><path d="M12 8v4M12 16h.01" stroke-width="2.2"/></svg>`,
+    auto:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 17H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1l2-4h10l2 4h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`,
+    report:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    settings:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    guide:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  };
   const items=[
-    {id:'notes',   ic:'💡', l:'Идеи'},
-    {id:'auto',    ic:'🚗', l:'Авто'},
-    {id:'report',  ic:'📊', l:'Стат.'},
-    {id:'settings',ic:'⚙️', l:'Настр.'},
-    {id:'guide',   ic:'📖', l:'Гайд'},
+    {id:'notes',   l:'Идеи'},
+    {id:'auto',    l:'Авто'},
+    {id:'report',  l:'Стат.'},
+    {id:'settings',l:'Настр.'},
+    {id:'guide',   l:'Гайд'},
   ];
   const el=$('moreMenu');
-  el.innerHTML=`<div class="more-grid">${items.map(i=>`
-    <div class="more-btn${A.nav===i.id?' on':''}" onclick="setNavMore('${i.id}')">
-      <span class="more-ic">${i.ic}</span>
-      <span class="more-lbl">${i.l}</span>
-    </div>`).join('')}</div>`;
+  el.innerHTML='<div class="more-grid">'+items.map(i=>'<div class="more-btn'+(A.nav===i.id?' on':'')+'" onclick="setNavMore(\''+i.id+'\')"><span class="more-ic">'+MORE_SVGS[i.id]+'</span><span class="more-lbl">'+i.l+'</span></div>').join('')+'</div>';
   el.classList.toggle('on',!!A._moreOpen);
 }
 
@@ -812,7 +831,10 @@ function toggleMore(){
   renderNav();renderMoreMenu();
 }
 function setNavMore(n){A._moreOpen=false;setNav(n);}
-function setNav(n){A.nav=n;render();}
+function setNav(n){
+  if(n==='tasks'||n==='workouts') A._moreOpen=false;
+  A.nav=n;render();
+}
 function pgTasks(){
   const isToday=A.selDate===today();
   const weekDays=getWeekDates(A.weekOffset);
@@ -855,7 +877,7 @@ function pgTasks(){
   cfHtml+=`<div class="cfc${A.filterCat==='all'?' on':''}" data-fc="all">Все</div>`;
   mainCats().forEach(c=>{
     const on=A.filterCat===c.id;
-    cfHtml+=`<div class="cfc${on?' on':''}" data-fc="${c.id}" style="${on?'border-color:'+c.c+';color:'+c.c:''}"><span class="cdot" style="background:${c.c}"></span>${c.l}</div>`;
+    cfHtml+=`<div class="cfc${on?' on':''}" data-fc="${c.id}" style="${on?'border-color:'+c.c+';color:'+c.c+';background:'+c.bg:''}"><span class="cdot" style="background:${c.c}"></span>${c.l}</div>`;
   });
   cfHtml+=`</div>`;
   // Subcats row
@@ -863,8 +885,8 @@ function pgTasks(){
   if(subs.length&&A.filterCat!=='all'){
     const par=A.cats.find(c=>c.id===parentId);
     cfHtml+=`<div class="cf-inner" style="padding-top:6px">`;
-    cfHtml+=`<div class="cfc${A.filterCat===parentId?' on':''}" data-fc="${parentId}" style="${A.filterCat===parentId?'border-color:'+(par?.c||'#fff')+';color:'+(par?.c||'#fff'):''}">Все ${par?.l||''}</div>`;
-    subs.forEach(s=>{ cfHtml+=`<div class="cfc${A.filterCat===s.id?' on':''}" data-fc="${s.id}" style="${A.filterCat===s.id?'border-color:'+s.c+';color:'+s.c:''}"><span class="cdot" style="background:${s.c}"></span>${s.l}</div>`; });
+    cfHtml+=`<div class="cfc${A.filterCat===parentId?' on':''}" data-fc="${parentId}" style="${A.filterCat===parentId?'border-color:'+(par?.c||'var(--acc)')+';color:'+(par?.c||'var(--acc)')+';background:rgba(26,143,255,.13)':''}">Все ${par?.l||''}</div>`;
+    subs.forEach(s=>{ cfHtml+=`<div class="cfc${A.filterCat===s.id?' on':''}" data-fc="${s.id}" style="${A.filterCat===s.id?'border-color:'+s.c+';color:'+s.c+';background:'+s.bg:''}"><span class="cbar-sub" style="background:${s.c}"></span>${s.l}</div>`; });
     cfHtml+=`</div>`;
   }
   cfHtml+=`</div>`;
@@ -2169,9 +2191,21 @@ function bind(){
     el.addEventListener('click',()=>{A.selDate=el.dataset.dt;render();});
   });
   document.querySelectorAll('[data-fc]').forEach(el=>{
-    el.addEventListener('click',()=>{A.filterCat=el.dataset.fc;render();});
+    el.addEventListener('click',()=>{
+      A.filterCat=el.dataset.fc;
+      render();
+      // Scroll selected chip into view after render
+      requestAnimationFrame(()=>{
+        const sel=document.querySelector('.cfc.on');
+        if(sel) sel.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+      });
+    });
   });
   $('ovl')?.addEventListener('click',e=>{if(e.target===$('ovl'))closeSheet();});
+  // Close more menu when tapping app content
+  $('app')?.addEventListener('click',()=>{
+    if(A._moreOpen){A._moreOpen=false;renderNav();renderMoreMenu();}
+  });
 }
 
 // ═══════════════════════════════════════════════════════════
