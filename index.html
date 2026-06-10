@@ -888,12 +888,12 @@ function getWeekLabel(offset){
 function render(){
   const app=$('app');
   // FAB visible on tasks, workouts, auto, notes
-  const showFab=['tasks','workouts','auto','memos','notes'].includes(A.nav);
+  const showFab=['tasks','workouts','auto','memos'].includes(A.nav);
   $('fab').style.display=showFab?'flex':'none';
   $('fab').onclick=
     A.nav==='workouts'?openNewWorkout:
     A.nav==='auto'?openAutoTask:
-    A.nav==='memos'?openNewMemo:A.nav==='notes'?openNewIdea:openNew;
+    A.nav==='memos'?openNewMemo:openNew;
 
   if(A.nav==='tasks')         app.innerHTML=pgTasks();
   else if(A.nav==='workouts') app.innerHTML=pgWorkouts();
@@ -903,7 +903,6 @@ function render(){
 
   else if(A.nav==='guide')    app.innerHTML=pgGuide();
   else if(A.nav==='memos')    app.innerHTML=pgMemos();
-  else if(A.nav==='notes')    app.innerHTML=pgNotes();
   renderNav();
   renderMoreMenu();
   bind();
@@ -946,7 +945,7 @@ function svgIcon(id,size){
 }
 
 function renderNav(){
-  const moreActive=['auto','report','settings','guide','memos','notes'].includes(A.nav);
+  const moreActive=['auto','report','settings','guide','memos'].includes(A.nav);
   const items=[
     {id:'tasks',    svgKey:'task',    l:'Задачи'},
     {id:'workouts', svgKey:'workout', l:'Спорт'},
@@ -964,10 +963,9 @@ function renderNav(){
 
 
 function renderMoreMenu(){
-  const moreMap={memos:'guide',notes:'idea',auto:'auto',report:'report',settings:'settings'};
+  const moreMap={memos:'guide',auto:'auto',report:'report',settings:'settings'};
   const items=[
     {id:'memos',   l:'Заметки'},
-    {id:'notes',   l:'Идеи'},
     {id:'auto',    l:'Авто'},
     {id:'report',  l:'Стат.'},
     {id:'settings',l:'Настр.'},
@@ -2331,12 +2329,10 @@ function deleteMemo(idx){
 }
 
 function openNewMemo(){
-  // FAB в заметках — открываем страницу (там есть кнопки Сохранить и + Идея)
-  // Фокусируем textarea если страница уже открыта
-  const inp=document.getElementById('memoInput');
-  if(inp){inp.focus();return;}
+  const inp=$('memoInput');
+  if(inp){inp.focus();inp.scrollIntoView({behavior:'smooth',block:'center'});return;}
   render();
-  setTimeout(()=>{const i=document.getElementById('memoInput');if(i)i.focus();},100);
+  setTimeout(()=>{const i=$('memoInput');if(i){i.focus();i.scrollIntoView({behavior:'smooth',block:'center'});}},150);
 }
 function openNewIdea(){
   A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
