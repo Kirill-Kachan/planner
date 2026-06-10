@@ -619,9 +619,13 @@ function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
 function loadState(){
   try{
-    // Читаем pln6, если пусто — мигрируем из pln5
-    const raw=localStorage.getItem('pln6')||localStorage.getItem('pln5')||'{}';
-    const d=JSON.parse(raw);
+    // Пробуем все ключи по порядку
+    let d={};
+    const keys=['pln6','pln5','pln4','pln3'];
+    for(const k of keys){
+      const raw=localStorage.getItem(k);
+      if(raw){try{d=JSON.parse(raw);break;}catch(e){}}
+    }
     A.tasks=d.tasks||seedTasks();
     A.workouts=d.workouts||seedWorkouts();
     A.reminders=d.reminders||{};
@@ -632,6 +636,8 @@ function loadState(){
     A.autoService=d.autoService||seedAutoService();
     A.workoutTypes=d.workoutTypes||[...WORKOUT_TYPES];
     A.memos=d.memos||[];
+    // Сразу пересохраняем в pln6
+    saveState();
   }catch(e){
     A.tasks=seedTasks();A.workouts=seedWorkouts();
     A.autoTasks=seedAutoTasks();A.autoService=seedAutoService();
