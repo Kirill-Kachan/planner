@@ -1686,10 +1686,18 @@ function showTaskSheet(isEdit){
   });
   cHtml+=`</div>`;
 
-  const dlOpts=[{l:'Сегодня',v:today()},{l:'Завтра',v:tomorrow()},{l:'+3 дня',v:addDays(3)},{l:'+неделя',v:addDays(7)}];
+  const dlOpts=[{l:'Сегодня',v:today()},{l:'Завтра',v:tomorrow()},{l:'+3',v:addDays(3)},{l:'+7',v:addDays(7)}];
   let qdHtml=`<div class="qdl">`;
   dlOpts.forEach(o=>{qdHtml+=`<div class="qdlb${dl===o.v?' on':''}" onclick="setDl('${o.v}')">${o.l}</div>`;});
+  // Кнопка сброса — всегда видна
+  qdHtml+=`<div class="qdlb${!dl?' on':''}" onclick="clearDl()" style="${!dl?'':''}">× Нет</div>`;
   qdHtml+=`</div>`;
+  // Показываем текущую дату или placeholder
+  const dlDisplay=dl?`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+    <input type="date" class="si" id="fDl" value="${dl}" onchange="syncDlInput(this.value)" style="flex:1">
+    <button onclick="clearDl()" style="height:40px;padding:0 12px;border-radius:9px;background:var(--rbg);color:var(--red);border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:700;flex-shrink:0">Сброс</button>
+  </div>`
+  :`<input type="date" class="si" id="fDl" value="" onchange="syncDlInput(this.value)">`;
 
   // Resume button for done tasks
   const resumeBtn=isEdit&&e.s==='done'?`<button class="btn-warn" onclick="resumeTask(${e.id})">↩ Возобновить задачу</button>`:'';
@@ -1705,7 +1713,7 @@ function showTaskSheet(isEdit){
     <div class="ss"><div class="sl">Приоритет</div>${pHtml}</div>
     <div class="ss"><div class="sl">Статус</div>${sHtml}</div>
     <div class="ss"><div class="sl">Категория</div>${cHtml}</div>
-    <div class="ss"><div class="sl">Дедлайн</div>${qdHtml}<input type="date" class="si" id="fDl" value="${dl}"></div>
+    <div class="ss"><div class="sl">Дедлайн</div>${qdHtml}${dlDisplay}</div>
     <div class="ss"><div class="sl">Напоминание</div><input type="datetime-local" class="si" id="fRem" value="${remVal}"></div>
     <div class="ss"><div class="sl">Заметка</div>
       <textarea class="si" id="fN" rows="2" placeholder="Дополнительно...">${e.note||''}</textarea>
@@ -1718,11 +1726,23 @@ function showTaskSheet(isEdit){
 
 function eSel(f,v){if(!A.edit)return;A.edit[f]=v;showTaskSheet(!!A.edit.id);}
 function setDl(v){if(!A.edit)return;A.edit.dl=A.edit.dl===v?'':v;showTaskSheet(!!A.edit.id);}
+function clearDl(){if(!A.edit)return;A.edit.dl='';showTaskSheet(!!A.edit.id);}
+function syncDlInput(v){
+  if(!A.edit)return;
+  A.edit.dl=v||'';
+  // Update quick buttons highlight without re-rendering sheet
+  document.querySelectorAll('.qdlb').forEach(el=>{
+    el.classList.toggle('on', el.textContent.trim()==='× Нет'?!v:false);
+  });
+}
 
 function saveTask(){
   const title=($('fT')?.value||'').trim();
   if(!title){toast('Введи название задачи');return;}
-  const dl=$('fDl')?.value||'',note=($('fN')?.value||'').trim(),rem=$('fRem')?.value||'';
+  // Use input value if changed, fallback to A.edit.dl
+  const inputDl=$('fDl')?.value||'';
+  const dl=inputDl||A.edit.dl||'';
+  const note=($('fN')?.value||'').trim(),rem=$('fRem')?.value||'';
   const task={...A.edit,title,dl,note,dd:A.edit.dd||A.selDate||today()};
   if(task.id){
     const i=A.tasks.findIndex(t=>t.id===task.id);
