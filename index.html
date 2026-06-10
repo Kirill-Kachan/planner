@@ -2258,6 +2258,9 @@ function openNewIdea(){
 function pgMemos(){
   if(!A.memos) A.memos=[];
   const memos=A.memos;
+  const activeIdeas=A.tasks.filter(t=>t.cat==='ideas'&&t.s!=='done');
+  const doneIdeas=A.tasks.filter(t=>t.cat==='ideas'&&t.s==='done');
+
   let html=`<div class="ph">
     <div class="ph-row" style="margin-bottom:4px">
       <div class="ph-h1">Заметки</div>
@@ -2269,12 +2272,11 @@ function pgMemos(){
     <textarea id="memoInput" rows="3" placeholder="Напиши заметку..." style="width:100%;background:transparent;border:none;outline:none;padding:14px;font-size:14px;font-weight:500;color:var(--tx);font-family:inherit;resize:none;line-height:1.5"></textarea>
     <div style="display:flex;gap:8px;padding:0 12px 12px">
       <button onclick="saveMemo()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--blu);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit">Сохранить</button>
-
     </div>
   </div>`;
 
   if(!memos.length && !activeIdeas.length){
-    html+=`<div class="empty"><div class="empty-ic" style="font-size:36px">📝</div><div class="empty-t">Пока пусто</div><div class="empty-s">Напиши заметку...</div></div>`;
+    html+=`<div class="empty"><div class="empty-ic" style="font-size:36px">📝</div><div class="empty-t">Пока пусто</div><div class="empty-s">Напиши заметку или добавь идею</div></div>`;
   }
 
   // Текстовые заметки
@@ -2288,7 +2290,20 @@ function pgMemos(){
     });
   }
 
-
+  // Идеи и размышления
+  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 7px">
+    <span style="font-size:10px;font-weight:800;color:var(--grn);letter-spacing:.09em;text-transform:uppercase">💡 Размышления (${activeIdeas.length})</span>
+    <button onclick="openNewIdea()" style="height:30px;padding:0 12px;border-radius:9px;background:rgba(38,212,103,.12);color:var(--grn);font-size:12px;font-weight:700;border:1px solid rgba(38,212,103,.25);cursor:pointer;font-family:inherit">+ Добавить</button>
+  </div>`;
+  if(!activeIdeas.length){
+    html+=`<div style="text-align:center;padding:12px;color:var(--t3);font-size:13px">Нет идей — добавь первую</div>`;
+  } else {
+    activeIdeas.forEach(t=>{html+=card(t);});
+  }
+  if(doneIdeas.length){
+    html+=glHdr('Реализовано',doneIdeas.length,'var(--t3)');
+    doneIdeas.forEach(t=>{html+=card(t);});
+  }
 
   html+=`</div>`;
   return html;
