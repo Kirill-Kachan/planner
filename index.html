@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
+  --nav-h:80px;
   --bg:#0d0d10;--bg2:#16161c;--bg3:#1e1e26;--bg4:#26262f;
   --bd:rgba(255,255,255,.06);--bd2:rgba(255,255,255,.12);
   --tx:#eeeef5;--t2:#8888a0;--t3:#50506a;
@@ -20,7 +21,7 @@
   --rbg:rgba(255,59,80,.13);--ybg:rgba(255,170,0,.13);--gbg:rgba(38,212,103,.13);
   --bbg:rgba(26,143,255,.13);--pbg:rgba(155,141,255,.13);
   --r:13px;--rs:8px;
-  --nav-h:64px;
+  --nav-h:80px;
 }
 [data-theme="light"]{
   --bg:#f5f5f7;--bg2:#ffffff;--bg3:#f0f0f5;--bg4:#e8e8f0;
@@ -43,46 +44,118 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 #app::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── BOTTOM NAV ─────────────────────────────── */
+/* ══ BOTTOM NAV ══════════════════════════════════════ */
 .nav{
-  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:400px;
-  background:rgba(10,10,18,.08);
-  backdrop-filter:blur(60px) saturate(260%) brightness(1.18);
-  -webkit-backdrop-filter:blur(60px) saturate(260%) brightness(1.18);
-  border:1px solid rgba(255,255,255,.06);
-  box-shadow:0 2px 30px rgba(0,0,0,.12);
-  border-radius:30px;
-  display:flex;align-items:center;justify-content:center;gap:0;
-  height:64px;padding:0 8px;
+  position:fixed;bottom:14px;left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:420px;
+  height:68px;
+  border-radius:28px;
+  padding:0 6px;
+  display:flex;align-items:center;gap:4px;
   z-index:100;
+  background:rgba(20,20,30,.55);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 4px 24px rgba(0,0,0,.25);
 }
-[data-theme="light"] .nav{background:rgba(255,255,255,.10);border-color:rgba(0,0,0,.05);box-shadow:0 2px 20px rgba(0,0,0,.07);}
+[data-theme="light"] .nav{
+  background:rgba(240,240,248,.65);
+  border-color:rgba(0,0,0,.08);
+  box-shadow:0 4px 20px rgba(0,0,0,.10);
+}
+
+/* Кнопки навигации — 3 равные */
 .nvi{
-  flex:1;height:50px;border-radius:16px;
+  flex:1;height:54px;border-radius:20px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:2px;cursor:pointer;color:rgba(255,255,255,.35);
-  font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
-  transition:color .7s cubic-bezier(.4,0,.2,1),background .7s cubic-bezier(.4,0,.2,1),border-color .7s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.34,1.56,.64,1);
+  gap:3px;cursor:pointer;
+  color:rgba(255,255,255,.38);
+  font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
   background:transparent;border:1px solid transparent;
+  transition:color .35s ease,background .35s ease,border-color .35s ease,transform .2s ease;
+  -webkit-tap-highlight-color:transparent;
 }
-[data-theme="light"] .nvi{color:rgba(0,0,0,.32);}
-.nvi.on{color:var(--acc);background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.24);}
-.nvi:active{transform:scale(.88)}
-.nvi-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;transition:transform .24s cubic-bezier(.4,0,.2,1)}.nvi-ic svg,.more-ic svg{width:100%;height:100%}
-.nvi.on .nvi-ic{transform:scale(1.1)}
-.nvi-lbl{font-size:9px;font-weight:700}
+[data-theme="light"] .nvi{color:rgba(0,0,0,.35);}
+.nvi.on{
+  color:var(--acc);
+  background:rgba(26,143,255,.15);
+  border-color:rgba(26,143,255,.25);
+}
+.nvi:active{transform:scale(.91)}
+.nvi-ic{width:24px;height:24px;display:flex;align-items:center;justify-content:center;}
+.nvi-ic svg{width:100%;height:100%;transition:transform .35s ease}
+.nvi.on .nvi-ic svg{transform:scale(1.08)}
+.nvi-lbl{font-size:9px;font-weight:700;line-height:1}
+
+/* Стрелка — такая же кнопка, flex:1 */
 .nav-more-btn{
-  width:50px;height:50px;border-radius:16px;flex-shrink:0;
+  flex:1;height:54px;border-radius:20px;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:rgba(255,255,255,.35);
-  font-size:28px;font-weight:200;line-height:1;
+  cursor:pointer;
+  color:rgba(255,255,255,.38);
   background:transparent;border:1px solid transparent;
-  transition:color .7s cubic-bezier(.4,0,.2,1),background .7s cubic-bezier(.4,0,.2,1),border-color .7s cubic-bezier(.4,0,.2,1),transform .35s cubic-bezier(.34,1.56,.64,1);
-  padding-bottom:2px;
+  transition:color .35s ease,background .35s ease,border-color .35s ease,transform .2s ease;
+  -webkit-tap-highlight-color:transparent;
 }
-[data-theme="light"] .nav-more-btn{color:rgba(0,0,0,.32);}
-.nav-more-btn.on{color:var(--acc);background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.24);}
-.nav-more-btn:active{transform:scale(.88)}
+[data-theme="light"] .nav-more-btn{color:rgba(0,0,0,.35);}
+.nav-more-btn.on{
+  color:var(--acc);
+  background:rgba(26,143,255,.15);
+  border-color:rgba(26,143,255,.25);
+}
+.nav-more-btn:active{transform:scale(.91)}
+.nav-more-btn svg{width:22px;height:22px;}
+
+/* ══ MORE MENU — точно такой же как nav ══════════════ */
+.more-menu{
+  position:fixed;
+  left:50%;transform:translateX(-50%);
+  width:calc(100% - 32px);max-width:420px;
+  border-radius:28px;
+  padding:0 6px;
+  height:68px;
+  display:none;
+  align-items:center;
+  gap:4px;
+  z-index:150;
+  background:rgba(20,20,30,.55);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 4px 24px rgba(0,0,0,.25);
+  animation:slideUp .28s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] .more-menu{
+  background:rgba(240,240,248,.65);
+  border-color:rgba(0,0,0,.08);
+  box-shadow:0 4px 20px rgba(0,0,0,.10);
+}
+.more-menu.on{display:flex}
+@keyframes slideUp{
+  from{opacity:0;transform:translateX(-50%) translateY(10px)}
+  to{opacity:1;transform:translateX(-50%) translateY(0)}
+}
+.more-btn{
+  flex:1;height:54px;border-radius:20px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  cursor:pointer;
+  color:rgba(255,255,255,.55);
+  background:transparent;border:1px solid transparent;
+  transition:color .35s ease,background .35s ease,border-color .35s ease,transform .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+[data-theme="light"] .more-btn{color:rgba(0,0,0,.45);}
+.more-btn:active{transform:scale(.91)}
+.more-btn.on{
+  color:var(--acc);
+  background:rgba(26,143,255,.15);
+  border-color:rgba(26,143,255,.25);
+}
+.more-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.more-ic svg{width:100%;height:100%}
+.more-lbl{font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;line-height:1}
+
 
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
@@ -163,7 +236,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 /* ── MORE POPUP ──────────────────────────────── */
 .more-menu{
-  position:fixed;bottom:calc(var(--nav-h) + 10px);left:50%;transform:translateX(-50%);
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
   width:calc(100% - 32px);max-width:400px;
   border-radius:30px;padding:10px 8px;z-index:150;
   background:rgba(10,10,18,.08);
@@ -287,7 +360,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .toast{position:fixed;top:56px;left:50%;transform:translateX(-50%) translateY(-10px);background:rgba(20,20,28,.94);border:1px solid var(--bd2);color:var(--tx);padding:9px 16px;border-radius:12px;font-size:12px;font-weight:700;z-index:999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-@media(min-width:600px){:root{--nav-h:88px}.nav{width:calc(100% - 48px)}}
+@media(min-width:600px){:root{--nav-h:80px}.nav{width:calc(100% - 48px)}}
 
 /* ── CONTENT ─────────────────────────────────── */
 .pg{padding:10px 16px 0}
@@ -462,13 +535,11 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 /* ── TABLET / DESKTOP ────────────────────────── */
 @media(min-width:600px){
-  :root{--nav-h:56px}
+  :root{--nav-h:80px}
   .dd{height:68px}
   .ws-wrap{padding:16px 24px 0}
   .qsbar{padding:10px 24px 0}
   .cf-wrap .cf-inner{padding:0 24px}
-  .nav{padding:0 24px 8px}
-  .nvi-ic{font-size:24px}
   .fab{right:24px}
 }
 @media(min-width:900px){
@@ -826,41 +897,50 @@ function svgIcon(id,size){
 }
 
 function renderNav(){
-  const mainItems=[
-    {id:'tasks',    ic:'task',    l:'Задачи'},
-    {id:'workouts', ic:'workout', l:'Спорт'},
-  ];
   const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
+  const items=[
+    {id:'tasks',    svgKey:'task',    l:'Задачи'},
+    {id:'workouts', svgKey:'workout', l:'Спорт'},
+  ];
   let h='';
-  mainItems.forEach(i=>{
-    h+=`<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
-      <span class="nvi-ic">${svgIcon(i.ic,24)}</span><span class="nvi-lbl">${i.l}</span></div>`;
+  items.forEach(i=>{
+    h+='<div class="nvi'+(A.nav===i.id?' on':'')+'" onclick="setNav(\''+i.id+'\')">'
+      +'<span class="nvi-ic">'+svgIcon(i.svgKey,24)+'</span>'
+      +'<span class="nvi-lbl">'+i.l+'</span></div>';
   });
-  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()" style="${A._moreOpen?'transform:rotate(90deg)':''};transition:transform .55s cubic-bezier(.4,0,.2,1)">${svgIcon('arrow',20)}</button>`;
+  const arrowOn=(moreActive||!!A._moreOpen)?' on':'';
+  h+='<button class="nav-more-btn'+arrowOn+'" onclick="toggleMore()">'+svgIcon('arrow',22)+'</button>';
   $('nav').innerHTML=h;
 }
 
+
 function renderMoreMenu(){
   const moreMap={notes:'idea',auto:'auto',report:'report',settings:'settings',guide:'guide'};
-  const items=[{id:'notes',l:'Идеи'},{id:'auto',l:'Авто'},{id:'report',l:'Стат.'},{id:'settings',l:'Настр.'},{id:'guide',l:'Гайд'}];
+  const items=[
+    {id:'notes',   l:'Идеи'},
+    {id:'auto',    l:'Авто'},
+    {id:'report',  l:'Стат.'},
+    {id:'settings',l:'Настр.'},
+    {id:'guide',   l:'Гайд'},
+  ];
   const el=$('moreMenu');
-  el.innerHTML='<div class="more-grid">'+items.map(i=>
-    '<div class="more-btn'+(A.nav===i.id?' on':'')+'" onclick="setNavMore(\''+i.id+'\')">'+
-    '<span class="more-ic">'+svgIcon(moreMap[i.id],22)+'</span>'+
-    '<span class="more-lbl">'+i.l+'</span></div>'
-  ).join('')+'</div>';
+  el.innerHTML=items.map(i=>
+    '<div class="more-btn'+(A.nav===i.id?' on':'')+'" onclick="setNavMore(\''+i.id+'\')">'
+    +'<span class="more-ic">'+svgIcon(moreMap[i.id],22)+'</span>'
+    +'<span class="more-lbl">'+i.l+'</span>'
+    +'</div>'
+  ).join('');
   el.classList.toggle('on',!!A._moreOpen);
 }
 
+
 function toggleMore(){
   A._moreOpen=!A._moreOpen;
-  renderNav();renderMoreMenu();
+  renderNav();
+  renderMoreMenu();
 }
 function setNavMore(n){A._moreOpen=false;setNav(n);}
-function setNav(n){
-  A._moreOpen=false;
-  A.nav=n;render();
-}
+function setNav(n){A._moreOpen=false;A.nav=n;render();}
 function pgTasks(){
   const isToday=A.selDate===today();
   const weekDays=getWeekDates(A.weekOffset);
