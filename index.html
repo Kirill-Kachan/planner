@@ -2293,10 +2293,9 @@ function pgMemos(){
   // Идеи и размышления
   html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 7px">
     <span style="font-size:10px;font-weight:800;color:var(--grn);letter-spacing:.09em;text-transform:uppercase">💡 Размышления (${activeIdeas.length})</span>
-    <button onclick="openNewIdea()" style="height:30px;padding:0 12px;border-radius:9px;background:rgba(38,212,103,.12);color:var(--grn);font-size:12px;font-weight:700;border:1px solid rgba(38,212,103,.25);cursor:pointer;font-family:inherit">+ Добавить</button>
   </div>`;
   if(!activeIdeas.length){
-    html+=`<div style="text-align:center;padding:12px;color:var(--t3);font-size:13px">Нет идей — добавь первую</div>`;
+    html+=`<div style="text-align:center;padding:12px;color:var(--t3);font-size:13px">Нет идей — нажми ＋ чтобы добавить</div>`;
   } else {
     activeIdeas.forEach(t=>{html+=card(t);});
   }
@@ -2344,10 +2343,8 @@ function deleteMemo(idx){
 }
 
 function openNewMemo(){
-  const inp=$('memoInput');
-  if(inp){inp.focus();inp.scrollIntoView({behavior:'smooth',block:'center'});return;}
-  render();
-  setTimeout(()=>{const i=$('memoInput');if(i){i.focus();i.scrollIntoView({behavior:'smooth',block:'center'});}},150);
+  // FAB открывает форму новой идеи
+  openNewIdea();
 }
 function openNewIdea(){
   A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
