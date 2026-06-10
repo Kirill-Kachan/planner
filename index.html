@@ -888,12 +888,12 @@ function getWeekLabel(offset){
 function render(){
   const app=$('app');
   // FAB visible on tasks, workouts, auto, notes
-  const showFab=['tasks','workouts','auto','memos'].includes(A.nav);
+  const showFab=['tasks','workouts','auto','memos','notes'].includes(A.nav);
   $('fab').style.display=showFab?'flex':'none';
   $('fab').onclick=
     A.nav==='workouts'?openNewWorkout:
     A.nav==='auto'?openAutoTask:
-    A.nav==='memos'?openNewMemo:openNew;
+    A.nav==='memos'?openNewMemo:A.nav==='notes'?openNewIdea:openNew;
 
   if(A.nav==='tasks')         app.innerHTML=pgTasks();
   else if(A.nav==='workouts') app.innerHTML=pgWorkouts();
@@ -903,6 +903,7 @@ function render(){
 
   else if(A.nav==='guide')    app.innerHTML=pgGuide();
   else if(A.nav==='memos')    app.innerHTML=pgMemos();
+  else if(A.nav==='notes')    app.innerHTML=pgNotes();
   renderNav();
   renderMoreMenu();
   bind();
@@ -945,7 +946,7 @@ function svgIcon(id,size){
 }
 
 function renderNav(){
-  const moreActive=['auto','report','settings','guide','memos'].includes(A.nav);
+  const moreActive=['auto','report','settings','guide','memos','notes'].includes(A.nav);
   const items=[
     {id:'tasks',    svgKey:'task',    l:'Задачи'},
     {id:'workouts', svgKey:'workout', l:'Спорт'},
@@ -963,9 +964,10 @@ function renderNav(){
 
 
 function renderMoreMenu(){
-  const moreMap={memos:'guide',auto:'auto',report:'report',settings:'settings'};
+  const moreMap={memos:'guide',notes:'idea',auto:'auto',report:'report',settings:'settings'};
   const items=[
     {id:'memos',   l:'Заметки'},
+    {id:'notes',   l:'Идеи'},
     {id:'auto',    l:'Авто'},
     {id:'report',  l:'Стат.'},
     {id:'settings',l:'Настр.'},
@@ -2258,10 +2260,6 @@ function openNewIdea(){
 function pgMemos(){
   if(!A.memos) A.memos=[];
   const memos=A.memos;
-  const ideas=A.tasks.filter(t=>t.cat==='ideas');
-  const activeIdeas=ideas.filter(t=>t.s!=='done');
-  const doneIdeas=ideas.filter(t=>t.s==='done');
-
   let html=`<div class="ph">
     <div class="ph-row" style="margin-bottom:4px">
       <div class="ph-h1">Заметки</div>
@@ -2273,12 +2271,12 @@ function pgMemos(){
     <textarea id="memoInput" rows="3" placeholder="Напиши заметку..." style="width:100%;background:transparent;border:none;outline:none;padding:14px;font-size:14px;font-weight:500;color:var(--tx);font-family:inherit;resize:none;line-height:1.5"></textarea>
     <div style="display:flex;gap:8px;padding:0 12px 12px">
       <button onclick="saveMemo()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--blu);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit">Сохранить</button>
-      <button onclick="openNewIdea()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--gbg);color:var(--grn);font-size:13px;font-weight:700;border:1.5px solid rgba(38,212,103,.25);cursor:pointer;font-family:inherit">+ Идея</button>
+
     </div>
   </div>`;
 
   if(!memos.length && !activeIdeas.length){
-    html+=`<div class="empty"><div class="empty-ic" style="font-size:36px">📝</div><div class="empty-t">Пока пусто</div><div class="empty-s">Напиши заметку или добавь идею</div></div>`;
+    html+=`<div class="empty"><div class="empty-ic" style="font-size:36px">📝</div><div class="empty-t">Пока пусто</div><div class="empty-s">Напиши заметку...</div></div>`;
   }
 
   // Текстовые заметки
@@ -2292,16 +2290,7 @@ function pgMemos(){
     });
   }
 
-  // Идеи
-  if(activeIdeas.length){
-    html+=glHdr('Размышления и идеи',activeIdeas.length,'var(--grn)');
-    activeIdeas.forEach(t=>{html+=card(t);});
-  }
 
-  if(doneIdeas.length){
-    html+=glHdr('Реализовано',doneIdeas.length,'var(--t3)');
-    doneIdeas.forEach(t=>{html+=card(t);});
-  }
 
   html+=`</div>`;
   return html;
