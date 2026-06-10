@@ -45,45 +45,44 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 /* ── BOTTOM NAV ─────────────────────────────── */
 .nav{
   position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:420px;
-  background:rgba(16,16,24,.60);
-  backdrop-filter:blur(28px) saturate(200%);
-  -webkit-backdrop-filter:blur(28px) saturate(200%);
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 8px 40px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.07);
-  border-radius:28px;
-  display:flex;align-items:center;justify-content:space-around;
-  height:68px;padding:0 10px;
+  width:calc(100% - 44px);max-width:390px;
+  background:rgba(8,8,14,.38);
+  backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
+  -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 10px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
+  border-radius:30px;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  height:64px;padding:0 8px;
   z-index:100;
 }
-[data-theme="light"] .nav{background:rgba(250,250,255,.72);border-color:rgba(0,0,0,.10);box-shadow:0 8px 32px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.95);}
+[data-theme="light"] .nav{background:rgba(255,255,255,.32);border-color:rgba(0,0,0,.07);box-shadow:0 8px 40px rgba(0,0,0,.09),inset 0 1px 0 rgba(255,255,255,.9);}
 .nvi{
-  flex:1;height:52px;border-radius:18px;
+  flex:1;height:50px;border-radius:16px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;color:var(--t3);
-  font-size:9px;font-weight:700;letter-spacing:.03em;
-  text-transform:uppercase;transition:all .18s;
+  gap:2px;cursor:pointer;color:rgba(255,255,255,.35);
+  font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
+  transition:color .24s cubic-bezier(.4,0,.2,1),background .24s cubic-bezier(.4,0,.2,1),border-color .24s cubic-bezier(.4,0,.2,1),transform .14s ease;
   background:transparent;border:1px solid transparent;
 }
-.nvi.on{
-  color:var(--acc);
-  background:rgba(26,143,255,.16);
-  border-color:rgba(26,143,255,.28);
-}
-.nvi:active{transform:scale(.91);opacity:.8}
-.nvi-ic{font-size:26px;line-height:1.1}
+[data-theme="light"] .nvi{color:rgba(0,0,0,.32);}
+.nvi.on{color:var(--acc);background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.24);}
+.nvi:active{transform:scale(.88)}
+.nvi-ic{font-size:24px;line-height:1.1;transition:transform .24s cubic-bezier(.4,0,.2,1)}
+.nvi.on .nvi-ic{transform:scale(1.1)}
 .nvi-lbl{font-size:9px;font-weight:700}
 .nav-more-btn{
-  width:52px;height:52px;border-radius:18px;
+  width:50px;height:50px;border-radius:16px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--t3);
-  font-size:30px;font-weight:200;line-height:1;
+  cursor:pointer;color:rgba(255,255,255,.35);
+  font-size:28px;font-weight:200;line-height:1;
   background:transparent;border:1px solid transparent;
-  transition:all .18s;font-family:'Inter',sans-serif;
-  padding-bottom:3px;
+  transition:color .24s cubic-bezier(.4,0,.2,1),background .24s,border-color .24s,transform .14s ease;
+  padding-bottom:2px;
 }
-.nav-more-btn.on{color:var(--acc);background:rgba(26,143,255,.16);border-color:rgba(26,143,255,.28);}
-.nav-more-btn:active{transform:scale(.91);opacity:.8}
+[data-theme="light"] .nav-more-btn{color:rgba(0,0,0,.32);}
+.nav-more-btn.on{color:var(--acc);background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.24);}
+.nav-more-btn:active{transform:scale(.88)}
 
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
@@ -140,44 +139,52 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .cbar-sub{width:3px;height:11px;border-radius:2px;flex-shrink:0;opacity:.55}
 
 /* ── WEATHER ─────────────────────────────────── */
-.weather-pill{display:flex;align-items:center;gap:8px;
-  background:rgba(26,143,255,.13);border-radius:16px;padding:7px 13px;
-  border:1px solid rgba(26,143,255,.28);cursor:pointer;transition:all .2s;
+.weather-pill{
+  display:flex;align-items:center;gap:9px;
+  background:rgba(26,143,255,.10);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-radius:18px;padding:8px 14px;
+  border:1px solid rgba(26,143,255,.20);cursor:pointer;
+  transition:all .22s cubic-bezier(.4,0,.2,1);
 }
-.weather-pill:active{opacity:.7;transform:scale(.96)}
-@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}40%{transform:translateY(-3px) rotate(-4deg)}70%{transform:translateY(-1px) rotate(2deg)}}
-@keyframes glow{0%,100%{box-shadow:0 4px 16px rgba(26,143,255,.18)}50%{box-shadow:0 4px 28px rgba(26,143,255,.38)}}
-.weather-pill{animation:glow 4s ease-in-out infinite}
-.weather-ic{font-size:30px;line-height:1;animation:float 4s ease-in-out infinite;display:inline-block}
+.weather-pill:active{opacity:.7;transform:scale(.94)}
+@keyframes float{0%,100%{transform:translateY(0) rotate(0deg)}33%{transform:translateY(-4px) rotate(-5deg)}66%{transform:translateY(-2px) rotate(3deg)}}
+@keyframes glow{0%,100%{box-shadow:0 4px 20px rgba(26,143,255,.12),0 0 0 0 rgba(26,143,255,.0)}50%{box-shadow:0 4px 32px rgba(26,143,255,.28),0 0 20px rgba(26,143,255,.10)}}
+.weather-pill{animation:glow 5s ease-in-out infinite}
+@keyframes spin{0%,100%{transform:rotate(0deg) scale(1)}50%{transform:rotate(8deg) scale(1.05)}}
+.weather-ic{font-size:32px;line-height:1;animation:float 5s ease-in-out infinite,spin 8s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 2px 6px rgba(26,143,255,.3))}
 .weather-temp{font-size:22px;font-weight:900;line-height:1;color:var(--tx)}
 .weather-desc{font-size:10px;color:var(--t2);font-weight:700;margin-top:1px}
 
 /* ── MORE POPUP ──────────────────────────────── */
 .more-menu{
-  position:fixed;bottom:calc(var(--nav-h) + 20px);left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:420px;
-  border-radius:24px;padding:14px 12px;z-index:150;
-  background:rgba(16,16,24,.65);
-  backdrop-filter:blur(28px) saturate(200%);
-  -webkit-backdrop-filter:blur(28px) saturate(200%);
-  border:1px solid rgba(255,255,255,.12);
-  box-shadow:0 8px 40px rgba(0,0,0,.5);
+  position:fixed;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);
+  width:calc(100% - 44px);max-width:390px;
+  border-radius:26px;padding:12px 10px;z-index:150;
+  background:rgba(8,8,14,.38);
+  backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
+  -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
+  border:1px solid rgba(255,255,255,.09);
+  box-shadow:0 10px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
   display:none;
+  animation:slideUp .2s cubic-bezier(.4,0,.2,1);
 }
-[data-theme="light"] .more-menu{background:rgba(250,250,255,.82);border-color:rgba(0,0,0,.10);}
+@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+[data-theme="light"] .more-menu{background:rgba(255,255,255,.32);border-color:rgba(0,0,0,.07);}
 .more-menu.on{display:block}
 .more-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .more-btn{
-  height:62px;border-radius:16px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  height:58px;border-radius:16px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
   cursor:pointer;
-  background:rgba(255,255,255,.07);
-  border:1px solid rgba(255,255,255,.10);
-  transition:all .15s;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  transition:all .18s cubic-bezier(.4,0,.2,1);
+  color:rgba(255,255,255,.7);
 }
-[data-theme="light"] .more-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.08);}
-.more-btn:active{transform:scale(.92);opacity:.8}
-.more-btn.on{background:rgba(26,143,255,.18);border-color:rgba(26,143,255,.30);}
+[data-theme="light"] .more-btn{background:rgba(0,0,0,.04);border-color:rgba(0,0,0,.07);color:rgba(0,0,0,.6);}
+.more-btn:active{transform:scale(.90)}
+.more-btn.on{background:rgba(26,143,255,.16);border-color:rgba(26,143,255,.26);color:var(--acc);}
 .more-ic{font-size:22px;line-height:1}
 .more-lbl{font-size:8px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;text-align:center}
 
@@ -574,8 +581,11 @@ function saveState(){
 function applyTheme(t){
   A.theme=t;
   document.body.dataset.theme=t==='dark'?'':t;
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',t==='light'?'#f5f5f7':'#0d0d10');
+  const bgMap={dark:'#0d0d10',light:'#f0f0f5',sepia:'#18140e',amoled:'#000',ocean:'#060e1a',forest:'#080f08',pink:'#120a10',nord:'#2e3440',mocha:'#1e1e2e',sunset:'#120810',midnight:'#05050f',slate:'#0f1117'};
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content',bgMap[t]||'#0d0d10');
   saveState();
+  // Re-render to update active theme button
+  if(A.nav==='settings') render();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -828,14 +838,14 @@ function pgTasks(){
   });
   strip+=`</div></div>`;
 
-  // Stats for selected date
+  // Stats — overdue always global, active for selected date
   const selTasks=A.tasks.filter(t=>t.s!=='done'&&(t.dl===A.selDate||(t.dd===A.selDate&&!t.dl)));
   const selDone=A.tasks.filter(t=>t.s==='done'&&(t.doneAt===A.selDate||t.dd===A.selDate)).length;
-  const selOver=selTasks.filter(t=>isOver(t)).length;
+  const allOverdue=A.tasks.filter(t=>isOver(t)).length; // всегда актуально
   const qsbar=`<div class="qsbar">
-    <div class="qs"><div class="qs-n" style="color:var(--yel)">${selTasks.length}</div><div class="qs-l">Активных</div></div>
-    <div class="qs"><div class="qs-n" style="color:var(--red)">${selOver}</div><div class="qs-l">Просрочено</div></div>
-    <div class="qs" onclick="setNav('report')"><div class="qs-n" style="color:var(--grn)">${selDone}</div><div class="qs-l">Готово →</div></div>
+    <div class="qs"><div class="qs-n" style="color:var(--yel)">${selTasks.length}</div><div class="qs-l">На день</div></div>
+    <div class="qs" onclick="setNav('report')" style="cursor:pointer"><div class="qs-n" style="color:var(--red)">${allOverdue}</div><div class="qs-l">⚠️ Просроч.</div></div>
+    <div class="qs" onclick="setNav('report')" style="cursor:pointer"><div class="qs-n" style="color:var(--grn)">${selDone}</div><div class="qs-l">Готово →</div></div>
   </div>`;
 
   // Cat filter
@@ -1016,8 +1026,9 @@ function pgWorkouts(){
   const mnCount=A.workouts.filter(w=>w.date>=mnStart.toISOString().slice(0,10)).length;
 
   let html=`<div class="ph">
-    <div class="ph-row" style="margin-bottom:4px">
+    <div class="ph-row" style="margin-bottom:4px;gap:8px">
       <div class="ph-h1">💪 Спорт</div>
+      <button onclick="openManageWorkoutTypes()" style="height:34px;padding:0 12px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:12px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit;flex-shrink:0">⚙️ Типы</button>
     </div>
   </div><div class="pg">`;
 
@@ -1445,13 +1456,27 @@ function pgSettings(){
   </div><div class="pg">`;
 
   // Theme
-  html+=`<div style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">Тема</div>
-  <div class="rc" style="padding:8px">
-    <div style="display:flex;gap:8px">`;
-  [{id:'dark',l:'Тёмная',ic:'🌑'},{id:'light',l:'Светлая',ic:'☀️'},{id:'sepia',l:'Сепия',ic:'🌅'}].forEach(th=>{
-    html+=`<div onclick="applyTheme('${th.id}')" style="flex:1;padding:10px 6px;border-radius:10px;background:var(--bg3);text-align:center;cursor:pointer;border:2px solid ${A.theme===th.id?'var(--blu)':'transparent'}">
-      <div style="font-size:20px">${th.ic}</div>
-      <div style="font-size:11px;font-weight:700;margin-top:4px">${th.l}</div>
+  const THEMES_LIST=[
+    {id:'dark',   l:'Тёмная',   ic:'🌑', bg:'#0d0d10'},
+    {id:'light',  l:'Светлая',  ic:'☀️', bg:'#f0f0f5'},
+    {id:'sepia',  l:'Сепия',    ic:'🌅', bg:'#18140e'},
+    {id:'amoled', l:'AMOLED',   ic:'⬛', bg:'#000000'},
+    {id:'ocean',  l:'Океан',    ic:'🌊', bg:'#060e1a'},
+    {id:'forest', l:'Лес',      ic:'🌿', bg:'#080f08'},
+    {id:'pink',   l:'Розовая',  ic:'🌸', bg:'#120a10'},
+    {id:'nord',   l:'Nord',     ic:'❄️', bg:'#2e3440'},
+    {id:'mocha',  l:'Mocha',    ic:'🟣', bg:'#1e1e2e'},
+    {id:'sunset', l:'Закат',    ic:'🔥', bg:'#120810'},
+    {id:'midnight',l:'Ночь',   ic:'💜', bg:'#05050f'},
+  ];
+  html+=`<div style="font-size:10px;font-weight:800;color:var(--t3);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">Тема оформления</div>
+  <div class="rc" style="padding:10px">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px">`;
+  THEMES_LIST.forEach(th=>{
+    const isOn=A.theme===th.id;
+    html+=`<div onclick="applyTheme('${th.id}')" style="height:58px;border-radius:12px;background:${th.bg};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:2.5px solid ${isOn?'var(--acc)':'transparent'};transition:border-color .18s;overflow:hidden">
+      <span style="font-size:20px">${th.ic}</span>
+      <span style="font-size:9px;font-weight:700;color:${th.id==='light'?'#555':'rgba(255,255,255,.7)'}">${th.l}</span>
     </div>`;
   });
   html+=`</div></div>`;
@@ -1506,8 +1531,9 @@ function pgSettings(){
   html+=`<button onclick="openAddCat()" style="width:100%;height:38px;border-radius:9px;background:transparent;color:var(--t2);font-size:12px;font-weight:700;margin-top:8px;border:1.5px dashed var(--bd2);cursor:pointer;font-family:inherit">＋ Добавить категорию</button>
   </div>`;
 
-  // Guide
-  html+=`<div style="margin-top:8px">`;
+  // Guide + Notifications
+  html+=`<div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">`;
+  html+=`<button onclick="requestNotifPermission()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">🔔 Разрешить уведомления</button>`;
   html+=`<button onclick="openGuide()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">📖 Инструкция по использованию</button>`;
   html+=`</div>`;
 
@@ -1633,7 +1659,43 @@ function clearDone(){
 // ═══════════════════════════════════════════════════════════
 // WORKOUT SHEET
 // ═══════════════════════════════════════════════════════════
+function openManageWorkoutTypes(){
+  if(!A.workoutTypes||!A.workoutTypes.length) A.workoutTypes=[...WORKOUT_TYPES];
+  const list=A.workoutTypes.map(tp=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)">
+      <span style="font-size:20px">${tp.ic}</span>
+      <span style="font-size:14px;font-weight:600;flex:1">${tp.l}</span>
+      ${tp.custom?`<button onclick="delWorkoutType('${tp.id}')" style="color:var(--red);background:var(--rbg);border:none;border-radius:7px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">×</button>`:'<span style="font-size:10px;color:var(--t3)">стандарт</span>'}
+    </div>`).join('');
+
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Типы тренировок</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss">
+      <div style="margin-bottom:14px">${list}</div>
+      <div class="sl">Добавить тип</div>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="si" id="wtIc" placeholder="🏋️" style="width:60px;text-align:center;font-size:20px">
+        <input class="si" id="wtName" placeholder="Название">
+      </div>
+      <button class="btn-s" onclick="addWorkoutType()">Добавить</button>
+    </div>`);
+}
+function addWorkoutType(){
+  const name=($('wtName')?.value||'').trim();
+  const ic=($('wtIc')?.value||'🏋️').trim();
+  if(!name){toast('Введи название');return;}
+  if(!A.workoutTypes) A.workoutTypes=[...WORKOUT_TYPES];
+  A.workoutTypes.push({id:'wt_'+Date.now(),l:name,ic,custom:true});
+  saveState();closeSheet();render();toast('Тип добавлен');
+}
+function delWorkoutType(id){
+  if(!confirm('Удалить тип?'))return;
+  A.workoutTypes=A.workoutTypes.filter(t=>t.id!==id);
+  saveState();closeSheet();render();
+}
+
 function openNewWorkout(){
+  if(!A.workoutTypes||!A.workoutTypes.length) A.workoutTypes=[...WORKOUT_TYPES];
+  const types=A.workoutTypes;
   const types=[{id:'chest',l:'💪 Грудь / Трицепс'},{id:'back',l:'🔙 Спина / Бицепс'},{id:'legs',l:'🦵 Ноги'},{id:'arms',l:'💪 Руки'}];
   let html=`<div class="sht-hdr"><span class="sht-ttl">Тип тренировки</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
   <div class="ss"><div class="pr2" style="flex-direction:column">`;
@@ -1828,26 +1890,23 @@ function pgNotes(){
   const ideas=A.tasks.filter(t=>t.cat==='ideas');
   const active=ideas.filter(t=>t.s!=='done');
   const done=ideas.filter(t=>t.s==='done');
-  return `<div class="ph">
+  let html=`<div class="ph">
     <div class="ph-row" style="margin-bottom:4px">
       <div class="ph-h1">💡 Размышления</div>
     </div>
-  </div>
-  <div class="pg">
-    ${active.length?glHdr('Идеи и варианты',active.length,'var(--grn)'):''}
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">
-      ${active.map(t=>{
-        const bgMap={red:'var(--rbg)',yellow:'var(--ybg)',blue:'rgba(105,240,174,.1)',green:'var(--gbg)'};
-        const brdMap={red:'rgba(255,59,80,.25)',yellow:'rgba(255,170,0,.2)',blue:'rgba(105,240,174,.22)',green:'rgba(38,212,103,.2)'};
-        return`<div onclick="openEdit(${t.id})" style="background:${bgMap[t.p]||bgMap.blue};border:1px solid ${brdMap[t.p]||brdMap.blue};border-radius:11px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;line-height:1.4">
-          ${t.title}
-          ${t.note?`<div style="font-size:10px;color:var(--t3);margin-top:3px">${t.note.slice(0,50)}</div>`:''}
-        </div>`;
-      }).join('')}
-      ${!active.length?`<div class="empty" style="width:100%;padding:30px 0"><div class="empty-ic">💭</div><div class="empty-t">Пока пусто</div><div class="empty-s">Нажми ＋ чтобы добавить идею</div></div>`:''}
-    </div>
-    ${done.length?`${glHdr('Реализовано',done.length,'var(--grn)')}${done.map(t=>`<div onclick="openEdit(${t.id})" style="background:var(--bg2);border:1px solid var(--bd);border-radius:10px;padding:8px 13px;margin-bottom:6px;cursor:pointer"><span style="font-size:12px;text-decoration:line-through;color:var(--t3)">${t.title}</span></div>`).join('')}`:''}
-  </div>`;
+  </div><div class="pg">`;
+  if(active.length){
+    html+=glHdr('Идеи и варианты',active.length,'var(--grn)');
+    active.forEach(t=>{html+=card(t);});
+  } else {
+    html+=`<div class="empty"><div class="empty-ic">💭</div><div class="empty-t">Пока пусто</div><div class="empty-s">Нажми ＋ чтобы добавить идею</div></div>`;
+  }
+  if(done.length){
+    html+=glHdr('Реализовано',done.length,'var(--grn)');
+    done.forEach(t=>{html+=card(t);});
+  }
+  html+=`</div>`;
+  return html;
 }
 function openNewIdea(){
   A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
@@ -2049,19 +2108,58 @@ function closeSheet(){
   setTimeout(()=>{$('sht').innerHTML='';},280);
 }
 function schedRem(id,title,ts){
-  if(!('Notification' in window))return;
-  const delay=ts-Date.now();if(delay<=0)return;
-  const fire=()=>new Notification('Планировщик',{body:title});
-  if(Notification.permission==='granted')setTimeout(fire,delay);
-  else if(Notification.permission!=='denied')Notification.requestPermission().then(p=>{if(p==='granted')setTimeout(fire,delay);});
+  if(!('Notification' in window)) return;
+  const delay=ts-Date.now();
+  if(delay<=0) return;
+
+  const doFire=()=>{
+    try{
+      new Notification('📋 Планировщик',{
+        body:title,
+        icon:'https://planner-go.netlify.app/icon.png',
+        badge:'https://planner-go.netlify.app/icon.png',
+        tag:'reminder-'+id,
+        renotify:true,
+        requireInteraction:false,
+      });
+    } catch(e){}
+  };
+
+  if(Notification.permission==='granted'){
+    setTimeout(doFire, delay);
+  } else if(Notification.permission!=='denied'){
+    Notification.requestPermission().then(p=>{
+      if(p==='granted') setTimeout(doFire, delay);
+    });
+  }
 }
+
+function requestNotifPermission(){
+  if(!('Notification' in window)){
+    toast('Уведомления не поддерживаются');return;
+  }
+  if(Notification.permission==='granted'){
+    toast('Уведомления уже включены ✓');return;
+  }
+  Notification.requestPermission().then(p=>{
+    if(p==='granted') toast('Уведомления включены ✓');
+    else toast('Уведомления заблокированы. Разреши в настройках браузера');
+  });
+}
+
 function restoreRems(){
   const now=Date.now();
   Object.entries(A.reminders).forEach(([id,ts])=>{
     const t=A.tasks.find(t=>String(t.id)===String(id));
-    if(t&&ts>now)schedRem(id,t.title,ts);
+    if(t&&ts>now) schedRem(id,t.title,ts);
   });
 }
+
+// ⚠️ NOTE: Background notifications (при выгруженном приложении)
+// работают только через Push API + backend сервер.
+// Это невозможно реализовать в локальном HTML-файле без сервера.
+// Текущие уведомления работают пока Safari открыт в фоне.
+// Для push-уведомлений на заблокированном экране нужен сервер (Netlify Functions).
 function setNav(n){A.nav=n;render();}
 function toast(msg){
   const el=$('toast');el.textContent=msg;el.classList.add('on');
@@ -2078,9 +2176,52 @@ function bind(){
 }
 
 // ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 loadState();restoreRems();render();
+
+// Auto-update date display every minute
+setInterval(()=>{
+  const newToday=new Date().toISOString().slice(0,10);
+  // If day changed, reset selDate to today
+  if(A.selDate<newToday){
+    A.selDate=newToday;
+    A.weekOffset=0;
+  }
+  // Re-render tasks page to keep date/overdue fresh
+  if(A.nav==='tasks') render();
+}, 60000);
+
+// Weather on load
+if(navigator.geolocation) fetchWeather().catch(()=>{});
+
+// Request notification permission proactively
+if('Notification' in window && Notification.permission==='default'){
+  // Don't ask immediately - ask when user adds first reminder
+}
+
+// PWA Service Worker
+if('serviceWorker' in navigator){
+  const sw=`
+self.addEventListener('install',e=>self.skipWaiting());
+self.addEventListener('activate',e=>e.waitUntil(clients.claim()));
+self.addEventListener('fetch',e=>{
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.open('pln-v3').then(async c=>{
+    try{const r=await fetch(e.request);c.put(e.request,r.clone());return r;}
+    catch{return await c.match(e.request)||new Response('Offline',{status:503});}
+  }));
+});
+// Handle push notifications (for future server push support)
+self.addEventListener('push',e=>{
+  const d=e.data?.json()||{title:'Планировщик',body:'Напоминание'};
+  e.waitUntil(self.registration.showNotification(d.title,{body:d.body,icon:'/icon.png',badge:'/icon.png'}));
+});
+`;
+  const blob=new Blob([sw],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
 if(navigator.geolocation) fetchWeather().catch(()=>{});
 
 // ── PWA Service Worker (inline) ──────────────────────────
