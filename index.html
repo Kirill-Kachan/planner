@@ -1488,7 +1488,7 @@ function selAtP(p){
 function saveAutoTask(){
   const t=($('atT')?.value||'').trim();if(!t){toast('Введи описание');return;}
   if(!A.autoTasks) A.autoTasks=[];
-  A.autoTasks.push({id:'a'+Date.now(),title:t,p:$('atP')?.value||'yellow',s:'todo',note:'',type:$('atType')?.value||'task'});
+  A.autoTasks.unshift({id:'a'+Date.now(),title:t,p:$('atP')?.value||'yellow',s:'todo',note:'',type:$('atType')?.value||'task'});
   saveState();closeSheet();render();toast('Задача добавлена');
 }
 function openServiceEdit(id){
@@ -2302,7 +2302,7 @@ function saveMemo(){
   const text=(inp?.value||'').trim();
   if(!text){toast('Введи текст');return;}
   if(!A.memos) A.memos=[];
-  A.memos.push({id:Date.now(),text,date:today()});
+  A.memos.unshift({id:Date.now(),text,date:today()});
   saveState();render();toast('Заметка сохранена');
 }
 
