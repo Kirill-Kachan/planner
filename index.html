@@ -46,23 +46,23 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .nav{
   position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
   width:calc(100% - 44px);max-width:390px;
-  background:rgba(8,8,14,.18);
-  backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
-  -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
-  border:1px solid rgba(255,255,255,.09);
+  background:rgba(8,8,14,.07);
+  backdrop-filter:blur(48px) saturate(280%) brightness(1.2);
+  -webkit-backdrop-filter:blur(48px) saturate(280%) brightness(1.2);
+  border:1px solid rgba(255,255,255,.07);
   box-shadow:0 10px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
   border-radius:30px;
   display:flex;align-items:center;justify-content:center;gap:0;
   height:64px;padding:0 8px;
   z-index:100;
 }
-[data-theme="light"] .nav{background:rgba(255,255,255,.18);border-color:rgba(0,0,0,.05);box-shadow:0 8px 40px rgba(0,0,0,.07),inset 0 1px 0 rgba(255,255,255,.7);}
+[data-theme="light"] .nav{background:rgba(255,255,255,.12);border-color:rgba(0,0,0,.04);box-shadow:0 8px 40px rgba(0,0,0,.05),inset 0 1px 0 rgba(255,255,255,.6);}
 .nvi{
   flex:1;height:50px;border-radius:16px;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:2px;cursor:pointer;color:rgba(255,255,255,.35);
   font-size:9px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;
-  transition:color .24s cubic-bezier(.4,0,.2,1),background .24s cubic-bezier(.4,0,.2,1),border-color .24s cubic-bezier(.4,0,.2,1),transform .14s ease;
+  transition:color .32s cubic-bezier(.4,0,.2,1),background .32s cubic-bezier(.4,0,.2,1),border-color .32s cubic-bezier(.4,0,.2,1),transform .18s cubic-bezier(.4,0,.2,1);
   background:transparent;border:1px solid transparent;
 }
 [data-theme="light"] .nvi{color:rgba(0,0,0,.32);}
@@ -77,7 +77,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   cursor:pointer;color:rgba(255,255,255,.35);
   font-size:28px;font-weight:200;line-height:1;
   background:transparent;border:1px solid transparent;
-  transition:color .24s cubic-bezier(.4,0,.2,1),background .24s,border-color .24s,transform .14s ease;
+  transition:color .32s cubic-bezier(.4,0,.2,1),background .32s cubic-bezier(.4,0,.2,1),border-color .32s cubic-bezier(.4,0,.2,1),transform .18s cubic-bezier(.4,0,.2,1);
   padding-bottom:2px;
 }
 [data-theme="light"] .nav-more-btn{color:rgba(0,0,0,.32);}
@@ -87,8 +87,10 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 /* ── PAGE HEADER ────────────────────────────── */
 .ph{padding:52px 16px 0}
 /* Page transition */
-@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.pg,.ph,.ws-wrap,.qsbar,.cf-wrap{animation:pgIn .2s cubic-bezier(.4,0,.2,1)}
+@keyframes pgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.pg,.ph,.ws-wrap,.qsbar,.cf-wrap{animation:pgIn .28s cubic-bezier(.4,0,.2,1)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.nav,.more-menu{animation:fadeIn .3s ease}
 @media(min-width:600px){.ph{padding:24px 24px 0}}
 .ph-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 .ph-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
@@ -164,16 +166,16 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   position:fixed;bottom:calc(var(--nav-h) + 14px);left:50%;transform:translateX(-50%);
   width:calc(100% - 44px);max-width:390px;
   border-radius:26px;padding:12px 10px;z-index:150;
-  background:rgba(8,8,14,.18);
-  backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
-  -webkit-backdrop-filter:blur(40px) saturate(240%) brightness(1.15);
-  border:1px solid rgba(255,255,255,.09);
+  background:rgba(8,8,14,.07);
+  backdrop-filter:blur(48px) saturate(280%) brightness(1.2);
+  -webkit-backdrop-filter:blur(48px) saturate(280%) brightness(1.2);
+  border:1px solid rgba(255,255,255,.07);
   box-shadow:0 10px 50px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.05);
   display:none;
   animation:slideUp .2s cubic-bezier(.4,0,.2,1);
 }
 @keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-[data-theme="light"] .more-menu{background:rgba(255,255,255,.18);border-color:rgba(0,0,0,.05);}
+[data-theme="light"] .more-menu{background:rgba(255,255,255,.12);border-color:rgba(0,0,0,.04);}
 .more-menu.on{display:block}
 .more-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .more-btn{
@@ -504,12 +506,12 @@ const DEFAULT_CATS=[
   {id:'finance',  l:'Финансы',       c:'#ffd54f',bg:'rgba(255,213,79,.13)', parent:'work'},
 ];
 const WORKOUT_TYPES=[
-  {id:'chest', l:'Грудь / Трицепс', ic:'💪'},
-  {id:'back',  l:'Спина / Бицепс',  ic:'🔙'},
-  {id:'legs',  l:'Ноги',            ic:'🦵'},
-  {id:'arms',  l:'Руки',            ic:'👊'},
-  {id:'cardio',l:'Кардио',          ic:'🏃'},
-  {id:'full',  l:'Фулл-боди',       ic:'🏋️'},
+  {id:'chest', l:'Грудь / Трицепс', svgId:'chest'},
+  {id:'back',  l:'Спина / Бицепс',  svgId:'back'},
+  {id:'legs',  l:'Ноги',            svgId:'legs'},
+  {id:'arms',  l:'Руки',            svgId:'arms'},
+  {id:'cardio',l:'Кардио',          svgId:'cardio'},
+  {id:'full',  l:'Фулл-боди',       svgId:'full'},
 ];
 const PRIOS=[
   {id:'red',   c:'#ff3b50',bg:'rgba(255,59,80,.15)',  l:'Высокий'},
@@ -786,43 +788,61 @@ function render(){
   bind();
 }
 
+// ─── GLOBAL SVG ICON LIBRARY ───────────────────────────────
+const SVG={
+  s:1.8, // stroke-width
+  i(id){return this._icons[id]||this._icons.task},
+  _icons:{
+    task:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg>`,
+    workout:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11"/><path d="M3 9h3.5M17.5 9H21M3 15h3.5M17.5 15H21"/><path d="M6.5 12h11"/></svg>`,
+    idea:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 21h6M12 3a7 7 0 0 1 4 12.72V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-1.28A7 7 0 0 1 12 3z"/></svg>`,
+    auto:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 17H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1l2-4h10l2 4h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`,
+    report:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
+    settings:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+    guide:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+    arrow:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`,
+    // Workout type icons
+    chest:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 6.5v11M17.5 6.5v11"/><path d="M3 9h3.5M17.5 9H21M3 15h3.5M17.5 15H21"/><path d="M6.5 12h11"/></svg>`,
+    back:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12h18M3 12l4-4M3 12l4 4"/><path d="M9 6l6-3 6 3-6 3-6-3z" opacity=".4"/></svg>`,
+    legs:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 3v9l-3 9M15 3v9l3 9M9 12h6"/></svg>`,
+    arms:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 17c0-4 2-7 5-9l3-2 3 2c3 2 5 5 5 9"/><path d="M9 8v2m6-2v2"/></svg>`,
+    cardio:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 7c0-2.2-1.8-4-4-4s-4 1.8-4 4c0-2.2-1.8-4-4-4S2 4.8 2 7c0 5.5 10 13 10 13s10-7.5 10-13z"/><polyline points="1 14 5 14 8 8 11 17 14 11 16 14 23 14"/></svg>`,
+    full:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v6l3 3M9 12l-3 3M15 12l3 3M12 22v-7"/></svg>`,
+    // Extra sport types
+    swim:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="2.5"/><path d="M7 13c1.5-2 4-3 5-3s3.5 1 5 3"/><path d="M3 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg>`,
+    bike:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="17" r="4"/><circle cx="18" cy="17" r="4"/><path d="M6 17l5-9h3l2 4h2"/><path d="M9 8h6"/></svg>`,
+    yoga:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="4" r="1.5"/><path d="M12 6v5l-4 3M12 11l4 3M8.5 17h7"/><path d="M7 21l2-4h6l2 4"/></svg>`,
+    stretch:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="4" r="1.5"/><path d="M12 6l-4 5 4 3 4-3-4-5z"/><path d="M8 11l-3 7M16 11l3 7M9 21h6"/></svg>`,
+    fight:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 9.5h4v2H6v-2zM14 8h4v3h-4V8z"/><path d="M10 10l4-1.5M8 11.5l-2 5h12l-2-5"/><circle cx="12" cy="4" r="1.5"/></svg>`,
+    run:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="14" cy="4" r="1.5"/><path d="M9 7.5l5.5.5L17 12l-5-1-2 5"/><path d="M5 14l3-2M15 19l2-2"/></svg>`,
+  }
+};
+function svgIcon(id,size){size=size||22;return'<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+((SVG._icons[id]||SVG._icons.task).match(/<svg[^>]*>([\s\S]*)<\/svg>/)||['',''])[1]+'</svg>';}
+
 function renderNav(){
   const mainItems=[
-    {id:'tasks',    ic:'📋', l:'Задачи'},
-    {id:'workouts', ic:'💪', l:'Спорт'},
+    {id:'tasks',    ic:'task',    l:'Задачи'},
+    {id:'workouts', ic:'workout', l:'Спорт'},
   ];
   const moreActive=['auto','report','settings','guide','notes'].includes(A.nav);
   let h='';
-  const NAV_SVG={
-    tasks:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><circle cx="17" cy="17" r="4" fill="currentColor" stroke="none" opacity=".3"/><path d="M15 17l1.5 1.5L19 15" stroke="currentColor" stroke-width="1.6"/></svg>`,
-    workouts:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 4v16M18 4v16M3 9h3M18 9h3M3 15h3M18 15h3M6 9h12M6 15h12"/></svg>`,
-  };
   mainItems.forEach(i=>{
     h+=`<div class="nvi${A.nav===i.id?' on':''}" onclick="setNav('${i.id}')">
-      <span class="nvi-ic">${NAV_SVG[i.id]||i.ic}</span><span class="nvi-lbl">${i.l}</span></div>`;
+      <span class="nvi-ic">${svgIcon(i.ic,24)}</span><span class="nvi-lbl">${i.l}</span></div>`;
   });
-  const MORE_SVG=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>`;
-  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()">${MORE_SVG}</button>`;
+  h+=`<button class="nav-more-btn${(moreActive||A._moreOpen)?' on':''}" onclick="toggleMore()">${svgIcon('arrow',20)}</button>`;
   $('nav').innerHTML=h;
 }
 
 function renderMoreMenu(){
-  const MORE_SVGS={
-    notes:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20z" opacity=".3" fill="currentColor" stroke="none"/><path d="M12 8v4M12 16h.01" stroke-width="2.2"/></svg>`,
-    auto:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 17H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1l2-4h10l2 4h1a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`,
-    report:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`,
-    settings:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
-    guide:`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
-  };
-  const items=[
-    {id:'notes',   l:'Идеи'},
-    {id:'auto',    l:'Авто'},
-    {id:'report',  l:'Стат.'},
-    {id:'settings',l:'Настр.'},
-    {id:'guide',   l:'Гайд'},
-  ];
+  const moreMap={notes:'idea',auto:'auto',report:'report',settings:'settings',guide:'guide'};
+  const items=[{id:'notes',l:'Идеи'},{id:'auto',l:'Авто'},{id:'report',l:'Стат.'},{id:'settings',l:'Настр.'},{id:'guide',l:'Гайд'}];
   const el=$('moreMenu');
-  el.innerHTML='<div class="more-grid">'+items.map(i=>'<div class="more-btn'+(A.nav===i.id?' on':'')+'" onclick="setNavMore(\''+i.id+'\')"><span class="more-ic">'+MORE_SVGS[i.id]+'</span><span class="more-lbl">'+i.l+'</span></div>').join('')+'</div>';
+  el.innerHTML='<div class="more-grid">'+items.map(i=>
+    '<div class="more-btn'+(A.nav===i.id?' on':'')+'" onclick="setNavMore(\''+i.id+'\')">'+
+    '<span class="more-ic">'+svgIcon(moreMap[i.id],22)+'</span>'+
+    '<span class="more-lbl">'+i.l+'</span></div>'
+  ).join('')+'</div>';
   el.classList.toggle('on',!!A._moreOpen);
 }
 
@@ -996,6 +1016,12 @@ function pgWorkouts(){
   const earlier=sorted.filter(w=>w.date<wkMon);
 
   const WTYPE_MAP={chest:'Грудь / Трицепс',back:'Спина / Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
+  function getWtInfo(type){
+    const custom=(A.workoutTypes||[]).find(t=>t.id===type);
+    const svgId=custom?.svgId||type;
+    const label=custom?.l||WTYPE_MAP[type]||type;
+    return{svgId,label};
+  }
 
   function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
@@ -1005,7 +1031,7 @@ function pgWorkouts(){
     const dyn=prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:''):'';
     const d=new Date(w.date+'T00:00:00');
     const dateStr=d.getDate()+'.'+pad(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2);
-    const typeName=WTYPE_MAP[w.type]||w.type;
+    const{svgId,label:typeName}=getWtInfo(w.type);
 
     let body='';
     if(isOpen){
@@ -1034,6 +1060,7 @@ function pgWorkouts(){
     return `<div class="wk-card">
       <div class="wk-hdr" onclick="toggleWkCard('${w.id}')">
         <span class="wk-date">${dateStr}</span>
+        <span style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:7px;flex-shrink:0">${svgIcon(svgId,15)}</span>
         <span class="wk-type">${typeName}</span>
         <span class="wk-cnt">${w.exs.length} упр.</span>
         ${dyn}
@@ -1685,28 +1712,44 @@ function openManageWorkoutTypes(){
   if(!A.workoutTypes||!A.workoutTypes.length) A.workoutTypes=[...WORKOUT_TYPES];
   const list=A.workoutTypes.map(tp=>`
     <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)">
-      <span style="font-size:20px">${tp.ic}</span>
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:9px;flex-shrink:0">${svgIcon(tp.svgId||tp.id,18)}</span>
       <span style="font-size:14px;font-weight:600;flex:1">${tp.l}</span>
-      ${tp.custom?`<button onclick="delWorkoutType('${tp.id}')" style="color:var(--red);background:var(--rbg);border:none;border-radius:7px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">×</button>`:'<span style="font-size:10px;color:var(--t3)">стандарт</span>'}
+      ${tp.custom?`<button onclick="delWorkoutType('${tp.id}')" style="color:var(--red);background:var(--rbg);border:none;border-radius:7px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit">×</button>`:'<span style="font-size:10px;color:var(--t3)">базовый</span>'}
     </div>`).join('');
+
+  // SVG icon picker
+  const svgOptions=['chest','back','legs','arms','cardio','full','swim','bike','yoga','stretch','fight','run'];
+  const svgPicker=svgOptions.map(id=>
+    `<div onclick="selWtSvg('${id}')" id="wsvg_${id}" style="width:40px;height:40px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid transparent;transition:all .15s">${svgIcon(id,20)}</div>`
+  ).join('');
 
   openSheet(`<div class="sht-hdr"><span class="sht-ttl">Типы тренировок</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
     <div class="ss">
       <div style="margin-bottom:14px">${list}</div>
       <div class="sl">Добавить тип</div>
-      <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input class="si" id="wtIc" placeholder="🏋️" style="width:60px;text-align:center;font-size:20px">
-        <input class="si" id="wtName" placeholder="Название">
-      </div>
+      <input class="si" id="wtName" placeholder="Название" style="margin-bottom:8px">
+      <div class="sl">Иконка</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px" id="wtSvgGrid">${svgPicker}</div>
+      <input type="hidden" id="wtSvgId" value="full">
       <button class="btn-s" onclick="addWorkoutType()">Добавить</button>
     </div>`);
+  // highlight default
+  setTimeout(()=>{
+    const el=document.getElementById('wsvg_full');
+    if(el)el.style.borderColor='var(--acc)';
+  },50);
+}
+function selWtSvg(id){
+  document.querySelectorAll('[id^="wsvg_"]').forEach(el=>el.style.borderColor='transparent');
+  const el=$('wsvg_'+id);if(el)el.style.borderColor='var(--acc)';
+  const inp=$('wtSvgId');if(inp)inp.value=id;
 }
 function addWorkoutType(){
   const name=($('wtName')?.value||'').trim();
-  const ic=($('wtIc')?.value||'🏋️').trim();
   if(!name){toast('Введи название');return;}
+  const svgId=$('wtSvgId')?.value||'full';
   if(!A.workoutTypes) A.workoutTypes=[...WORKOUT_TYPES];
-  A.workoutTypes.push({id:'wt_'+Date.now(),l:name,ic,custom:true});
+  A.workoutTypes.push({id:'wt_'+Date.now(),l:name,svgId,custom:true});
   saveState();closeSheet();render();toast('Тип добавлен');
 }
 function delWorkoutType(id){
@@ -1719,11 +1762,14 @@ function openNewWorkout(){
   if(!A.workoutTypes||!A.workoutTypes.length) A.workoutTypes=[...WORKOUT_TYPES];
   const types=A.workoutTypes;
   let html=`<div class="sht-hdr"><span class="sht-ttl">Тип тренировки</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
-  <div class="ss"><div class="pr2" style="flex-direction:column">`;
+  <div class="ss"><div style="display:flex;flex-direction:column;gap:6px">`;
   types.forEach(tp=>{
     const last=A.workouts.filter(w=>w.type===tp.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
-    html+=`<div class="pch" style="width:100%;display:flex;justify-content:space-between;align-items:center" onclick="openWorkoutForm('${tp.id}')">
-      <span>${tp.l}</span>${last?`<span style="font-size:10px;color:var(--t3)">пред: ${fmtD(last.date)}</span>`:''}
+    const sid=tp.svgId||tp.id;
+    html+=`<div class="pch" style="display:flex;align-items:center;gap:12px;padding:10px 14px" onclick="openWorkoutForm('${tp.id}')">
+      <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border-radius:10px;flex-shrink:0">${svgIcon(sid,20)}</span>
+      <span style="font-size:14px;font-weight:600;flex:1">${tp.l}</span>
+      ${last?`<span style="font-size:10px;color:var(--t3)">пред: ${fmtD(last.date)}</span>`:''}
     </div>`;
   });
   html+=`</div></div>`;
