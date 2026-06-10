@@ -110,6 +110,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 /* ══ MORE MENU — точно такой же как nav ══════════════ */
 .more-menu{
   position:fixed;
+  bottom:96px;
   left:50%;transform:translateX(-50%);
   width:calc(100% - 32px);max-width:420px;
   border-radius:28px;
@@ -163,7 +164,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 @keyframes pgIn{from{opacity:0;transform:translateY(22px) scale(.982)}to{opacity:1;transform:translateY(0) scale(1)}}
 .pg,.ph,.ws-wrap,.qsbar,.cf-wrap{animation:pgIn .65s cubic-bezier(.4,0,.2,1)}
 @keyframes fadeIn{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-.nav,.more-menu{animation:fadeIn .65s cubic-bezier(.4,0,.2,1)}
+.nav{animation:fadeIn .65s cubic-bezier(.4,0,.2,1)}
 @media(min-width:600px){.ph{padding:24px 24px 0}}
 .ph-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
 .ph-label{font-size:11px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
@@ -233,39 +234,6 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .weather-ic{font-size:32px;line-height:1;animation:float 5s ease-in-out infinite,spin 8s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 2px 6px rgba(26,143,255,.3))}
 .weather-temp{font-size:22px;font-weight:900;line-height:1;color:var(--tx)}
 .weather-desc{font-size:10px;color:var(--t2);font-weight:700;margin-top:1px}
-
-/* ── MORE POPUP ──────────────────────────────── */
-.more-menu{
-  position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
-  width:calc(100% - 32px);max-width:400px;
-  border-radius:30px;padding:10px 8px;z-index:150;
-  background:rgba(10,10,18,.08);
-  backdrop-filter:blur(60px) saturate(260%) brightness(1.18);
-  -webkit-backdrop-filter:blur(60px) saturate(260%) brightness(1.18);
-  border:1px solid rgba(255,255,255,.06);
-  box-shadow:0 2px 30px rgba(0,0,0,.12);
-  display:none;
-  animation:slideUp .35s cubic-bezier(.4,0,.2,1);
-}
-@keyframes slideUp{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-[data-theme="light"] .more-menu{background:rgba(255,255,255,.10);border-color:rgba(0,0,0,.05);}
-.more-menu.on{display:block}
-.more-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
-.more-btn{
-  height:50px;border-radius:14px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  cursor:pointer;
-  background:transparent;
-  border:1px solid transparent;
-  transition:all .55s cubic-bezier(.4,0,.2,1);
-  color:rgba(255,255,255,.55);
-}
-[data-theme="light"] .more-btn{color:rgba(0,0,0,.45);}
-.more-btn:active{transform:scale(.90)}
-.more-btn.on{background:rgba(26,143,255,.14);border-color:rgba(26,143,255,.22);color:var(--acc);}
-.more-ic{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-.more-ic svg{width:100%;height:100%}
-.more-lbl{font-size:8px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;text-align:center}
 
 /* ── THEMES ─────────────────────────────────── */
 [data-theme="light"]{--bg:#f0f0f5;--bg2:#fff;--bg3:#f5f5fa;--bg4:#e8e8f0;--bd:rgba(0,0,0,.07);--bd2:rgba(0,0,0,.12);--tx:#1a1a2e;--t2:#555570;--t3:#9090a8;}
