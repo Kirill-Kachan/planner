@@ -1949,7 +1949,7 @@ function saveTask(){
     if(i!==-1) A.tasks[i]=task;
   } else {
     task.id=Date.now();
-    A.tasks.push(task);
+    A.tasks.unshift(task); // в начало списка
   }
   if(rem){
     const ts=new Date(rem).getTime();
