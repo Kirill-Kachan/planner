@@ -268,7 +268,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .wk-ex:last-child{border-bottom:none}
 .wk-ex-name{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px}
 .wk-ex-prev{font-size:12px;color:var(--t2);font-weight:500}
-.wk-pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:140px}
+.wk-pills{display:flex;gap:5px;flex-wrap:nowrap;justify-content:flex-end;flex-shrink:0}
 .wpill{background:var(--bg3);border-radius:7px;padding:5px 10px;font-size:12px;font-weight:800;color:var(--t2)}
 .wpill.up{color:var(--grn);background:var(--gbg)}.wpill.dn{color:var(--red);background:var(--rbg)}
 .wk-edit-btn{width:100%;height:38px;border-radius:10px;background:var(--bg3);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit;margin-top:10px}
@@ -1143,7 +1143,7 @@ function groupExs(exs){
   const result=[];
   exs.forEach(ex=>{
     const last=result[result.length-1];
-    if(last&&last.n===ex.n){
+    if(last&&last.n===ex.n&&!ex.mixed&&!ex.mixedW&&!last.mixed&&!last.mixedW){
       if(!last.mixed){
         last.mixed=true;
         // Проверяем был ли вес разный уже
@@ -1185,7 +1185,7 @@ function fmtEx(ex){
 // Для строки "Пред"
 function fmtExPrev(ex){
   if(ex.mixedW&&ex.sets) return ex.sets.map(s=>s.r+'×'+s.w).join('/')+'кг';
-  if(ex.mixed&&Array.isArray(ex.r)) return ex.s+'×'+ex.r.join('/')+(ex.w>0?' '+ex.w+'кг':'');
+  if(ex.mixed&&Array.isArray(ex.r)) return ex.s+'×'+ex.r.join('/')+(ex.w>0?' · '+ex.w+'кг':'');
   return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
 }
 
@@ -1221,8 +1221,7 @@ function exVol(ex){
             ${pe?`<div class="wk-ex-prev">Пред: ${fmtExPrev(pe)}</div>`:''}
           </div>
           <div class="wk-pills">
-            <span class="wpill ${rCls}">${arr[rCls]||''}${fmtEx(ex)}</span>
-            ${!ex.mixedW&&ex.w>0?`<span class="wpill ${wCls}">${arr[wCls]||''}${ex.w}кг</span>`:''}
+            <span class="wpill ${rCls}">${arr[rCls]||''}${fmtEx(ex)}${!ex.mixedW&&ex.w>0?' · '+ex.w+'кг':''}</span>
           </div>
         </div>`;
       });
