@@ -1113,6 +1113,15 @@ function card(t){
   </div>`;
 }
 
+// Объём упражнения = сумма повторений (для динамики)
+function exVol(ex){
+  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r,0);
+  if(ex.mixed&&Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0);
+  return ex.s*ex.r;
+}
+// Полный объём тренировки
+function wVol(w){return w.exs.reduce((s,e)=>s+exVol(e),0);}
+
 // ═══════════════════════════════════════════════════════════
 // PAGE: WORKOUTS
 // ═══════════════════════════════════════════════════════════
@@ -1195,15 +1204,6 @@ function fmtExPrev(ex){
   if(ex.mixed&&Array.isArray(ex.r)) return ex.s+'×'+ex.r.join('/')+(ex.w>0?' · '+ex.w+'кг':'');
   return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
 }
-
-// Объём упражнения = сумма повторений (для динамики)
-function exVol(ex){
-  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r,0);
-  if(ex.mixed&&Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0);
-  return ex.s*ex.r;
-}
-// Полный объём тренировки
-function wVol(w){return w.exs.reduce((s,e)=>s+exVol(e),0);}
 
   function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
