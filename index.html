@@ -1113,13 +1113,18 @@ function card(t){
   </div>`;
 }
 
-// Объём упражнения = сумма повторений (для динамики)
+// Тоннаж упражнения = повторения × вес (если вес 0 — только повторения)
 function exVol(ex){
-  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r,0);
-  if(ex.mixed&&Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0);
-  return ex.s*ex.r;
+  if(ex.mixedW&&ex.sets){
+    return ex.sets.reduce((s,x)=>s+(x.w>0?x.r*x.w:x.r),0);
+  }
+  if(ex.mixed&&Array.isArray(ex.r)){
+    const rSum=ex.r.reduce((s,r)=>s+r,0);
+    return ex.w>0?rSum*ex.w:rSum;
+  }
+  return ex.w>0?ex.s*ex.r*ex.w:ex.s*ex.r;
 }
-// Полный объём тренировки
+// Полный тоннаж тренировки
 function wVol(w){return w.exs.reduce((s,e)=>s+exVol(e),0);}
 
 // ═══════════════════════════════════════════════════════════
