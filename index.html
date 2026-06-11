@@ -1606,35 +1606,69 @@ function pgReport(){
     <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
   </div></div>`;
 
-  // ── SVG Line chart
-  const last10=[...A.workouts].sort((a,b)=>a.date.localeCompare(b.date)).slice(-10);
-  if(last10.length>1){
-    const vols=last10.map(w=>({v:wVol(w),d:w.date,t:w.type}));
+  // ── Графики по типам тренировок (отдельно для каждого)
+  const byTypeChart={};
+  A.workouts.forEach(w=>{if(!byTypeChart[w.type])byTypeChart[w.type]=[];byTypeChart[w.type].push(w);});
+  const WTYPE_LABELS={chest:'Грудь / Трицепс',back:'Спина / Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
+  const WTYPE_COLORS={chest:'var(--blu)',back:'var(--pur)',legs:'var(--grn)',arms:'var(--yel)',cardio:'var(--red)',full:'var(--t2)'};
+
+  function makeChart(ws, color, gradId){
+    const sorted=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
+    if(sorted.length<2) return `<div style="text-align:center;padding:12px;color:var(--t3);font-size:12px">Нужно минимум 2 тренировки для графика</div>`;
+    const vols=sorted.map(w=>({v:wVol(w),d:w.date}));
     const maxV=Math.max(...vols.map(x=>x.v));
     const minV=Math.min(...vols.map(x=>x.v));
-    const W=320,H=90,padX=10,padY=14;
+    const W=320,H=80,padX=14,padY=10;
+    const range=Math.max(maxV-minV,1);
     const pts=vols.map((x,i)=>{
       const cx=padX+(i/(vols.length-1))*(W-padX*2);
-      const cy=padY+(1-(x.v-minV)/Math.max(maxV-minV,1))*(H-padY*2);
+      const cy=padY+(1-(x.v-minV)/range)*(H-padY*2-12);
       return[cx,cy,x];
     });
     const path='M'+pts.map(p=>`${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' L');
-    const area='M'+pts[0][0].toFixed(1)+','+(H-2)+' '+pts.map(p=>`L${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0].toFixed(1)},${H-2} Z`;
-    html+=`<div class="rc"><div class="rc-t">Объём тренировок (повторений × подходы)</div>
-      <svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block;margin:4px 0" xmlns="http://www.w3.org/2000/svg">
-        <defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--blu)" stop-opacity=".35"/><stop offset="100%" stop-color="var(--blu)" stop-opacity="0"/></linearGradient></defs>
-        <path d="${area}" fill="url(#lg)"/>
-        <path d="${path}" fill="none" stroke="var(--blu)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        ${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4" fill="var(--blu)"/>`).join('')}
-        ${pts.map(p=>{const d=new Date(p[2].d+'T00:00:00');return`<text x="${p[0].toFixed(1)}" y="${H-1}" text-anchor="middle" font-size="8" fill="var(--t3)" font-family="Inter">${d.getDate()}.${pad(d.getMonth()+1)}</text>`;}).join('')}
-      </svg>
-    </div>`;
+    const area=`M${pts[0][0].toFixed(1)},${H-14} `+pts.map(p=>`L${p[0].toFixed(1)},${p[1].toFixed(1)}`).join(' ')+` L${pts[pts.length-1][0].toFixed(1)},${H-14} Z`;
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;display:block" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="${color}" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+      </linearGradient></defs>
+      <path d="${area}" fill="url(#${gradId})"/>
+      <path d="${path}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${pts.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.5" fill="${color}"/>`).join('')}
+      ${pts.map((p,i)=>{
+        const d=new Date(p[2].d+'T00:00:00');
+        const lbl=d.getDate()+'.'+pad(d.getMonth()+1);
+        return `<text x="${p[0].toFixed(1)}" y="${H-2}" text-anchor="middle" font-size="8" fill="var(--t3)" font-family="Inter">${lbl}</text>`;
+      }).join('')}
+      ${pts.map(p=>`<text x="${p[0].toFixed(1)}" y="${(p[1]-5).toFixed(1)}" text-anchor="middle" font-size="8" fill="${color}" font-family="Inter" font-weight="700">${p[2].v}</text>`).join('')}
+    </svg>`;
   }
 
+  if(Object.keys(byTypeChart).length){
+    html+=glHdr('Прогресс по тренировкам',Object.keys(byTypeChart).length);
+    Object.entries(byTypeChart).forEach(([type,ws],idx)=>{
+      if(ws.length<2) return;
+      const lbl=WTYPE_LABELS[type]||type;
+      const color=WTYPE_COLORS[type]||'var(--blu)';
+      const sorted=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
+      const first=wVol(sorted[0]), last2=wVol(sorted[sorted.length-1]);
+      const totalDiff=last2-first;
+      const totalPct=first>0?Math.round(totalDiff/first*100):0;
+      const arrow=totalDiff>0?'↑':totalDiff<0?'↓':'→';
+      const arrowColor=totalDiff>0?'var(--grn)':totalDiff<0?'var(--red)':'var(--t3)';
+      html+=`<div class="rc" style="margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:700">${lbl}</span>
+          <span style="font-size:13px;font-weight:900;color:${arrowColor}">${arrow} ${Math.abs(totalPct)}% с ${new Date(sorted[0].date+'T00:00:00').getDate()}.${pad(new Date(sorted[0].date+'T00:00:00').getMonth()+1)}</span>
+        </div>
+        ${makeChart(ws, color, 'lg'+idx)}
+      </div>`;
+    });
+  }
+
+
   // ── Dynamics by type — collapsible with details
-  const byType={};
-  A.workouts.forEach(w=>{if(!byType[w.type])byType[w.type]=[];byType[w.type].push(w);});
-  const WTYPE_LABELS={chest:'Грудь/Трицепс',back:'Спина/Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
+  const byType=byTypeChart;
   if(Object.keys(byType).length){
     html+=glHdr('Динамика нагрузки',Object.keys(byType).length);
     html+=`<div class="rc">`;
