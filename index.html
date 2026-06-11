@@ -1235,10 +1235,21 @@ function fmtExPrev(ex){
   function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
     const prev=A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
-    const volC=wVol(w);
-    const volP=prev?wVol(prev):0;
-    const dyn=prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:''):'';
-    const d=new Date(w.date+'T00:00:00');
+    // Сравниваем только общие упражнения (которые есть в обеих тренировках)
+    let volC=0, volP=0;
+    if(prev){
+      const prevNames=new Set(prev.exs.map(e=>e.n));
+      const curNames=new Set(w.exs.map(e=>e.n));
+      const common=[...curNames].filter(n=>prevNames.has(n));
+      if(common.length>0){
+        volC=w.exs.filter(e=>common.includes(e.n)).reduce((s,e)=>s+exVol(e),0);
+        volP=prev.exs.filter(e=>common.includes(e.n)).reduce((s,e)=>s+exVol(e),0);
+      } else {
+        // Нет общих — сравниваем всё
+        volC=wVol(w); volP=wVol(prev);
+      }
+    }
+    const dyn=prev?(volC>volP?`<span class="wk-dyn" style="color:var(--grn)">↑</span>`:volC<volP?`<span class="wk-dyn" style="color:var(--red)">↓</span>`:''):'';    const d=new Date(w.date+'T00:00:00');
     const dateStr=d.getDate()+'.'+pad(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2);
     const{svgId,label:typeName}=getWtInfo(w.type);
 
