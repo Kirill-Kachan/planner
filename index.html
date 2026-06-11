@@ -1650,16 +1650,22 @@ function pgReport(){
       if(ws.length<2) return;
       const lbl=WTYPE_LABELS[type]||type;
       const color=WTYPE_COLORS[type]||'var(--blu)';
-      const sorted=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
-      const first=wVol(sorted[0]), last2=wVol(sorted[sorted.length-1]);
-      const totalDiff=last2-first;
-      const totalPct=first>0?Math.round(totalDiff/first*100):0;
+      const sorted2=[...ws].sort((a,b)=>a.date.localeCompare(b.date));
+      const lastW=sorted2[sorted2.length-1];
+      const prevW=sorted2[sorted2.length-2]||sorted2[0];
+      const lastVol=wVol(lastW), prevVol=wVol(prevW);
+      const totalDiff=lastVol-prevVol;
+      const totalPct=prevVol>0?Math.round(totalDiff/prevVol*100):0;
       const arrow=totalDiff>0?'↑':totalDiff<0?'↓':'→';
       const arrowColor=totalDiff>0?'var(--grn)':totalDiff<0?'var(--red)':'var(--t3)';
+      const lastDate=new Date(lastW.date+'T00:00:00');
+      const prevDate=new Date(prevW.date+'T00:00:00');
+      const lastLbl=lastDate.getDate()+'.'+pad(lastDate.getMonth()+1);
+      const prevLbl=prevDate.getDate()+'.'+pad(prevDate.getMonth()+1);
       html+=`<div class="rc" style="margin-bottom:10px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
           <span style="font-size:13px;font-weight:700">${lbl}</span>
-          <span style="font-size:13px;font-weight:900;color:${arrowColor}">${arrow} ${Math.abs(totalPct)}% с ${new Date(sorted[0].date+'T00:00:00').getDate()}.${pad(new Date(sorted[0].date+'T00:00:00').getMonth()+1)}</span>
+          <span style="font-size:13px;font-weight:900;color:${arrowColor}">${arrow} ${Math.abs(totalPct)}% · ${prevLbl}→${lastLbl}</span>
         </div>
         ${makeChart(ws, color, 'lg'+idx)}
       </div>`;
