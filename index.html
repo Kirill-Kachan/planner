@@ -2744,16 +2744,16 @@ function bind(){
 // ═══════════════════════════════════════════════════════════
 loadState();restoreRems();render();
 
-// Auto-update date display every minute
+// Auto-update date display every minute — работает на всех страницах
 setInterval(()=>{
   const newToday=new Date().toISOString().slice(0,10);
-  // If day changed, reset selDate to today
   if(A.selDate<newToday){
     A.selDate=newToday;
     A.weekOffset=0;
+    render(); // перерисовываем всегда при смене дня
+  } else if(A.nav==='tasks'){
+    render(); // на задачах обновляем каждую минуту (просроченные)
   }
-  // Re-render tasks page to keep date/overdue fresh
-  if(A.nav==='tasks') render();
 }, 60000);
 
 // Weather auto-refresh every 30 min
