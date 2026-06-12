@@ -1845,8 +1845,16 @@ function pgSettings(){
   html+=`<button onclick="openAddCat()" style="width:100%;height:38px;border-radius:9px;background:transparent;color:var(--t2);font-size:12px;font-weight:700;margin-top:8px;border:1.5px dashed var(--bd2);cursor:pointer;font-family:inherit">＋ Добавить категорию</button>
   </div>`;
 
+  // Резервная копия
+  html+=`<div style="margin-bottom:6px">
+    <div style="font-size:10px;font-weight:800;color:var(--red);text-transform:uppercase;letter-spacing:.09em;margin-bottom:8px">⚠️ Резервная копия — делай перед удалением ярлыка!</div>
+    <div style="display:flex;gap:8px">
+      <button onclick="exportBackup()" style="flex:1;height:48px;border-radius:12px;background:rgba(38,212,103,.15);color:var(--grn);font-size:13px;font-weight:800;border:1.5px solid rgba(38,212,103,.3);cursor:pointer;font-family:inherit">⬇️ Скачать копию</button>
+      <button onclick="importBackup()" style="flex:1;height:48px;border-radius:12px;background:rgba(26,143,255,.15);color:var(--blu);font-size:13px;font-weight:800;border:1.5px solid rgba(26,143,255,.3);cursor:pointer;font-family:inherit">⬆️ Восстановить</button>
+    </div>
+  </div>`;
   // Guide + Notifications
-  html+=`<div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">`;
+  html+=`<div style="margin-top:2px;display:flex;flex-direction:column;gap:6px">`;
   html+=`<button onclick="requestNotifPermission()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">🔔 Разрешить уведомления</button>`;
   html+=`<button onclick="openGuide()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">📖 Инструкция по использованию</button>`;
   html+=`<button onclick="resetWorkouts()" style="width:100%;height:44px;border-radius:12px;background:var(--ybg);color:var(--yel);font-size:13px;font-weight:700;border:1.5px solid rgba(255,170,0,.2);cursor:pointer;font-family:inherit">↺ Загрузить историю тренировок</button>`;
@@ -2629,9 +2637,57 @@ function schedRem(id,title,ts){
   }
 }
 
+function exportBackup(){
+  const data={
+    tasks:A.tasks, workouts:A.workouts, reminders:A.reminders,
+    cats:A.cats, notion:A.notion, theme:A.theme,
+    autoTasks:A.autoTasks||[], autoService:A.autoService||[],
+    workoutTypes:A.workoutTypes||[], memos:A.memos||[],
+    exportDate: new Date().toISOString(),
+    version:'pln6'
+  };
+  const json=JSON.stringify(data,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const d=new Date();
+  a.href=url;
+  a.download='planner-backup-'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✅ Резервная копия сохранена');
+}
+
+function importBackup(){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='.json';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    try{
+      const text=await file.text();
+      const data=JSON.parse(text);
+      if(!data.tasks&&!data.workouts){toast('❌ Неверный формат файла');return;}
+      if(!confirm('Восстановить данные из копии?\nТекущие данные будут заменены.'))return;
+      A.tasks=data.tasks||A.tasks;
+      A.workouts=data.workouts||A.workouts;
+      A.reminders=data.reminders||{};
+      A.cats=data.cats&&data.cats.length?data.cats:A.cats;
+      A.notion=data.notion||A.notion;
+      A.theme=data.theme||A.theme;
+      A.autoTasks=data.autoTasks||A.autoTasks;
+      A.autoService=data.autoService||A.autoService;
+      A.workoutTypes=data.workoutTypes||A.workoutTypes;
+      A.memos=data.memos||A.memos;
+      saveState();applyTheme(A.theme);render();
+      toast('✅ Данные восстановлены');
+    }catch(err){toast('❌ Ошибка чтения файла');}
+  };
+  inp.click();
+}
+
+
 function requestNotifPermission(){
   if(!('Notification' in window)){
-    toast('Уведомления не поддерживаются');return;
   }
   if(Notification.permission==='granted'){
     toast('Уведомления уже включены ✓');return;
