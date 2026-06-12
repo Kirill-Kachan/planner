@@ -580,9 +580,11 @@ const RUMF=['Январь','Февраль','Март','Апрель','Май','
 const RUMS=['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
 const PCLS={red:'pr',yellow:'py',green:'pg',blue:'pb'};
 const $=id=>document.getElementById(id);
-const today=()=>new Date().toISOString().slice(0,10);
-const addDays=(n,base)=>{const d=base?new Date(base+'T00:00:00'):new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+// Используем локальную дату — toISOString() даёт UTC и может быть "вчера" ночью
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
 const tomorrow=()=>addDays(1);
+const addDays=(n)=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+
 
 function fmtD(s){
   if(!s)return'';
@@ -868,13 +870,18 @@ function seedWorkouts(){
 // ═══════════════════════════════════════════════════════════
 function getWeekDates(offset){
   const now=new Date();
+  // getDay(): 0=вс,1=пн,...,6=сб
+  // Нам нужен понедельник: если вс(0)→6 дней назад, иначе dow-1
   const dow=now.getDay();
+  const daysFromMon=dow===0?6:dow-1; // всегда начинаем с пн
   const monday=new Date(now);
-  monday.setDate(now.getDate()-(dow===0?6:dow-1)+offset*7);
+  monday.setHours(0,0,0,0);
+  monday.setDate(now.getDate()-daysFromMon+offset*7);
   const days=[];
   for(let i=0;i<7;i++){
-    const d=new Date(monday);d.setDate(monday.getDate()+i);
-    days.push(d.toISOString().slice(0,10));
+    const d=new Date(monday);
+    d.setDate(monday.getDate()+i);
+    days.push(d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()));
   }
   return days;
 }
