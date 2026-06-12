@@ -2744,17 +2744,25 @@ function bind(){
 // ═══════════════════════════════════════════════════════════
 loadState();restoreRems();render();
 
-// Auto-update date display every minute — работает на всех страницах
-setInterval(()=>{
+// Обновление даты при возврате в приложение (iOS убивает setInterval в фоне)
+function checkDateUpdate(){
   const newToday=new Date().toISOString().slice(0,10);
   if(A.selDate<newToday){
     A.selDate=newToday;
     A.weekOffset=0;
-    render(); // перерисовываем всегда при смене дня
+    render();
   } else if(A.nav==='tasks'){
-    render(); // на задачах обновляем каждую минуту (просроченные)
+    render();
   }
-}, 60000);
+}
+// Каждую минуту пока активно
+setInterval(checkDateUpdate, 60000);
+// При возврате из фона / переключении вкладок
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') checkDateUpdate();
+});
+// При фокусе окна (PWA)
+window.addEventListener('focus', checkDateUpdate);
 
 // Weather auto-refresh every 30 min
 fetchWeather().catch(()=>{});
