@@ -5,10 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Планировщик">
-<meta name="theme-color" content="#0d0d10">
-<link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Планировщик&quot;,&quot;short_name&quot;:&quot;Планы&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;%230d0d10&quot;,&quot;theme_color&quot;:&quot;%230d0d10&quot;,&quot;start_url&quot;:&quot;.&quot;}">
-<title>Планировщик</title>
+<meta name="apple-mobile-web-app-title" content="Планы">
+<meta name="theme-color" content="#0d0d10" id="themeColor">
+<title>Планы</title>
+
+<!-- SVG иконка встроена как data URI -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='115' fill='%230d0d10'/%3E%3Crect width='512' height='512' rx='115' fill='url(%23g)'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%231a3a6a'/%3E%3Cstop offset='100%25' stop-color='%230d0d10'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect x='80' y='140' width='220' height='28' rx='14' fill='%231a8fff'/%3E%3Crect x='80' y='200' width='170' height='22' rx='11' fill='%231a8fff' opacity='.5'/%3E%3Crect x='80' y='252' width='195' height='22' rx='11' fill='%231a8fff' opacity='.5'/%3E%3Crect x='80' y='304' width='150' height='22' rx='11' fill='%231a8fff' opacity='.3'/%3E%3Ccircle cx='380' cy='340' r='88' fill='%231a8fff' opacity='.15'/%3E%3Ccircle cx='380' cy='340' r='60' fill='none' stroke='%231a8fff' stroke-width='8'/%3E%3Cpath d='M355 340 l18 18 l32-36' stroke='%2326d467' stroke-width='12' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+
+<!-- Manifest -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22short_name%22%3A%22%D0%9F%D0%BB%D0%B0%D0%BD%D1%8B%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230d0d10%22%2C%22theme_color%22%3A%22%230d0d10%22%2C%22start_url%22%3A%22.%22%2C%22orientation%22%3A%22portrait%22%7D">
+
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -2703,16 +2709,22 @@ if('Notification' in window && Notification.permission==='default'){
   // Ask when user sets first reminder
 }
 
-// PWA Service Worker
+// PWA Service Worker — офлайн поддержка
 if('serviceWorker' in navigator){
   const swLines=[
-    "self.addEventListener('install',e=>self.skipWaiting());",
-    "self.addEventListener('activate',e=>e.waitUntil(clients.claim()));",
+    "const CACHE='pln-v4';",
+    "self.addEventListener('install',e=>{",
+    "  e.waitUntil(self.skipWaiting());",
+    "});",
+    "self.addEventListener('activate',e=>{",
+    "  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>clients.claim()));",
+    "});",
     "self.addEventListener('fetch',e=>{",
     "  if(e.request.method!=='GET')return;",
-    "  e.respondWith(caches.open('pln-v3').then(async c=>{",
-    "    try{const r=await fetch(e.request);c.put(e.request,r.clone());return r;}",
-    "    catch{return await c.match(e.request)||new Response('Offline',{status:503});}",
+    "  e.respondWith(caches.open(CACHE).then(async c=>{",
+    "    const cached=await c.match(e.request);",
+    "    try{const r=await fetch(e.request);if(r.ok)c.put(e.request,r.clone());return r;}",
+    "    catch{return cached||new Response('Офлайн',{status:503});}",
     "  }));",
     "});"
   ];
