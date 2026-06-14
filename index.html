@@ -1192,27 +1192,44 @@ function groupExs(exs){
   const result=[];
   exs.forEach(ex=>{
     const last=result[result.length-1];
-    if(last&&last.n===ex.n&&!ex.mixed&&!ex.mixedW&&!last.mixed&&!last.mixedW){
+    // Объединяем только если одинаковое название и оба не pre-mixed из seed
+    if(last&&last.n===ex.n&&!ex.mixed&&!ex.mixedW&&!last.mixedW){
+      const sameW=(last.w===ex.w);
       if(!last.mixed){
+        // Первое объединение
         last.mixed=true;
-        // Проверяем был ли вес разный уже
-        if(last.w!==ex.w){
-          last.mixedW=true;
-          last.sets=[{r:last.r,w:last.w},{r:ex.r,w:ex.w}];
+        if(sameW){
+          // Одинаковый вес — расширяем повторения (учитываем s>1)
+          const rArr=Array.isArray(last.r)?[...last.r]:[last.r];
+          for(let i=0;i<(last.s||1);i++) if(i>0) rArr.push(last.r);
+          for(let i=0;i<(ex.s||1);i++) rArr.push(ex.r);
+          last.r=rArr;
+          last.s=rArr.length;
         } else {
-          last.r=[last.r,ex.r];
+          // Разный вес → mixedW
+          last.mixedW=true;
+          const sets=[];
+          for(let i=0;i<(last.s||1);i++) sets.push({r:last.r,w:last.w});
+          for(let i=0;i<(ex.s||1);i++) sets.push({r:ex.r,w:ex.w});
+          last.sets=sets;
+          last.s=sets.length;
         }
       } else if(last.mixedW){
-        last.sets.push({r:ex.r,w:ex.w});
-      } else if(last.w!==ex.w){
-        // Стал разный вес
+        for(let i=0;i<(ex.s||1);i++) last.sets.push({r:ex.r,w:ex.w});
+        last.s=last.sets.length;
+      } else if(!sameW){
+        // Был одинаковый вес, стал разный
         last.mixedW=true;
-        last.sets=last.r.map(r=>({r,w:last.w}));
-        last.sets.push({r:ex.r,w:ex.w});
+        last.sets=(Array.isArray(last.r)?last.r:[last.r]).map(r=>({r,w:last.w}));
+        for(let i=0;i<(ex.s||1);i++) last.sets.push({r:ex.r,w:ex.w});
+        last.s=last.sets.length;
       } else {
-        last.r.push(ex.r);
+        // Продолжаем одинаковый вес
+        const add=Array.isArray(ex.r)?ex.r:Array(ex.s||1).fill(ex.r);
+        if(Array.isArray(last.r)) last.r.push(...add);
+        else last.r=[last.r,...add];
+        last.s=Array.isArray(last.r)?last.r.length:(last.s||1)+(ex.s||1);
       }
-      last.s=(last.s||1)+1;
     } else {
       result.push({...ex});
     }
