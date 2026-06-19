@@ -1183,7 +1183,7 @@ function card(t){
 function exVol(ex){
   if(ex.ladder){
     // Двойная лесенка 1-2-...-N-...-2-1 = N²
-    return ex.ladder * ex.ladder;
+    return ex.ladder * (ex.ladder + 1);
   }
   if(ex.mixedW&&ex.sets){
     return ex.sets.reduce((s,x)=>s+(x.w>0?x.r*x.w:x.r),0);
@@ -1281,7 +1281,7 @@ function groupExs(exs){
 // Одинаковый вес: 3×12/10/8   Разный: 12×20/10×25/8×30кг   Обычный: 3×10
 function fmtEx(ex){
   if(ex.ladder){
-    return 'до '+ex.ladder+' · Σ'+(ex.ladder*ex.ladder);
+    return 'до '+ex.ladder+' · Σ'+(ex.ladder*(ex.ladder+1));
   }
   if(ex.mixedW&&ex.sets){
     return ex.sets.map(s=>s.r+'×'+s.w).join('/')+'кг';
@@ -1294,7 +1294,7 @@ function fmtEx(ex){
 // Для строки "Пред"
 function fmtExPrev(ex){
   if(ex.ladder){
-    return 'до '+ex.ladder+' · Σ'+(ex.ladder*ex.ladder);
+    return 'до '+ex.ladder+' · Σ'+(ex.ladder*(ex.ladder+1));
   }
   if(ex.mixedW&&ex.sets){
     // Компактно: если все r одинаковые — Nx R (W1/W2кг), иначе просто Nx подх
@@ -2240,7 +2240,7 @@ function openWorkoutForm(type,wid){
       <div id="exLadder${i}" style="display:${isLadder?'block':'none'}">
         <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
         <input class="si" type="number" id="eladder${i}" value="${ex.ladder||7}" oninput="updateLadderSum(${i})">
-        <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: ${(ex.ladder||7)*(ex.ladder||7)} повторений</div>
+        <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: ${(ex.ladder||7)*((ex.ladder||7)+1)} повторений</div>
       </div>
     </div>`;
   });
@@ -2290,7 +2290,7 @@ function checkLadderName(i){
 function updateLadderSum(i){
   const val=parseInt($('eladder'+i)?.value)||0;
   const sumEl=$('eladderSum'+i);
-  if(sumEl) sumEl.textContent='Сумма: '+(val*val)+' повторений';
+  if(sumEl) sumEl.textContent='Сумма: '+(val*(val+1))+' повторений';
 }
 
 function addEx(){
@@ -2310,7 +2310,7 @@ function addEx(){
     <div id="exLadder${i}" style="display:none">
       <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
       <input class="si" type="number" id="eladder${i}" value="7" oninput="updateLadderSum(${i})">
-      <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: 49 повторений</div>
+      <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: 56 повторений</div>
     </div>
   </div>`);
   cnt.value=i+1;
