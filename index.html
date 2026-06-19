@@ -625,6 +625,36 @@ function getStat(id){return STATS.find(s=>s.id===id)||STATS[0]}
 function mainCats(){return A.cats.filter(c=>!c.parent&&c.id!=='auto'&&c.id!=='ideas')}
 function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 
+// Авто-миграция: старые записи "Подтягивания лесенка до N" (s:1,r:N)
+// конвертируются в новый формат {ladder:N}. Срабатывает один раз,
+// безопасно — не трогает уже мигрированные записи и обычные подтягивания.
+function migrateLadderExercises(){
+  if(!A.workouts || !A.workouts.length) return;
+  let changed=false;
+  A.workouts.forEach(w=>{
+    if(!w.exs) return;
+    w.exs.forEach(ex=>{
+      if(ex.ladder) return; // уже новый формат
+      if(!ex.n) return;
+      const nameLower=ex.n.toLowerCase();
+      if(nameLower.includes('лесенка')){
+        // Извлекаем пик: либо из текста "до N", либо берём ex.r как пик
+        const match=ex.n.match(/до\s*(\d+)/i);
+        const peak=match?parseInt(match[1]):(typeof ex.r==='number'?ex.r:null);
+        if(peak){
+          ex.n='Подтягивания лесенка';
+          ex.ladder=peak;
+          delete ex.s;
+          delete ex.r;
+          ex.w=0;
+          changed=true;
+        }
+      }
+    });
+  });
+  if(changed) saveState();
+}
+
 function loadState(){
   try{
     // Читаем все возможные ключи — берём тот где больше задач
@@ -650,6 +680,7 @@ function loadState(){
     A.autoService=d.autoService&&d.autoService.length?d.autoService:seedAutoService();
     A.workoutTypes=d.workoutTypes&&d.workoutTypes.length?d.workoutTypes:[...WORKOUT_TYPES];
     A.memos=d.memos||[];
+    migrateLadderExercises(); // авто-исправление старого формата лесенки
   }catch(e){
     A.tasks=seedTasks();A.workouts=seedWorkouts();
     A.autoTasks=seedAutoTasks();A.autoService=seedAutoService();
