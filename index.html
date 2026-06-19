@@ -274,6 +274,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .wk-ex:last-child{border-bottom:none}
 .wk-ex-name{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:3px}
 .wk-ex-prev{font-size:11px;color:var(--t2);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}
+.wk-ex-total{font-size:10px;color:var(--t3);font-weight:600;margin-top:1px}
 .wk-pills{display:flex;gap:4px;flex-wrap:nowrap;justify-content:flex-end;flex-shrink:0;min-width:0}
 .wpill{background:var(--bg3);border-radius:7px;padding:4px 8px;font-size:11px;font-weight:800;color:var(--t2);white-space:nowrap}
 .wpill.up{color:var(--grn);background:var(--gbg)}.wpill.dn{color:var(--red);background:var(--rbg)}
@@ -1279,9 +1280,15 @@ function groupExs(exs){
 
 // Форматирует отображение подходов компактно
 // Одинаковый вес: 3×12/10/8   Разный: 12×20/10×25/8×30кг   Обычный: 3×10
+function totalReps(ex){
+  if(ex.ladder) return ex.ladder*(ex.ladder+1);
+  if(ex.mixedW&&ex.sets) return ex.sets.reduce((s,x)=>s+x.r,0);
+  if(ex.mixed&&Array.isArray(ex.r)) return ex.r.reduce((s,r)=>s+r,0);
+  return ex.s*ex.r;
+}
 function fmtEx(ex){
   if(ex.ladder){
-    return 'до '+ex.ladder+' · Σ'+(ex.ladder*(ex.ladder+1));
+    return 'до '+ex.ladder+' · '+totalReps(ex);
   }
   if(ex.mixedW&&ex.sets){
     return ex.sets.map(s=>s.r+'×'+s.w).join('/')+'кг';
@@ -1294,7 +1301,7 @@ function fmtEx(ex){
 // Для строки "Пред"
 function fmtExPrev(ex){
   if(ex.ladder){
-    return 'до '+ex.ladder+' · Σ'+(ex.ladder*(ex.ladder+1));
+    return 'до '+ex.ladder+' · '+totalReps(ex);
   }
   if(ex.mixedW&&ex.sets){
     // Компактно: если все r одинаковые — Nx R (W1/W2кг), иначе просто Nx подх
@@ -1342,6 +1349,7 @@ function fmtExPrev(ex){
           <div style="flex:1;min-width:0">
             <div class="wk-ex-name">${ex.n}</div>
             ${pe?`<div class="wk-ex-prev">Пред: ${fmtExPrev(pe)}</div>`:''}
+            <div class="wk-ex-total">Всего: ${totalReps(ex)}</div>
           </div>
           <div class="wk-pills">
             <span class="wpill ${rCls}">${arr[rCls]||''}${fmtEx(ex)}${!ex.mixedW&&ex.w>0?' · '+ex.w+'кг':''}</span>
@@ -2221,7 +2229,7 @@ function openWorkoutForm(type,wid){
   initExs.forEach((ex,i)=>{
     const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
     const isLadder=!!ex.ladder;
-    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · Σ'+(pe.ladder*pe.ladder)):(pe.s+'×'+pe.r+(pe.w>0?' '+pe.w+'кг':''))):'';
+    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1))):(pe.s+'×'+pe.r+(pe.w>0?' '+pe.w+'кг':'')+' · '+(pe.s*pe.r))):'';
     exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
       <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
       ${pe?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px">пред: ${peStr}</div>`:''}
