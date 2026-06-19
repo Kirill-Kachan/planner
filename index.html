@@ -774,12 +774,12 @@ function seedWorkouts(){
     ]},
     // 11.03 — Спина/Бицепс
     {id:'w02',date:'2026-03-11',type:'back',exs:[
-      {n:'Подтягивания лесенка до 5',s:1,r:5,w:0},
+      {n:'Подтягивания лесенка',ladder:5,w:0},
       {n:'Подтягивания',s:5,r:5,w:0},
     ]},
     // 16.03 — Спина/Бицепс
     {id:'w03',date:'2026-03-16',type:'back',exs:[
-      {n:'Подтягивания лесенка до 5',s:1,r:5,w:0},
+      {n:'Подтягивания лесенка',ladder:5,w:0},
       {n:'Подтягивания',s:3,r:5,w:0},
       {n:'Тяга горизонт. блока к поясу',s:3,r:13,w:39},
       {n:'Хаммер спина',s:3,r:10,w:15},
@@ -793,7 +793,7 @@ function seedWorkouts(){
     ]},
     // 11.05 — Спина/Бицепс
     {id:'w05',date:'2026-05-11',type:'back',exs:[
-      {n:'Подтягивания лесенка до 5',s:1,r:6,w:0},
+      {n:'Подтягивания лесенка',ladder:5,w:0},
       {n:'Подтягивания',s:1,r:5,w:0},
       {n:'Тяга горизонт. блока к поясу',s:3,r:13,w:39},
       {n:'Скамья Скотта',s:3,r:13,w:20},
@@ -810,7 +810,7 @@ function seedWorkouts(){
     ]},
     // 18.05 — Спина/Бицепс
     {id:'w07',date:'2026-05-18',type:'back',exs:[
-      {n:'Подтягивания лесенка до 6',s:1,r:6,w:0},
+      {n:'Подтягивания лесенка',ladder:6,w:0},
       {n:'Подтягивания',s:3,r:5,w:0},
       {n:'Тяга горизонт. блока к поясу',s:3,r:13,w:39},
       {n:'Хаммер спина',s:3,r:10,w:15},
@@ -821,7 +821,7 @@ function seedWorkouts(){
     ]},
     // 25.05 — Спина/Бицепс (Скамья Скотта: 1×10 20кг + 2×10 25кг → разный вес)
     {id:'w08',date:'2026-05-25',type:'back',exs:[
-      {n:'Подтягивания лесенка до 6',s:1,r:6,w:0},
+      {n:'Подтягивания лесенка',ladder:6,w:0},
       {n:'Подтягивания',s:5,r:5,w:0},
       {n:'Хаммер спина',s:3,r:10,w:15},
       {n:'Скамья Скотта',s:3,sets:[{r:10,w:20},{r:10,w:25},{r:10,w:25}],mixedW:true},
@@ -839,7 +839,7 @@ function seedWorkouts(){
     ]},
     // 01.06 — Спина/Бицепс (Молотки: 1×10 + 2×8 10кг)
     {id:'w10',date:'2026-06-01',type:'back',exs:[
-      {n:'Подтягивания лесенка до 7',s:1,r:7,w:0},
+      {n:'Подтягивания лесенка',ladder:7,w:0},
       {n:'Подтягивания',s:5,r:5,w:0},
       {n:'Хаммер спина',s:3,r:12,w:15},
       {n:'Скамья Скотта',s:3,r:12,w:25},
@@ -856,7 +856,7 @@ function seedWorkouts(){
     ]},
     // 08.06 — Спина/Бицепс (Скамья Скотта: 1×12 + 1×10 + 1×8 25кг)
     {id:'w12',date:'2026-06-08',type:'back',exs:[
-      {n:'Подтягивания лесенка до 7',s:1,r:7,w:0},
+      {n:'Подтягивания лесенка',ladder:7,w:0},
       {n:'Подтягивания',s:5,r:5,w:0},
       {n:'Хаммер спина',s:3,r:12,w:15},
       {n:'Скамья Скотта',s:3,r:[12,10,8],w:25,mixed:true},
@@ -1150,6 +1150,10 @@ function card(t){
 
 // Тоннаж упражнения = повторения × вес (если вес 0 — только повторения)
 function exVol(ex){
+  if(ex.ladder){
+    // Двойная лесенка 1-2-...-N-...-2-1 = N²
+    return ex.ladder * ex.ladder;
+  }
   if(ex.mixedW&&ex.sets){
     return ex.sets.reduce((s,x)=>s+(x.w>0?x.r*x.w:x.r),0);
   }
@@ -1192,6 +1196,11 @@ function groupExs(exs){
   const result=[];
   exs.forEach(ex=>{
     const last=result[result.length-1];
+    // Лесенка никогда не объединяется — у неё нет s/r, своя логика подсчёта
+    if(ex.ladder || (last && last.ladder)){
+      result.push({...ex});
+      return;
+    }
     // Объединяем только если одинаковое название и оба не pre-mixed из seed
     if(last&&last.n===ex.n&&!ex.mixed&&!ex.mixedW&&!last.mixedW){
       const sameW=(last.w===ex.w);
@@ -1240,6 +1249,9 @@ function groupExs(exs){
 // Форматирует отображение подходов компактно
 // Одинаковый вес: 3×12/10/8   Разный: 12×20/10×25/8×30кг   Обычный: 3×10
 function fmtEx(ex){
+  if(ex.ladder){
+    return 'до '+ex.ladder+' · Σ'+(ex.ladder*ex.ladder);
+  }
   if(ex.mixedW&&ex.sets){
     return ex.sets.map(s=>s.r+'×'+s.w).join('/')+'кг';
   }
@@ -1250,6 +1262,9 @@ function fmtEx(ex){
 }
 // Для строки "Пред"
 function fmtExPrev(ex){
+  if(ex.ladder){
+    return 'до '+ex.ladder+' · Σ'+(ex.ladder*ex.ladder);
+  }
   if(ex.mixedW&&ex.sets){
     // Компактно: если все r одинаковые — Nx R (W1/W2кг), иначе просто Nx подх
     const ws=ex.sets.map(s=>s.w);
@@ -2174,16 +2189,27 @@ function openWorkoutForm(type,wid){
   let exHtml='';
   initExs.forEach((ex,i)=>{
     const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
-    exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px">
-      <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" value="${ex.n}">
-      ${pe?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px">пред: ${pe.s}×${pe.r}${pe.w>0?' '+pe.w+'кг':''}</div>`:''}
-      <div style="display:flex;gap:6px">
+    const isLadder=!!ex.ladder;
+    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · Σ'+(pe.ladder*pe.ladder)):(pe.s+'×'+pe.r+(pe.w>0?' '+pe.w+'кг':''))):'';
+    exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
+      <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
+      ${pe?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px">пред: ${peStr}</div>`:''}
+      <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
+        <input type="checkbox" id="el${i}" ${isLadder?'checked':''} onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
+        Лесенка (вверх-вниз)
+      </label>
+      <div id="exFields${i}" style="display:${isLadder?'none':'flex'};gap:6px">
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Подходы</div>
-          <input class="si" type="number" id="es${i}" value="${ex.s}"></div>
+          <input class="si" type="number" id="es${i}" value="${ex.s||3}"></div>
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Повторения</div>
-          <input class="si" type="number" id="er${i}" value="${ex.r}"></div>
+          <input class="si" type="number" id="er${i}" value="${ex.r||10}"></div>
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Кг</div>
-          <input class="si" type="number" id="ew${i}" value="${ex.w}"></div>
+          <input class="si" type="number" id="ew${i}" value="${ex.w||0}"></div>
+      </div>
+      <div id="exLadder${i}" style="display:${isLadder?'block':'none'}">
+        <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
+        <input class="si" type="number" id="eladder${i}" value="${ex.ladder||7}" oninput="updateLadderSum(${i})">
+        <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: ${(ex.ladder||7)*(ex.ladder||7)} повторений</div>
       </div>
     </div>`;
   });
@@ -2215,15 +2241,45 @@ function openEditWorkout(id){
   openWorkoutForm(w.type,id);
 }
 
+function toggleLadderMode(i){
+  const checked=$('el'+i)?.checked;
+  const fields=$('exFields'+i), ladder=$('exLadder'+i);
+  if(fields) fields.style.display=checked?'none':'flex';
+  if(ladder) ladder.style.display=checked?'block':'none';
+}
+function checkLadderName(i){
+  // Авто-включение режима лесенки если в названии есть "лесенка"
+  const name=($('en'+i)?.value||'').toLowerCase();
+  const cb=$('el'+i);
+  if(name.includes('лесенка') && cb && !cb.checked){
+    cb.checked=true;
+    toggleLadderMode(i);
+  }
+}
+function updateLadderSum(i){
+  const val=parseInt($('eladder'+i)?.value)||0;
+  const sumEl=$('eladderSum'+i);
+  if(sumEl) sumEl.textContent='Сумма: '+(val*val)+' повторений';
+}
+
 function addEx(){
   const list=$('exList'),cnt=$('wCnt');if(!list||!cnt)return;
   const i=parseInt(cnt.value);
-  list.insertAdjacentHTML('beforeend',`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px">
-    <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}">
-    <div style="display:flex;gap:6px">
+  list.insertAdjacentHTML('beforeend',`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
+    <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" oninput="checkLadderName(${i})">
+    <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
+      <input type="checkbox" id="el${i}" onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
+      Лесенка (вверх-вниз)
+    </label>
+    <div id="exFields${i}" style="display:flex;gap:6px">
       <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Подходы</div><input class="si" type="number" id="es${i}" value="3"></div>
       <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Повторения</div><input class="si" type="number" id="er${i}" value="10"></div>
       <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Кг</div><input class="si" type="number" id="ew${i}" value="0"></div>
+    </div>
+    <div id="exLadder${i}" style="display:none">
+      <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
+      <input class="si" type="number" id="eladder${i}" value="7" oninput="updateLadderSum(${i})">
+      <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: 49 повторений</div>
     </div>
   </div>`);
   cnt.value=i+1;
@@ -2237,7 +2293,13 @@ function saveWorkout(){
   const exs=[];
   for(let i=0;i<cnt;i++){
     const n=($('en'+i)?.value||'').trim();if(!n)continue;
-    exs.push({n,s:parseInt($('es'+i)?.value||3),r:parseInt($('er'+i)?.value||10),w:parseFloat($('ew'+i)?.value||0)});
+    const isLadder=$('el'+i)?.checked;
+    if(isLadder){
+      const peak=parseInt($('eladder'+i)?.value||7);
+      exs.push({n,ladder:peak,w:0});
+    } else {
+      exs.push({n,s:parseInt($('es'+i)?.value||3),r:parseInt($('er'+i)?.value||10),w:parseFloat($('ew'+i)?.value||0)});
+    }
   }
   if(!exs.length){toast('Добавь хотя бы одно упражнение');return;}
   if(wid){
