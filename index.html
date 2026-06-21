@@ -2231,7 +2231,12 @@ function openWorkoutForm(type,wid){
     const isLadder=!!ex.ladder;
     const peStr=pe?(pe.ladder?('до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1))):(pe.s+'×'+pe.r+(pe.w>0?' '+pe.w+'кг':'')+' · '+(pe.s*pe.r))):'';
     exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
-      <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
+        <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
+        <button onclick="moveExUp(${i})" title="Вверх" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↑</button>
+        <button onclick="moveExDown(${i})" title="Вниз" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↓</button>
+        <button onclick="removeEx(${i})" title="Удалить" style="width:34px;height:34px;border-radius:9px;background:var(--rbg);color:var(--red);border:1.5px solid rgba(255,70,70,.25);cursor:pointer;font-size:15px;flex-shrink:0;font-family:inherit">✕</button>
+      </div>
       ${pe?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px">пред: ${peStr}</div>`:''}
       <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
         <input type="checkbox" id="el${i}" ${isLadder?'checked':''} onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
@@ -2301,11 +2306,41 @@ function updateLadderSum(i){
   if(sumEl) sumEl.textContent='Сумма: '+(val*(val+1))+' повторений';
 }
 
+function removeEx(i){
+  const block=$('exBlock'+i);
+  if(!block) return;
+  const list=$('exList');
+  if(list && list.children.length<=1){
+    toast('Должно остаться хотя бы одно упражнение');
+    return;
+  }
+  block.remove();
+}
+
+function moveExUp(i){
+  const block=$('exBlock'+i);
+  if(!block) return;
+  const prevSib=block.previousElementSibling;
+  if(prevSib) block.parentNode.insertBefore(block, prevSib);
+}
+
+function moveExDown(i){
+  const block=$('exBlock'+i);
+  if(!block) return;
+  const nextSib=block.nextElementSibling;
+  if(nextSib) block.parentNode.insertBefore(nextSib, block);
+}
+
 function addEx(){
   const list=$('exList'),cnt=$('wCnt');if(!list||!cnt)return;
   const i=parseInt(cnt.value);
   list.insertAdjacentHTML('beforeend',`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
-    <input class="si" style="margin-bottom:7px" placeholder="Упражнение" id="en${i}" oninput="checkLadderName(${i})">
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
+      <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" oninput="checkLadderName(${i})">
+      <button onclick="moveExUp(${i})" title="Вверх" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↑</button>
+      <button onclick="moveExDown(${i})" title="Вниз" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↓</button>
+      <button onclick="removeEx(${i})" title="Удалить" style="width:34px;height:34px;border-radius:9px;background:var(--rbg);color:var(--red);border:1.5px solid rgba(255,70,70,.25);cursor:pointer;font-size:15px;flex-shrink:0;font-family:inherit">✕</button>
+    </div>
     <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
       <input type="checkbox" id="el${i}" onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
       Лесенка (вверх-вниз)
@@ -2328,17 +2363,26 @@ function saveWorkout(){
   const date=$('wDate')?.value||today();
   const type=$('wType')?.value||'chest';
   const wid=$('wId')?.value||'';
-  const cnt=parseInt($('wCnt')?.value||'0');
   const exs=[];
-  for(let i=0;i<cnt;i++){
-    const n=($('en'+i)?.value||'').trim();if(!n)continue;
-    const isLadder=$('el'+i)?.checked;
-    if(isLadder){
-      const peak=parseInt($('eladder'+i)?.value||7);
-      exs.push({n,ladder:peak,w:0});
-    } else {
-      exs.push({n,s:parseInt($('es'+i)?.value||3),r:parseInt($('er'+i)?.value||10),w:parseFloat($('ew'+i)?.value||0)});
-    }
+  const list=$('exList');
+  if(list){
+    Array.from(list.children).forEach(block=>{
+      const idMatch=block.id&&block.id.match(/^exBlock(\d+)$/);
+      if(!idMatch) return;
+      const i=idMatch[1];
+      const n=(block.querySelector('#en'+i)?.value||'').trim();
+      if(!n) return;
+      const isLadder=block.querySelector('#el'+i)?.checked;
+      if(isLadder){
+        const peak=parseInt(block.querySelector('#eladder'+i)?.value||7);
+        exs.push({n,ladder:peak,w:0});
+      } else {
+        const s=parseInt(block.querySelector('#es'+i)?.value||3);
+        const r=parseInt(block.querySelector('#er'+i)?.value||10);
+        const w=parseFloat(block.querySelector('#ew'+i)?.value||0);
+        exs.push({n,s,r,w});
+      }
+    });
   }
   if(!exs.length){toast('Добавь хотя бы одно упражнение');return;}
   if(wid){
