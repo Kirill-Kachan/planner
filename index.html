@@ -1340,7 +1340,8 @@ function fmtExPrev(ex){
     if(isOpen){
       body=`<div class="wk-body open">`;
       groupExs(w.exs).forEach(ex=>{
-        const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
+        const prevGrouped=prev?groupExs(prev.exs):null;
+        const pe=prevGrouped?prevGrouped.find(e=>e.n===ex.n):null;
         const volEC=exVol(ex);const volEP=pe?exVol(pe):0;
         const rCls=pe?(volEC>volEP?'up':volEC<volEP?'dn':''):'';
         const wCls=(pe&&ex.w>0)?(ex.w>pe.w?'up':ex.w<pe.w?'dn':''):'';
@@ -1779,12 +1780,12 @@ function pgReport(){
 
       // Details: what changed
       const details=[];
-      last.exs.forEach(ex=>{
-        const pe=prev.exs.find(e=>e.n===ex.n);
+      groupExs(last.exs).forEach(ex=>{
+        const pe=groupExs(prev.exs).find(e=>e.n===ex.n);
         if(!pe){details.push(`➕ ${ex.n} — новое упражнение`);return;}
-        if(ex.w>pe.w) details.push(`↑ ${ex.n}: вес ${pe.w}→${ex.w} кг`);
-        else if(ex.s*ex.r>pe.s*pe.r) details.push(`🔁 ${ex.n}: объём ↑ (${pe.s}×${pe.r}→${ex.s}×${ex.r})`);
-        else if(ex.s>pe.s) details.push(`📈 ${ex.n}: подходы ${pe.s}→${ex.s}`);
+        const exV=exVol(ex), peV=exVol(pe);
+        if(ex.w>0&&pe.w>0&&ex.w!==pe.w) details.push(`↑ ${ex.n}: вес ${pe.w}→${ex.w} кг`);
+        else if(exV>peV) details.push(`🔁 ${ex.n}: объём вырос (${fmtEx(pe)}→${fmtEx(ex)})`);
       });
 
       html+=`<div style="border-bottom:1px solid var(--bd)">
@@ -2225,11 +2226,15 @@ function openWorkoutForm(type,wid){
   const prev=wid?A.workouts.filter(w=>w.type===type&&w.id!==wid).sort((a,b)=>b.date.localeCompare(a.date))[0]:
     A.workouts.filter(w=>w.type===type).sort((a,b)=>b.date.localeCompare(a.date))[1];
   const initExs=last?last.exs:[{n:'',s:3,r:10,w:0}];
+  const prevGrouped=prev?groupExs(prev.exs):null;
+  const seenNames=new Set();
   let exHtml='';
   initExs.forEach((ex,i)=>{
-    const pe=prev?prev.exs.find(e=>e.n===ex.n):null;
+    const isFirstOccurrence=!seenNames.has(ex.n);
+    seenNames.add(ex.n);
+    const pe=(isFirstOccurrence&&prevGrouped)?prevGrouped.find(e=>e.n===ex.n):null;
     const isLadder=!!ex.ladder;
-    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1))):(pe.s+'×'+pe.r+(pe.w>0?' '+pe.w+'кг':'')+' · '+(pe.s*pe.r))):'';
+    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1))):(fmtEx(pe)+(pe.w>0&&!pe.mixedW?' '+pe.w+'кг':'')+' · '+totalReps(pe))):'';
     exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
         <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
