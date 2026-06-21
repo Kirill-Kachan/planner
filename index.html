@@ -2207,11 +2207,16 @@ function openNewWorkout(){
   const types=A.workoutTypes;
   let html=`<div class="sht-hdr"><span class="sht-ttl">Тип тренировки</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
   <div class="ss"><div style="display:flex;flex-direction:column;gap:6px;width:100%">`;
-  types.forEach(tp=>{
-    const last=A.workouts.filter(w=>w.type===tp.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  types.forEach((tp,idx)=>{
+    let last=null;
+    try{
+      last=A.workouts.filter(w=>w.type===tp.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+    }catch(e){last=null;}
     const sid=tp.svgId||tp.id;
-    html+=`<div class="pch" style="display:flex;align-items:center;gap:12px;padding:10px 14px;width:100%;box-sizing:border-box;cursor:pointer" onclick="openWorkoutForm('${tp.id}')">
-      <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border-radius:10px;flex-shrink:0;pointer-events:none">${svgIcon(sid,20)}</span>
+    let iconHtml='';
+    try{iconHtml=svgIcon(sid,20);}catch(e){iconHtml='';}
+    html+=`<div class="pch" data-tp-idx="${idx}" data-tp-id="${tp.id}" style="display:flex;align-items:center;gap:12px;padding:10px 14px;width:100%;box-sizing:border-box;cursor:pointer" onclick="openWorkoutFormSafe(this)">
+      <span style="width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border-radius:10px;flex-shrink:0;pointer-events:none">${iconHtml}</span>
       <span style="font-size:14px;font-weight:600;flex:1;pointer-events:none">${tp.l}</span>
       ${last?`<span style="font-size:10px;color:var(--t3);pointer-events:none">пред: ${fmtD(last.date)}</span>`:''}
     </div>`;
@@ -2219,8 +2224,14 @@ function openNewWorkout(){
   html+=`</div></div>`;
   openSheet(html);
 }
+function openWorkoutFormSafe(el){
+  const tid=el?.getAttribute('data-tp-id');
+  if(!tid){toast('Ошибка: тип не определён');return;}
+  openWorkoutForm(tid);
+}
 
 function openWorkoutForm(type,wid){
+ try{
   const existing=wid?A.workouts.find(w=>w.id===wid):null;
   const last=existing||A.workouts.filter(w=>w.type===type).sort((a,b)=>b.date.localeCompare(a.date))[0];
   const prev=wid?A.workouts.filter(w=>w.type===type&&w.id!==wid).sort((a,b)=>b.date.localeCompare(a.date))[0]:
@@ -2234,10 +2245,14 @@ function openWorkoutForm(type,wid){
     seenNames.add(ex.n);
     const pe=(isFirstOccurrence&&prevGrouped)?prevGrouped.find(e=>e.n===ex.n):null;
     const isLadder=!!ex.ladder;
-    const peStr=pe?(pe.ladder?('до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1))):(fmtEx(pe)+(pe.w>0&&!pe.mixedW?' '+pe.w+'кг':'')+' · '+totalReps(pe))):'';
+    let peStr='';
+    if(pe){
+      if(pe.ladder) peStr='до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1));
+      else peStr=fmtEx(pe)+((pe.w>0&&!pe.mixedW)?(' '+pe.w+'кг'):'')+' · '+totalReps(pe);
+    }
     exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
       <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
-        <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" value="${ex.n}" oninput="checkLadderName(${i})">
+        <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" value="${ex.n||''}" oninput="checkLadderName(${i})">
         <button onclick="moveExUp(${i})" title="Вверх" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↑</button>
         <button onclick="moveExDown(${i})" title="Вниз" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↓</button>
         <button onclick="removeEx(${i})" title="Удалить" style="width:34px;height:34px;border-radius:9px;background:var(--rbg);color:var(--red);border:1.5px solid rgba(255,70,70,.25);cursor:pointer;font-size:15px;flex-shrink:0;font-family:inherit">✕</button>
@@ -2249,11 +2264,11 @@ function openWorkoutForm(type,wid){
       </label>
       <div id="exFields${i}" style="display:${isLadder?'none':'flex'};gap:6px">
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Подходы</div>
-          <input class="si" type="number" id="es${i}" value="${ex.s||3}"></div>
+          <input class="si" type="number" id="es${i}" value="${ex.s!=null?ex.s:3}"></div>
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Повторения</div>
-          <input class="si" type="number" id="er${i}" value="${ex.r||10}"></div>
+          <input class="si" type="number" id="er${i}" value="${ex.r!=null?ex.r:10}"></div>
         <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Кг</div>
-          <input class="si" type="number" id="ew${i}" value="${ex.w||0}"></div>
+          <input class="si" type="number" id="ew${i}" value="${ex.w!=null?ex.w:0}"></div>
       </div>
       <div id="exLadder${i}" style="display:${isLadder?'block':'none'}">
         <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
@@ -2282,6 +2297,10 @@ function openWorkoutForm(type,wid){
     <button class="btn-s" onclick="saveWorkout()">${wid?'Сохранить изменения':'Сохранить тренировку'}</button>
     ${wid?`<button class="btn-d" onclick="delWorkout('${wid}')">🗑 Удалить тренировку</button>`:''}
   `);
+ }catch(e){
+   console.error('openWorkoutForm error:', e);
+   toast('Ошибка открытия формы: '+e.message);
+ }
 }
 
 function openEditWorkout(id){
