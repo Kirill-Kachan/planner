@@ -2258,6 +2258,7 @@ function openWorkoutForm(type,wid){
     </div>`;
   });
   const prevLabel=prev?` (пред. ${fmtD(prev.date)})`:' (первая тренировка этого типа)';
+  const debugJson=last?JSON.stringify(last.exs,null,1).replace(/</g,'&lt;'):'';
   openSheet(`
     <div class="sht-hdr">
       <span class="sht-ttl">${wid?'Редактировать тренировку':'Новая тренировка'}</span>
@@ -2273,6 +2274,7 @@ function openWorkoutForm(type,wid){
       <input type="hidden" id="wId" value="${wid||''}">
       <input type="hidden" id="wCnt" value="${initExs.length}">
       <button onclick="addEx()" style="width:100%;height:38px;border-radius:9px;background:var(--bg3);color:var(--t2);font-size:12px;font-weight:700;margin-top:2px;border:none;cursor:pointer;font-family:inherit">＋ Добавить упражнение</button>
+      <details style="margin-top:8px"><summary style="font-size:10px;color:var(--t3);cursor:pointer">🔧 Debug: исходные данные</summary><pre style="font-size:9px;color:var(--t3);white-space:pre-wrap;background:var(--bg);padding:8px;border-radius:8px;margin-top:4px;max-height:200px;overflow:auto">${debugJson}</pre></details>
     </div>
     <button class="btn-s" onclick="saveWorkout()">${wid?'Сохранить изменения':'Сохранить тренировку'}</button>
     ${wid?`<button class="btn-d" onclick="delWorkout('${wid}')">🗑 Удалить тренировку</button>`:''}
