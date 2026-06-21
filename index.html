@@ -1201,26 +1201,6 @@ function wVol(w){return w.exs.reduce((s,e)=>s+exVol(e),0);}
 // ═══════════════════════════════════════════════════════════
 // PAGE: WORKOUTS
 // ═══════════════════════════════════════════════════════════
-function pgWorkouts(){
-  if(!A._expandedWk) A._expandedWk=new Set();
-
-  const wkMon=getMondayOf(today());
-  const wkSun=addDays(6,wkMon);
-
-  // Sort ALL workouts chronologically descending
-  const sorted=[...A.workouts].sort((a,b)=>b.date.localeCompare(a.date));
-  const thisWeek=sorted.filter(w=>w.date>=wkMon&&w.date<=wkSun);
-  const earlier=sorted.filter(w=>w.date<wkMon);
-
-  const WTYPE_MAP={chest:'Грудь / Трицепс',back:'Спина / Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
-  function getWtInfo(type){
-    const custom=(A.workoutTypes||[]).find(t=>t.id===type);
-    const svgId=custom?.svgId||type;
-    const label=custom?.l||WTYPE_MAP[type]||type;
-    return{svgId,label};
-  }
-
-
 // Объединяет дублирующиеся упражнения подряд в одну строку
 // Одинаковый вес: [{n,s:1,r:12,w:25},{n,s:1,r:10,w:25}] → {n,s:2,r:[12,10],w:25,mixed:true}
 // Разный вес:    [{n,s:1,r:12,w:20},{n,s:1,r:10,w:25}] → {n,s:2,sets:[{r:12,w:20},{r:10,w:25}],mixed:true,mixedW:true}
@@ -1315,7 +1295,28 @@ function fmtExPrev(ex){
   return ex.s+'×'+ex.r+(ex.w>0?' · '+ex.w+'кг':'');
 }
 
-  function buildCard(w, defaultOpen){
+  
+function pgWorkouts(){
+  if(!A._expandedWk) A._expandedWk=new Set();
+
+  const wkMon=getMondayOf(today());
+  const wkSun=addDays(6,wkMon);
+
+  // Sort ALL workouts chronologically descending
+  const sorted=[...A.workouts].sort((a,b)=>b.date.localeCompare(a.date));
+  const thisWeek=sorted.filter(w=>w.date>=wkMon&&w.date<=wkSun);
+  const earlier=sorted.filter(w=>w.date<wkMon);
+
+  const WTYPE_MAP={chest:'Грудь / Трицепс',back:'Спина / Бицепс',legs:'Ноги',arms:'Руки',cardio:'Кардио',full:'Фулл-боди'};
+  function getWtInfo(type){
+    const custom=(A.workoutTypes||[]).find(t=>t.id===type);
+    const svgId=custom?.svgId||type;
+    const label=custom?.l||WTYPE_MAP[type]||type;
+    return{svgId,label};
+  }
+
+
+function buildCard(w, defaultOpen){
     const isOpen=A._expandedWk.has(w.id)||defaultOpen;
     const prev=A.workouts.filter(x=>x.type===w.type&&x.date<w.date).sort((a,b)=>b.date.localeCompare(a.date))[0];
     // Сравниваем только общие упражнения (которые есть в обеих тренировках)
