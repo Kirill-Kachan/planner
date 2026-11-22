@@ -1540,7 +1540,7 @@ function completeAutoTask(id){
   const date=$('aeDl')?.value||today();
   const note=($('aeN')?.value||'').trim();
   const type=$('aeType')?.value||'task';
-  const label=(type==='repair'?'🔧 ':'type'==='replace'?'🔄 ':'')+t.title;
+  const label=(type==='repair'?'🔧 ':type==='replace'?'🔄 ':'')+t.title;
   // Group with same date+km
   const ex=A.autoService.find(s=>s.date===date&&s.km===km);
   if(ex){ex.items.push(label);}
@@ -2605,10 +2605,6 @@ function openNewMemo(){
   // FAB открывает форму новой идеи
   openNewIdea();
 }
-function openNewIdea(){
-  A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
-  showTaskSheet(false);
-}
 
 // ═══════════════════════════════════════════════════════════
 // PAGE: GUIDE
@@ -2802,7 +2798,7 @@ function openSheet(html){
 }
 function closeSheet(){
   $('ovl').classList.remove('on');
-  setTimeout(()=>{$('sht').innerHTML='';},280);
+  setTimeout(()=>{if(!$('ovl').classList.contains('on'))$('sht').innerHTML='';},280);
 }
 function schedRem(id,title,ts){
   if(!('Notification' in window)) return;
@@ -2905,7 +2901,6 @@ function restoreRems(){
 // Это невозможно реализовать в локальном HTML-файле без сервера.
 // Текущие уведомления работают пока Safari открыт в фоне.
 // Для push-уведомлений на заблокированном экране нужен сервер (Netlify Functions).
-function setNav(n){A.nav=n;render();}
 function toast(msg){
   const el=$('toast');el.textContent=msg;el.classList.add('on');
   clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('on'),2400);
