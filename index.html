@@ -2660,7 +2660,7 @@ function openWorkoutForm(type,wid,draft,copyId){
   else if(src){model={blocks:groupExs(src.exs).map(exToBlock),date:today(),name:''};}
   else if(prev){ // новая: названия и число подходов из прошлой, значения пустые (в полях — подсказки «пред.»)
     filled=false;
-    model={blocks:prevG.map(e=>{const b=exToBlock(e);return{n:b.n,ladder:b.ladder,sets:b.sets.map(()=>({r:'',w:''}))};}),date:today(),name:''};
+    model={blocks:prevG.map(e=>{const b=exToBlock(e);return{n:b.n,ladder:b.ladder,sets:[{r:'',w:''}]};}),date:today(),name:''};
   } else model={blocks:[{n:'',ladder:0,sets:[{r:'',w:''}]}],date:today(),name:''};
   let exHtml='';
   model.blocks.forEach(b=>{
@@ -2713,6 +2713,7 @@ function openCopyWorkout(id){
 function fillFromPrev(){
   document.querySelectorAll('#exList > .exb').forEach(el=>{
     let phs=[];try{phs=JSON.parse(el.getAttribute('data-ph')||'[]');}catch(e){}
+    if(!el.querySelector('.exl:checked'))while(el.querySelectorAll('.exr').length<phs.length)addSet(+el.dataset.i);
     el.querySelectorAll('.exr').forEach((r,k)=>{
       const ph=phs[k]||phs[phs.length-1];if(!ph)return;
       if(!r.querySelector('.sr').value)r.querySelector('.sr').value=ph.r;
