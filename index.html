@@ -587,8 +587,17 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .pcal-d.has{background:var(--ybg)}.pcal-d.has i{color:var(--yel)}
 .pcal-d.late{background:var(--rbg)}.pcal-d.late i{color:var(--red)}
 .pcal-d.ok{background:var(--gbg)}.pcal-d.ok i{color:var(--grn)}
-body.glass-on{background:radial-gradient(60% 38% at 15% 8%,color-mix(in srgb,var(--acc) 40%,transparent),transparent),radial-gradient(55% 40% at 95% 55%,color-mix(in srgb,var(--pur) 32%,transparent),transparent),radial-gradient(60% 40% at 10% 95%,color-mix(in srgb,var(--grn) 22%,transparent),transparent),var(--bg)!important;background-attachment:fixed}
-body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-card,body.glass-on .auto-task,body.glass-on .auto-svc-entry,body.glass-on .wt,body.glass-on .pcal,body.glass-on .exb,body.glass-on .qsbar,body.glass-on .ws-wrap,body.glass-on .sh,body.glass-on #sht,body.glass-on #lpBar{backdrop-filter:saturate(170%) blur(var(--gl-blur,28px));-webkit-backdrop-filter:saturate(170%) blur(var(--gl-blur,28px))}
+#wall{display:none}
+body.glass-on{background:var(--bg)!important}
+body.glass-on #wall{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 62% at 50% -12%,color-mix(in srgb,var(--acc) 18%,transparent) 0%,color-mix(in srgb,var(--acc) 7%,transparent) 38%,transparent 72%),
+    radial-gradient(95% 58% at 108% 104%,color-mix(in srgb,var(--pur) 13%,transparent) 0%,color-mix(in srgb,var(--pur) 5%,transparent) 42%,transparent 74%),
+    var(--bg)}
+body.glass-on #app{position:relative;z-index:1}
+body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-card,body.glass-on .auto-task,body.glass-on .auto-svc-entry,body.glass-on .wt,body.glass-on .pcal,body.glass-on .exb,body.glass-on .qs{border-color:rgba(255,255,255,.085);box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 6px 22px rgba(0,0,0,.18)}
+body.glass-on[data-theme="light"] .rc,body.glass-on[data-theme="light"] .tc,body.glass-on[data-theme="light"] .wk-card,body.glass-on[data-theme="light"] .qs{border-color:rgba(0,0,0,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 20px rgba(0,0,0,.06)}
+body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-card,body.glass-on .auto-task,body.glass-on .auto-svc-entry,body.glass-on .wt,body.glass-on .pcal,body.glass-on .exb,body.glass-on .qs,body.glass-on .sh,body.glass-on #sht,body.glass-on #lpBar{backdrop-filter:saturate(170%) blur(var(--gl-blur,28px));-webkit-backdrop-filter:saturate(170%) blur(var(--gl-blur,28px))}
 
 .swp-card{position:relative;overflow:visible!important}
 .swp-card{transition:transform .22s cubic-bezier(.4,0,.2,1)}
@@ -1319,6 +1328,7 @@ function doneWait(id){const w=(A.waits||[]).find(x=>String(x.id)===String(id));i
 function reopenWait(id){const w=(A.waits||[]).find(x=>String(x.id)===String(id));if(!w)return;w.done=false;delete w.doneAt;saveState();closeSheet();render();}
 // ══════════ ПРОЗРАЧНОСТЬ ИНТЕРФЕЙСА ══════════
 function applyGlass(){
+  if(!document.getElementById('wall')){const w=document.createElement('div');w.id='wall';document.body.insertBefore(w,document.body.firstChild);}
   const ui=A.ui||{glass:0,blur:28};
   const root=document.body,t=Math.max(0,Math.min(100,+ui.glass||0))/100;
   const blur=Math.max(0,Math.min(40,ui.blur==null?28:+ui.blur));
@@ -1328,7 +1338,7 @@ function applyGlass(){
   root.style.setProperty('--nav-a',navA.toFixed(3));
   root.style.setProperty('--gl-blur',blur+'px');
   if(t>0){
-    const cs=getComputedStyle(root),a=1-.7*t;
+    const cs=getComputedStyle(root),a=1-.5*t;
     ['--bg2','--bg3','--bg4'].forEach(v=>{
       const c=cs.getPropertyValue(v).trim();
       let rgb=null,m;
