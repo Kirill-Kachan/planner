@@ -527,6 +527,44 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
   .left-col{grid-column:1;grid-row:2}
   .right-col{grid-column:2;grid-row:2;padding:0 24px 0 12px}
 }
+
+/* ── Форма тренировки ── */
+.exb{background:var(--bg3);border-radius:12px;padding:10px;margin-bottom:10px;border:1.5px solid var(--bd2);border-left:4px solid var(--acc)}
+.exb-h{display:flex;align-items:center;gap:6px}
+.exb-h .exn{flex:1;margin-bottom:0;font-weight:700;font-size:15px}
+.exb-fold{width:30px;height:34px;border-radius:9px;background:transparent;color:var(--t2);border:none;font-size:16px;cursor:pointer;flex-shrink:0;font-family:inherit}
+.exb-ic{width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit}
+.exb-ic.dng{background:var(--rbg);color:var(--red);border-color:rgba(255,70,70,.25)}
+.exb-sum{font-size:12px;color:var(--t2);padding:6px 4px 0 36px;cursor:pointer}
+.exb-body{margin-top:8px}
+.exb-prev{font-size:11px;color:var(--acc);background:var(--bbg);border-radius:8px;padding:5px 9px;margin-bottom:8px;font-weight:600}
+.exb-lad{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;color:var(--t2);cursor:pointer}
+.exb-lad input{width:18px;height:18px}
+.exr-hd{display:grid;grid-template-columns:22px 1fr 14px 1fr 34px;gap:6px;font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px}
+.exr{display:grid;grid-template-columns:22px 1fr 14px 1fr 34px;gap:6px;align-items:center;margin-bottom:6px}
+.exr .si{margin-bottom:0;text-align:center;font-size:16px;font-weight:700}
+.exr-n{font-size:12px;color:var(--t3);font-weight:800;text-align:center}
+.exr-x{color:var(--t3);text-align:center;font-weight:700}
+.exr-del{width:34px;height:34px;border-radius:9px;background:transparent;color:var(--t3);border:none;font-size:14px;cursor:pointer;font-family:inherit}
+.exb-add{width:100%;height:34px;border-radius:9px;background:var(--bg2);color:var(--acc);font-size:12px;font-weight:800;border:1.5px dashed var(--bd2);cursor:pointer;font-family:inherit}
+.exb-addEx{width:100%;height:44px;border-radius:12px;background:var(--acc);color:#fff;font-size:14px;font-weight:800;margin-top:2px;border:none;cursor:pointer;font-family:inherit}
+.exb-find{width:100%;height:38px;border-radius:12px;background:var(--bg3);color:var(--t2);font-size:12px;font-weight:700;margin-top:8px;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit}
+.exb-fill{width:100%;height:36px;border-radius:10px;background:var(--bbg);color:var(--acc);font-size:12px;font-weight:700;margin-bottom:10px;border:none;cursor:pointer;font-family:inherit}
+#wkPill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 18px);z-index:90;background:var(--acc);color:#fff;border-radius:22px;padding:10px 16px;font-size:13px;font-weight:700;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.35);cursor:pointer;max-width:92vw}
+#wkPill .wkp-x{opacity:.85;padding:0 2px;font-size:14px}
+
+.gl.fold{cursor:pointer;display:flex;align-items:center;gap:8px}
+.gl.fold .gl-n{margin-left:0}
+.gl-chev{margin-left:auto;font-size:13px;color:var(--t3);transition:transform .2s;transform:rotate(-90deg)}
+.gl-chev.open{transform:rotate(0)}
+[data-del]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.lp-sel{outline:2px solid var(--acc);outline-offset:1px;border-radius:var(--r);position:relative;z-index:5;box-shadow:0 8px 28px rgba(0,0,0,.45)}
+.lp-drag{transition:none!important;opacity:.95}
+#lpBar{position:fixed;left:12px;right:12px;bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 14px);z-index:95;background:var(--bg2);border:1.5px solid var(--bd2);border-radius:16px;padding:10px 12px;display:none;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+#lpBar .lpb-h{flex:1;font-size:11px;color:var(--t2)}
+#lpBar button{height:36px;padding:0 14px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
+#lpBar .lpb-del{background:var(--rbg);color:var(--red);margin-left:auto}
+#lpBar .lpb-ok{background:var(--bg3);color:var(--tx)}
 </style>
 </head>
 <body>
@@ -584,7 +622,7 @@ const $=id=>document.getElementById(id);
 // Используем локальную дату — toISOString() даёт UTC и может быть "вчера" ночью
 const today=()=>{const d=new Date();return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
 const tomorrow=()=>addDays(1);
-const addDays=(n)=>{const d=new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
+const addDays=(n,base)=>{const d=base?new Date(base+'T00:00:00'):new Date();d.setDate(d.getDate()+n);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());};
 
 
 function fmtD(s){
@@ -629,6 +667,14 @@ function subCats(pid){return A.cats.filter(c=>c.parent===pid)}
 // Авто-миграция: старые записи "Подтягивания лесенка до N" (s:1,r:N)
 // конвертируются в новый формат {ladder:N}. Срабатывает один раз,
 // безопасно — не трогает уже мигрированные записи и обычные подтягивания.
+function migrateLadderNames(){
+  // «Подтягивания лесенка» → «Подтягивания» (лесенка теперь галочка)
+  let ch=false;
+  (A.workouts||[]).forEach(w=>(w.exs||[]).forEach(ex=>{
+    if(ex.n==='Подтягивания лесенка'){ex.n='Подтягивания';ch=true;}
+  }));
+  if(ch)try{saveState();}catch(e){}
+}
 function migrateLadderExercises(){
   if(!A.workouts || !A.workouts.length) return;
   let changed=false;
@@ -643,7 +689,7 @@ function migrateLadderExercises(){
         const match=ex.n.match(/до\s*(\d+)/i);
         const peak=match?parseInt(match[1]):(typeof ex.r==='number'?ex.r:null);
         if(peak){
-          ex.n='Подтягивания лесенка';
+          ex.n='Подтягивания';
           ex.ladder=peak;
           delete ex.s;
           delete ex.r;
@@ -682,6 +728,7 @@ function loadState(){
     A.workoutTypes=d.workoutTypes&&d.workoutTypes.length?d.workoutTypes:[...WORKOUT_TYPES];
     A.memos=d.memos||[];
     migrateLadderExercises(); // авто-исправление старого формата лесенки
+    migrateLadderNames();
   }catch(e){
     A.tasks=seedTasks();A.workouts=seedWorkouts();
     A.autoTasks=seedAutoTasks();A.autoService=seedAutoService();
@@ -951,6 +998,7 @@ function render(){
   renderNav();
   renderMoreMenu();
   bind();
+  try{updateWkPill();}catch(e){}
 }
 
 // ─── GLOBAL SVG ICON LIBRARY ───────────────────────────────
@@ -1109,14 +1157,20 @@ function pgTasks(){
 
   let cnt=`<div class="pg">`;
   if(isToday){
-    if(overdue.length){cnt+=glHdr('⚠️ Просрочено',overdue.length,'var(--red)');overdue.forEach(t=>{cnt+=card(t);});}
-    if(todayTs.length){cnt+=glHdr('📅 Сегодня',todayTs.length,'var(--yel)');todayTs.forEach(t=>{cnt+=card(t);});}
-    if(tmrwTs.length){cnt+=glHdr('⏭ Завтра',tmrwTs.length,'var(--blu)');tmrwTs.forEach(t=>{cnt+=card(t);});}
-    if(later.length){cnt+=glHdr('📌 Запланировано',later.length);later.forEach(t=>{cnt+=card(t);});}
-    if(noDl.length){cnt+=glHdr('📋 Без дедлайна',noDl.length);noDl.forEach(t=>{cnt+=card(t);});}
+    const sec=(key,label,list,color)=>{
+      if(!list.length)return '';
+      let h=foldHdr(label,list.length,color,'t_'+key,0);
+      if(!isFolded('t_'+key,0))list.forEach(t=>{h+=card(t,key);});
+      return h;
+    };
+    cnt+=sec('ovd','⚠️ Просрочено',overdue,'var(--red)');
+    cnt+=sec('tod','📅 Сегодня',todayTs,'var(--yel)');
+    cnt+=sec('tmr','⏭ Завтра',tmrwTs,'var(--blu)');
+    cnt+=sec('lat','📌 Запланировано',later);
+    cnt+=sec('nod','📋 Без дедлайна',noDl);
   } else {
     const d=new Date(A.selDate+'T00:00:00');
-    if(all.length){cnt+=glHdr('📅 '+d.getDate()+' '+RUM[d.getMonth()],all.length);all.forEach(t=>{cnt+=card(t);});}
+    if(all.length){cnt+=glHdr('📅 '+d.getDate()+' '+RUM[d.getMonth()],all.length);all.forEach(t=>{cnt+=card(t,'day');});}
   }
   if(!all.length) cnt+=`<div class="empty"><div class="empty-ic">✨</div><div class="empty-t">${isToday?'На сегодня всё готово!':'Задач нет'}</div><div class="empty-s">Нажми ＋ чтобы добавить.</div></div>`;
   cnt+=`</div>`;
@@ -1160,7 +1214,7 @@ function glHdr(label,count,color){
   return `<div class="gl"><span style="color:${color}">${label}</span><span class="gl-n">${count}</span></div>`;
 }
 
-function card(t){
+function card(t,grp){
   const cat=getCat(t.cat),stat=getStat(t.s),pCls=PCLS[t.p]||'py';
   const isDone=t.s==='done',ovd=isOver(t);
   const hasRem=A.reminders[t.id];
@@ -1173,10 +1227,10 @@ function card(t){
   if(t.dl&&!isDone) tags+=`<span class="tag" style="color:${ovd?'var(--red)':'var(--t2)'};font-weight:${ovd?'800':'600'}">${ovd?'⚠️ Просрочено! ':fmtD(t.dl)}</span>`;
   if(hasRem) tags+=`<span class="tag t-rem">🔔 ${fmtDT(hasRem)}</span>`;
   tags+=`</div>`;
-  const note=t.note?`<div class="tc-note">${t.note.slice(0,90)}${t.note.length>90?'…':''}</div>`:'';
-  return `<div class="tc ${pCls}" onclick="openEdit(${t.id})">
+  const note=t.note?`<div class="tc-note">${escH(t.note.slice(0,90))}${t.note.length>90?'…':''}</div>`:'';
+  return `<div class="tc ${pCls}" data-del="task:${t.id}" data-grp="${grp||'x'}" onclick="openEdit(${t.id})">
     <div class="tc-chk${isDone?' on':''}" onclick="toggleDone(event,${t.id})"></div>
-    <div class="tc-body"><div class="tc-title${isDone?' done':''}">${t.title}</div>${tags}${note}</div>
+    <div class="tc-body"><div class="tc-title${isDone?' done':''}">${escH(t.title)}</div>${tags}${note}</div>
   </div>`;
 }
 
@@ -1358,15 +1412,16 @@ function buildCard(w, defaultOpen){
           </div>
         </div>`;
       });
-      body+=`<button class="wk-edit-btn" onclick="event.stopPropagation();openEditWorkout('${w.id}')">✏️ Редактировать тренировку</button>`;
+      body+=`<button class="wk-edit-btn" onclick="event.stopPropagation();openEditWorkout('${w.id}')">✏️ Редактировать тренировку</button>
+      <div style="display:flex;gap:8px;margin-top:8px"><button class="wk-edit-btn" style="margin-top:0" onclick="event.stopPropagation();openCopyWorkout('${w.id}')">⧉ Копировать</button><button class="wk-edit-btn" style="margin-top:0" onclick="event.stopPropagation();openMergeWorkouts('${w.id}')">⇄ Объединить</button></div>`;
       body+=`</div>`;
     }
 
-    return `<div class="wk-card">
+    return `<div class="wk-card" data-del="wk:${w.id}" data-grp="wk">
       <div class="wk-hdr" onclick="toggleWkCard('${w.id}')">
         <span class="wk-date">${dateStr}</span>
         <span style="width:26px;height:26px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border-radius:7px;flex-shrink:0">${svgIcon(svgId,15)}</span>
-        <span class="wk-type">${typeName}</span>
+        <span class="wk-type">${escH(w.name||typeName)}</span>
         <span class="wk-cnt">${groupExs(w.exs).length} упр.</span>
         ${dyn}
         <span class="wk-chevron${isOpen?' open':''}">∨</span>
@@ -1376,8 +1431,8 @@ function buildCard(w, defaultOpen){
   }
 
   const wkCount=thisWeek.length;
-  const mnStart=new Date();mnStart.setDate(1);
-  const mnCount=A.workouts.filter(w=>w.date>=mnStart.toISOString().slice(0,10)).length;
+  const mnStart=today().slice(0,8)+'01';
+  const mnCount=A.workouts.filter(w=>w.date>=mnStart).length;
 
   let html=`<div class="ph">
     <div class="ph-row" style="margin-bottom:4px;gap:8px">
@@ -1401,7 +1456,7 @@ function buildCard(w, defaultOpen){
     earlier.forEach(w=>{html+=buildCard(w,false);});
   }
   if(!sorted.length){
-    html+=`<div class="empty"><span style="display:flex;align-items:center;justify-content:center">{svgIcon("workout",40)}</span><div class="empty-t">Нет тренировок</div><div class="empty-s">Нажми ＋ чтобы добавить первую</div></div>`;
+    html+=`<div class="empty"><span style="display:flex;align-items:center;justify-content:center">${svgIcon("workout",40)}</span><div class="empty-t">Нет тренировок</div><div class="empty-s">Нажми ＋ чтобы добавить первую</div></div>`;
   }
   html+=`</div>`;
   return html;
@@ -1436,11 +1491,11 @@ function pgAuto(){
   } else {
     html+=`<div class="rc">`;
     activeTasks.forEach(t=>{
-      html+=`<div class="auto-task" onclick="openAutoEdit('${t.id}')">
+      html+=`<div class="auto-task" data-del="atask:${t.id}" data-grp="atask" onclick="openAutoEdit('${t.id}')">
         <div class="auto-pbar" style="background:${pColors[t.p]||'var(--yel)'}"></div>
         <div style="flex:1">
-          <div style="font-size:14px;font-weight:600">${t.title}</div>
-          ${t.note?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${t.note}</div>`:''}
+          <div style="font-size:14px;font-weight:600">${escH(t.title)}</div>
+          ${t.note?`<div style="font-size:11px;color:var(--t3);margin-top:2px">${escH(t.note)}</div>`:''}
         </div>
         <span style="color:var(--t3);font-size:18px">›</span>
       </div>`;
@@ -1453,10 +1508,10 @@ function pgAuto(){
   sortedSvc.forEach(s=>{
     const d=new Date(s.date+'T00:00:00');
     const dateStr=d.getDate()+' '+RUM[d.getMonth()]+' '+d.getFullYear();
-    html+=`<div class="auto-svc-entry">
+    html+=`<div class="auto-svc-entry" data-del="svc:${s.id}" data-grp="svc">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <span style="font-size:14px;font-weight:700">${dateStr}</span>
-        <span class="auto-svc-km">${Number(s.km).toLocaleString('ru')} км</span>
+        <span class="auto-svc-km">${isNaN(Number(s.km))?escH(s.km):Number(s.km).toLocaleString('ru')} км</span>
       </div>`;
     s.items.forEach(item=>{
       html+=`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--bd)">
@@ -1620,8 +1675,8 @@ function delService(id){
 // PAGE: REPORT (Статистика)
 // ═══════════════════════════════════════════════════════════
 function pgReport(){
-  const wkD=new Date();wkD.setDate(wkD.getDate()-wkD.getDay()+1);const wk=wkD.toISOString().slice(0,10);
-  const mnD=new Date();mnD.setDate(1);const mn=mnD.toISOString().slice(0,10);
+  const wk=getMondayOf(today());
+  const mn=today().slice(0,8)+'01';
   const tasks=A.tasks,done=tasks.filter(x=>x.s==='done'),active=tasks.filter(x=>x.s!=='done');
   const wkDone=done.filter(x=>x.doneAt&&x.doneAt>=wk).length;
   const wkAdded=tasks.filter(x=>x.dd&&x.dd>=wk).length;
@@ -1647,40 +1702,11 @@ function pgReport(){
     <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(mnDone,mnAdded)}%</div><div class="rs-l">Закрыто</div></div>
   </div></div>`;
 
-  // ── Collapsible done tasks
+  // ── Выполненные: свёртывание по нажатию на заголовок, год → месяц → неделя → день
   const doneOpen=A._doneOpen||false;
-  html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 7px">
-    <span style="font-size:10px;font-weight:800;color:var(--t3);letter-spacing:.09em;text-transform:uppercase">✅ Выполнено (${done.length})</span>
-    <div style="display:flex;gap:8px">
-      ${done.length?`<button onclick="clearDone()" style="font-size:11px;font-weight:700;color:var(--red);padding:4px 8px;background:var(--rbg);border-radius:6px;border:none;cursor:pointer">Очистить</button>`:''}
-      <button onclick="A._doneOpen=!A._doneOpen;render()" style="font-size:11px;font-weight:700;color:var(--blu);padding:4px 10px;background:var(--bbg);border-radius:6px;border:none;cursor:pointer">${doneOpen?'Свернуть ∧':'Показать ∨'}</button>
-    </div>
-  </div>`;
+  html+=`<div class="gl fold" onclick="A._doneOpen=!A._doneOpen;render()" style="padding-top:14px"><span style="color:var(--t3)">✅ Выполнено</span><span class="gl-n">${done.length}</span><span class="gl-chev${doneOpen?' open':''}">∨</span></div>`;
+  if(doneOpen){html+=doneTreeHtml(done);}
 
-  if(doneOpen){
-    const doneList=[...done].sort((a,b)=>(b.doneAt||'').localeCompare(a.doneAt||'')).slice(0,50);
-    const groups={};
-    doneList.forEach(t=>{const k=t.doneAt||t.dd||'';if(!groups[k])groups[k]=[];groups[k].push(t);});
-    if(!done.length){html+=`<div class="empty" style="padding:20px"><div class="empty-ic" style="font-size:28px">✅</div><div class="empty-t">Пока ничего</div></div>`;}
-    else{
-      Object.entries(groups).sort((a,b)=>b[0].localeCompare(a[0])).forEach(([date,ts])=>{
-        html+=glHdr(fmtD(date)||'Без даты',ts.length);
-        ts.forEach(t=>{
-          const cat=getCat(t.cat);
-          html+=`<div class="done-card" onclick="openEdit(${t.id})">
-            <div class="done-chk">✓</div>
-            <div class="done-body">
-              <div class="done-title">${t.title}</div>
-              <div class="done-meta">
-                <span style="background:${cat.bg};color:${cat.c};padding:1px 6px;border-radius:4px;font-weight:700">${cat.l}</span>
-                ${t.doneAt?`<span>✓ ${fmtDFull(t.doneAt)}</span>`:''}
-              </div>
-            </div>
-          </div>`;
-        });
-      });
-    }
-  }
 
   // ── Workout stats
   const wkWs=A.workouts.filter(w=>w.date>=wk);
@@ -1937,6 +1963,7 @@ function pgSettings(){
   html+=`<div style="margin-top:2px;display:flex;flex-direction:column;gap:6px">`;
   html+=`<button onclick="requestNotifPermission()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">🔔 Разрешить уведомления</button>`;
   html+=`<button onclick="openGuide()" style="width:100%;height:44px;border-radius:12px;background:var(--bg2);color:var(--t2);font-size:13px;font-weight:700;border:1.5px solid var(--bd);cursor:pointer;font-family:inherit">📖 Инструкция по использованию</button>`;
+  html+=`<button onclick="openClearDone()" style="width:100%;height:44px;border-radius:12px;background:var(--rbg);color:var(--red);font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit;margin-bottom:8px">🧹 Очистить выполненные задачи…</button>`;
   html+=`<button onclick="resetWorkouts()" style="width:100%;height:44px;border-radius:12px;background:var(--ybg);color:var(--yel);font-size:13px;font-weight:700;border:1.5px solid rgba(255,170,0,.2);cursor:pointer;font-family:inherit">↺ Загрузить историю тренировок</button>`;
   html+=`</div>`;
 
@@ -2231,192 +2258,378 @@ function openWorkoutFormSafe(el){
   openWorkoutForm(tid);
 }
 
-function openWorkoutForm(type,wid){
+// ══════════ ФОРМА ТРЕНИРОВКИ (модель: блок = упражнение + список подходов) ══════════
+let _exSeq=0;
+function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function isLadderName(n){return /подтяг|брус/i.test(n||'');}
+// сохранённое упражнение → блок формы
+function exToBlock(ex){
+  if(ex.ladder) return {n:ex.n,ladder:ex.ladder,sets:[{r:'',w:0}]};
+  if(ex.mixedW&&ex.sets) return {n:ex.n,ladder:0,sets:ex.sets.map(s=>({r:s.r,w:s.w||0}))};
+  if(ex.mixed&&Array.isArray(ex.r)) return {n:ex.n,ladder:0,sets:ex.r.map(r=>({r,w:ex.w||0}))};
+  const s=Math.max(1,ex.s||1);
+  return {n:ex.n,ladder:0,sets:Array.from({length:s},()=>({r:ex.r,w:ex.w||0}))};
+}
+// блок формы → упражнение в формате хранения (существующие форматы)
+function blockToEx(b){
+  const n=(b.n||'').trim();if(!n)return null;
+  if(b.ladder>0) return {n,ladder:+b.ladder,w:0};
+  const sets=(b.sets||[]).map(s=>({r:parseInt(s.r),w:parseFloat(s.w)||0})).filter(s=>s.r>0);
+  if(!sets.length)return null;
+  const r0=sets[0].r,w0=sets[0].w;
+  const sameW=sets.every(s=>s.w===w0),sameR=sets.every(s=>s.r===r0);
+  if(sameW&&sameR) return {n,s:sets.length,r:r0,w:w0};
+  if(sameW) return {n,s:sets.length,r:sets.map(s=>s.r),w:w0,mixed:true};
+  return {n,s:sets.length,sets,mixedW:true};
+}
+// лучший подход: максимальный вес, затем повторы
+function bestSet(ex){
+  const sets=exToBlock(ex).sets.filter(s=>s.r>0);
+  if(!sets.length)return null;
+  return sets.reduce((b,s)=>(s.w>b.w||(s.w===b.w&&s.r>b.r))?s:b,sets[0]);
+}
+function prevText(pe){
+  if(!pe)return'';
+  let t;
+  if(pe.ladder) t='до '+pe.ladder+' · '+totalReps(pe);
+  else t=fmtEx(pe)+((pe.w>0&&!pe.mixedW)?(' '+pe.w+'кг'):'')+' · '+totalReps(pe);
+  if(pe.mixedW){const b=bestSet(pe);if(b)t+=' · лучший: '+b.w+'кг×'+b.r;}
+  return t;
+}
+// последнее выполнение упражнения по названию (в любых тренировках)
+function lastExByName(n,exceptWid){
+  const ws=[...A.workouts].filter(w=>w.id!==exceptWid).sort((a,b)=>b.date.localeCompare(a.date));
+  for(const w of ws){const e=groupExs(w.exs).find(x=>x.n===n);if(e)return{ex:e,date:w.date};}
+  return null;
+}
+function allExNames(){
+  const seen={};
+  [...A.workouts].sort((a,b)=>b.date.localeCompare(a.date)).forEach(w=>w.exs.forEach(e=>{if(e.n&&!seen[e.n])seen[e.n]=w.date;}));
+  return seen; // {name: lastDate}, порядок — от недавних к давним
+}
+function setRowHtml(k,s,ph){
+  return `<div class="exr"><span class="exr-n">${k+1}</span>
+    <input class="si sr" type="number" inputmode="numeric" placeholder="${ph?escH(ph.r):'повт.'}" value="${s&&s.r!==''&&s.r!=null?escH(s.r):''}">
+    <span class="exr-x">×</span>
+    <input class="si sw" type="number" inputmode="decimal" step="any" placeholder="${ph?escH(ph.w):'кг'}" value="${s&&s.w!==''&&s.w!=null&&!(s.w===0&&(s.r===''||s.r==null))?escH(s.w):''}">
+    <button class="exr-del" onclick="delSet(this)" title="Убрать подход">✕</button></div>`;
+}
+function exBlockHtml(b,pe,peDate){
+  const i=_exSeq++;
+  const peB=pe?exToBlock(pe):null;
+  const phs=peB?peB.sets:[];
+  const rows=(b.sets&&b.sets.length?b.sets:[{r:'',w:''}]).map((s,k)=>setRowHtml(k,s,phs[k]||phs[phs.length-1]||null)).join('');
+  const ladOn=!!b.ladder;
+  const ladOk=isLadderName(b.n)||ladOn;
+  return `<div class="exb" id="exBlock${i}" data-i="${i}" data-ph='${escH(JSON.stringify(phs))}'>
+    <div class="exb-h">
+      <button class="exb-fold" onclick="foldEx(${i})" title="Свернуть/развернуть" id="exFold${i}">▾</button>
+      <input class="si exn" placeholder="Упражнение" list="exNames" value="${escH(b.n||'')}" oninput="onExInput(${i})" onchange="onExName(${i})">
+      <button class="exb-ic" onclick="moveExUp(${i})" title="Вверх">↑</button>
+      <button class="exb-ic" onclick="moveExDown(${i})" title="Вниз">↓</button>
+      <button class="exb-ic dng" onclick="removeEx(${i})" title="Удалить упражнение">✕</button>
+    </div>
+    <div class="exb-sum" id="exSum${i}" style="display:none" onclick="foldEx(${i})"></div>
+    <div class="exb-body" id="exBody${i}">
+      <div class="exb-prev" id="exPrev${i}" style="display:${pe?'block':'none'}">${pe?'пред'+(peDate?' '+fmtD(peDate):'')+': '+prevText(pe):''}</div>
+      <label class="exb-lad" id="exLadLbl${i}" style="display:${ladOk?'flex':'none'}">
+        <input type="checkbox" class="exl" ${ladOn?'checked':''} onchange="toggleLadderMode(${i})"> Лесенка (вверх-вниз)
+      </label>
+      <div id="exFields${i}" style="display:${ladOn?'none':'block'}">
+        <div class="exr-hd"><span></span><span>Повторения</span><span></span><span>Кг</span><span></span></div>
+        <div id="exSets${i}">${rows}</div>
+        <button class="exb-add" onclick="addSet(${i})">＋ Подход</button>
+      </div>
+      <div id="exLadder${i}" style="display:${ladOn?'block':'none'}">
+        <div class="exr-hd" style="display:block">До скольки повторений (пик лесенки)</div>
+        <input class="si exp" type="number" inputmode="numeric" value="${b.ladder||7}" oninput="updateLadderSum(${i})">
+        <div class="exb-prev" id="eladderSum${i}" style="display:block">Сумма: ${(b.ladder||7)*((b.ladder||7)+1)} повторений</div>
+      </div>
+    </div>
+  </div>`;
+}
+// собрать форму в модель
+function collectForm(){
+  const blocks=[];
+  document.querySelectorAll('#exList > .exb').forEach(el=>{
+    const ladCb=el.querySelector('.exl');
+    const lad=(ladCb&&ladCb.checked)?(parseInt(el.querySelector('.exp').value)||7):0;
+    const sets=[...el.querySelectorAll('.exr')].map(r=>({r:r.querySelector('.sr').value,w:r.querySelector('.sw').value}));
+    blocks.push({n:el.querySelector('.exn').value,ladder:lad,sets});
+  });
+  return{type:$('wType')?.value||'chest',wid:$('wId')?.value||'',date:$('wDate')?.value||today(),name:$('wName')?.value||'',blocks};
+}
+function openWorkoutForm(type,wid,draft,copyId){
  try{
   const existing=wid?A.workouts.find(w=>w.id===wid):null;
-  const last=existing||A.workouts.filter(w=>w.type===type).sort((a,b)=>b.date.localeCompare(a.date))[0];
-  const prev=wid?A.workouts.filter(w=>w.type===type&&w.id!==wid).sort((a,b)=>b.date.localeCompare(a.date))[0]:
-    A.workouts.filter(w=>w.type===type).sort((a,b)=>b.date.localeCompare(a.date))[1];
-  const initExs=last?last.exs:[{n:'',s:3,r:10,w:0}];
-  const prevGrouped=prev?groupExs(prev.exs):null;
-  const seenNames=new Set();
+  const src=copyId?A.workouts.find(w=>w.id===copyId):null;
+  if(draft){type=draft.type;wid=draft.wid||'';}
+  else if(existing)type=existing.type;
+  else if(src)type=src.type;
+  const sameType=A.workouts.filter(w=>w.type===type&&w.id!==wid).sort((a,b)=>b.date.localeCompare(a.date));
+  // «Предыдущая» для редактируемой — самая свежая до её даты; для новой — самая свежая из имеющихся
+  let prev=null;
+  if(existing)prev=sameType.find(w=>w.date<=existing.date)||null; else prev=sameType[0]||null;
+  const prevG=prev?groupExs(prev.exs):[];
+  let model; // blocks + date + name
+  let filled=true;
+  if(draft){model={blocks:draft.blocks,date:draft.date,name:draft.name||''};}
+  else if(existing){model={blocks:groupExs(existing.exs).map(exToBlock),date:existing.date,name:existing.name||''};}
+  else if(src){model={blocks:groupExs(src.exs).map(exToBlock),date:today(),name:''};}
+  else if(prev){ // новая: названия и число подходов из прошлой, значения пустые (в полях — подсказки «пред.»)
+    filled=false;
+    model={blocks:prevG.map(e=>{const b=exToBlock(e);return{n:b.n,ladder:b.ladder,sets:b.sets.map(()=>({r:'',w:''}))};}),date:today(),name:''};
+  } else model={blocks:[{n:'',ladder:0,sets:[{r:'',w:''}]}],date:today(),name:''};
   let exHtml='';
-  initExs.forEach((ex,i)=>{
-    const isFirstOccurrence=!seenNames.has(ex.n);
-    seenNames.add(ex.n);
-    const pe=(isFirstOccurrence&&prevGrouped)?prevGrouped.find(e=>e.n===ex.n):null;
-    const isLadder=!!ex.ladder;
-    let peStr='';
-    if(pe){
-      if(pe.ladder) peStr='до '+pe.ladder+' · '+(pe.ladder*(pe.ladder+1));
-      else peStr=fmtEx(pe)+((pe.w>0&&!pe.mixedW)?(' '+pe.w+'кг'):'')+' · '+totalReps(pe);
-    }
-    exHtml+=`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
-        <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" value="${ex.n||''}" oninput="checkLadderName(${i})">
-        <button onclick="moveExUp(${i})" title="Вверх" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↑</button>
-        <button onclick="moveExDown(${i})" title="Вниз" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↓</button>
-        <button onclick="removeEx(${i})" title="Удалить" style="width:34px;height:34px;border-radius:9px;background:var(--rbg);color:var(--red);border:1.5px solid rgba(255,70,70,.25);cursor:pointer;font-size:15px;flex-shrink:0;font-family:inherit">✕</button>
-      </div>
-      ${pe?`<div style="font-size:10px;color:var(--t3);margin-bottom:5px">пред: ${peStr}</div>`:''}
-      <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
-        <input type="checkbox" id="el${i}" ${isLadder?'checked':''} onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
-        Лесенка (вверх-вниз)
-      </label>
-      <div id="exFields${i}" style="display:${isLadder?'none':'flex'};gap:6px">
-        <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Подходы</div>
-          <input class="si" type="number" id="es${i}" value="${ex.s!=null?ex.s:3}"></div>
-        <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Повторения</div>
-          <input class="si" type="number" id="er${i}" value="${ex.r!=null?ex.r:10}"></div>
-        <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Кг</div>
-          <input class="si" type="number" id="ew${i}" value="${ex.w!=null?ex.w:0}"></div>
-      </div>
-      <div id="exLadder${i}" style="display:${isLadder?'block':'none'}">
-        <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
-        <input class="si" type="number" id="eladder${i}" value="${ex.ladder||7}" oninput="updateLadderSum(${i})">
-        <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: ${(ex.ladder||7)*((ex.ladder||7)+1)} повторений</div>
-      </div>
-    </div>`;
+  model.blocks.forEach(b=>{
+    const pe=prevG.find(e=>e.n===b.n&&!!e.ladder===!!b.ladder)||null;
+    exHtml+=exBlockHtml(b,pe,prev&&pe?prev.date:null);
   });
+  const names=Object.keys(allExNames()).map(n=>`<option value="${escH(n)}">`).join('');
+  const types=(A.workoutTypes&&A.workoutTypes.length?A.workoutTypes:WORKOUT_TYPES);
+  const tsel=types.map(t=>`<option value="${t.id}"${t.id===type?' selected':''}>${escH(t.l)}</option>`).join('');
   const prevLabel=prev?` (пред. ${fmtD(prev.date)})`:' (первая тренировка этого типа)';
   openSheet(`
     <div class="sht-hdr">
       <span class="sht-ttl">${wid?'Редактировать тренировку':'Новая тренировка'}</span>
+      <button class="exb-ic" style="width:auto;padding:0 10px;margin-right:8px" onclick="minimizeWorkout()" title="Свернуть, продолжить позже">▾ Свернуть</button>
       <div class="sht-x" onclick="closeSheet()">✕</div>
     </div>
-    <div class="ss"><div class="sl">Дата</div>
-      <input type="date" class="si" id="wDate" value="${existing?existing.date:today()}">
+    <datalist id="exNames">${names}</datalist>
+    <div class="ss" style="display:flex;gap:8px">
+      <div style="flex:1"><div class="sl">Дата</div><input type="date" class="si" id="wDate" value="${model.date}"></div>
+      <div style="flex:1"><div class="sl">Тип</div><select class="si" id="wType">${tsel}</select></div>
     </div>
+    <div class="ss"><div class="sl">Название (необязательно)</div><input class="si" id="wName" placeholder="Например: Грудь + плечи" value="${escH(model.name)}"></div>
     <div class="ss">
       <div class="sl">Упражнения${prevLabel}</div>
+      ${(!filled&&prev)?`<button class="exb-fill" onclick="fillFromPrev()">↺ Подставить значения прошлой тренировки</button>`:''}
       <div id="exList">${exHtml}</div>
-      <input type="hidden" id="wType" value="${type}">
       <input type="hidden" id="wId" value="${wid||''}">
-      <input type="hidden" id="wCnt" value="${initExs.length}">
-      <button onclick="addEx()" style="width:100%;height:38px;border-radius:9px;background:var(--bg3);color:var(--t2);font-size:12px;font-weight:700;margin-top:2px;border:none;cursor:pointer;font-family:inherit">＋ Добавить упражнение</button>
+      <button class="exb-addEx" onclick="addEx()">＋ Добавить упражнение</button>
+      <button class="exb-find" onclick="openExPicker()">🔍 Найти в истории упражнений</button>
     </div>
     <button class="btn-s" onclick="saveWorkout()">${wid?'Сохранить изменения':'Сохранить тренировку'}</button>
-    ${wid?`<button class="btn-d" onclick="delWorkout('${wid}')">🗑 Удалить тренировку</button>`:''}
+    ${wid?`<button class="btn-sec" onclick="openCopyWorkout('${wid}')">⧉ Копировать в новую тренировку</button>
+    <button class="btn-d" onclick="delWorkout('${wid}')">🗑 Удалить тренировку</button>`:''}
   `);
+  updateWkPill();
  }catch(e){
    console.error('openWorkoutForm error:', e);
    toast('Ошибка открытия формы: '+e.message);
  }
 }
-
 function openEditWorkout(id){
   const w=A.workouts.find(w=>w.id===id);
   if(!w)return;
   openWorkoutForm(w.type,id);
 }
-
-function toggleLadderMode(i){
-  const checked=$('el'+i)?.checked;
-  const fields=$('exFields'+i), ladder=$('exLadder'+i);
-  if(fields) fields.style.display=checked?'none':'flex';
-  if(ladder) ladder.style.display=checked?'block':'none';
+function openCopyWorkout(id){
+  closeSheet();
+  setTimeout(()=>openWorkoutForm(null,null,null,id),320);
 }
-function checkLadderName(i){
-  // Авто-включение режима лесенки если в названии есть "лесенка"
-  const name=($('en'+i)?.value||'').toLowerCase();
-  const cb=$('el'+i);
-  if(name.includes('лесенка') && cb && !cb.checked){
-    cb.checked=true;
-    toggleLadderMode(i);
+function fillFromPrev(){
+  document.querySelectorAll('#exList > .exb').forEach(el=>{
+    let phs=[];try{phs=JSON.parse(el.getAttribute('data-ph')||'[]');}catch(e){}
+    el.querySelectorAll('.exr').forEach((r,k)=>{
+      const ph=phs[k]||phs[phs.length-1];if(!ph)return;
+      if(!r.querySelector('.sr').value)r.querySelector('.sr').value=ph.r;
+      if(!r.querySelector('.sw').value)r.querySelector('.sw').value=ph.w||'';
+    });
+  });
+  toast('Подставлено из прошлой тренировки');
+}
+function foldEx(i){
+  const body=$('exBody'+i),sum=$('exSum'+i),f=$('exFold'+i);if(!body)return;
+  const folded=body.style.display==='none';
+  if(folded){body.style.display='';sum.style.display='none';f.textContent='▾';}
+  else{
+    const el=$('exBlock'+i);
+    const b={n:el.querySelector('.exn').value,ladder:el.querySelector('.exl')?.checked?(parseInt(el.querySelector('.exp').value)||7):0,
+      sets:[...el.querySelectorAll('.exr')].map(r=>({r:r.querySelector('.sr').value,w:r.querySelector('.sw').value}))};
+    const ex=blockToEx(b);
+    sum.textContent=ex?(fmtEx(ex)+((ex.w>0&&!ex.mixedW)?' · '+ex.w+'кг':'')+' · '+totalReps(ex)):'не заполнено';
+    body.style.display='none';sum.style.display='block';f.textContent='▸';
   }
+}
+function toggleLadderMode(i){
+  const on=document.querySelector('#exBlock'+i+' .exl')?.checked;
+  const f=$('exFields'+i),l=$('exLadder'+i);
+  if(f)f.style.display=on?'none':'block';
+  if(l)l.style.display=on?'block':'none';
 }
 function updateLadderSum(i){
-  const val=parseInt($('eladder'+i)?.value)||0;
-  const sumEl=$('eladderSum'+i);
-  if(sumEl) sumEl.textContent='Сумма: '+(val*(val+1))+' повторений';
+  const val=parseInt(document.querySelector('#exBlock'+i+' .exp')?.value)||0;
+  const el=$('eladderSum'+i);if(el)el.textContent='Сумма: '+(val*(val+1))+' повторений';
 }
-
-function removeEx(i){
-  const block=$('exBlock'+i);
-  if(!block) return;
-  const list=$('exList');
-  if(list && list.children.length<=1){
-    toast('Должно остаться хотя бы одно упражнение');
-    return;
+function onExInput(i){
+  const el=$('exBlock'+i);if(!el)return;
+  const n=el.querySelector('.exn').value;
+  const lbl=$('exLadLbl'+i),cb=el.querySelector('.exl');
+  const ok=isLadderName(n);
+  if(lbl)lbl.style.display=(ok||cb.checked)?'flex':'none';
+  if(!ok&&cb.checked&&n.trim()){cb.checked=false;toggleLadderMode(i);}
+}
+// выбор названия: подтягиваем последнее выполнение этого упражнения
+function onExName(i){
+  const el=$('exBlock'+i);if(!el)return;
+  const n=el.querySelector('.exn').value.trim();if(!n)return;
+  onExInput(i);
+  const wid=$('wId')?.value||'';
+  const last=lastExByName(n,wid);if(!last)return;
+  const b=exToBlock(last.ex);
+  const prevEl=$('exPrev'+i);
+  if(prevEl){prevEl.style.display='block';prevEl.textContent='пред '+fmtD(last.date)+': '+prevText(last.ex);}
+  el.setAttribute('data-ph',JSON.stringify(b.sets));
+  const rows=[...el.querySelectorAll('.exr')];
+  rows.forEach((r,k)=>{const ph=b.sets[k]||b.sets[b.sets.length-1];if(ph){r.querySelector('.sr').placeholder=ph.r;r.querySelector('.sw').placeholder=ph.w||'кг';}});
+  if(last.ex.ladder&&isLadderName(n)){
+    el.querySelector('.exl').checked=true;toggleLadderMode(i);el.querySelector('.exp').value=last.ex.ladder;updateLadderSum(i);
   }
+}
+function addSet(i){
+  const box=$('exSets'+i);if(!box)return;
+  const rows=box.querySelectorAll('.exr');
+  const lastRow=rows[rows.length-1];
+  let phs=[];try{phs=JSON.parse($('exBlock'+i).getAttribute('data-ph')||'[]');}catch(e){}
+  const k=rows.length;
+  const s=lastRow?{r:lastRow.querySelector('.sr').value,w:lastRow.querySelector('.sw').value}:{r:'',w:''};
+  box.insertAdjacentHTML('beforeend',setRowHtml(k,s,phs[k]||phs[phs.length-1]||null));
+}
+function delSet(btn){
+  const row=btn.closest('.exr'),box=row.parentNode;
+  if(box.querySelectorAll('.exr').length<=1){row.querySelectorAll('input').forEach(x=>x.value='');return;}
+  row.remove();
+  box.querySelectorAll('.exr').forEach((r,k)=>r.querySelector('.exr-n').textContent=k+1);
+}
+function removeEx(i){
+  const block=$('exBlock'+i);if(!block)return;
+  const list=$('exList');
+  if(list&&list.children.length<=1){toast('Должно остаться хотя бы одно упражнение');return;}
   block.remove();
 }
-
 function moveExUp(i){
-  const block=$('exBlock'+i);
-  if(!block) return;
-  const prevSib=block.previousElementSibling;
-  if(prevSib) block.parentNode.insertBefore(block, prevSib);
+  const block=$('exBlock'+i);if(!block)return;
+  const p=block.previousElementSibling;if(p)block.parentNode.insertBefore(block,p);
 }
-
 function moveExDown(i){
-  const block=$('exBlock'+i);
-  if(!block) return;
-  const nextSib=block.nextElementSibling;
-  if(nextSib) block.parentNode.insertBefore(nextSib, block);
+  const block=$('exBlock'+i);if(!block)return;
+  const n=block.nextElementSibling;if(n)block.parentNode.insertBefore(n,block);
 }
-
 function addEx(){
-  const list=$('exList'),cnt=$('wCnt');if(!list||!cnt)return;
-  const i=parseInt(cnt.value);
-  list.insertAdjacentHTML('beforeend',`<div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:8px" id="exBlock${i}">
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:7px">
-      <input class="si" style="flex:1;margin-bottom:0" placeholder="Упражнение" id="en${i}" oninput="checkLadderName(${i})">
-      <button onclick="moveExUp(${i})" title="Вверх" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↑</button>
-      <button onclick="moveExDown(${i})" title="Вниз" style="width:34px;height:34px;border-radius:9px;background:var(--bg2);color:var(--t2);border:1.5px solid var(--bd);cursor:pointer;font-size:14px;flex-shrink:0;font-family:inherit">↓</button>
-      <button onclick="removeEx(${i})" title="Удалить" style="width:34px;height:34px;border-radius:9px;background:var(--rbg);color:var(--red);border:1.5px solid rgba(255,70,70,.25);cursor:pointer;font-size:15px;flex-shrink:0;font-family:inherit">✕</button>
-    </div>
-    <label style="display:flex;align-items:center;gap:6px;margin-bottom:7px;font-size:11px;color:var(--t2);cursor:pointer">
-      <input type="checkbox" id="el${i}" onchange="toggleLadderMode(${i})" style="width:16px;height:16px">
-      Лесенка (вверх-вниз)
-    </label>
-    <div id="exFields${i}" style="display:flex;gap:6px">
-      <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Подходы</div><input class="si" type="number" id="es${i}" value="3"></div>
-      <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Повторения</div><input class="si" type="number" id="er${i}" value="10"></div>
-      <div style="flex:1"><div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">Кг</div><input class="si" type="number" id="ew${i}" value="0"></div>
-    </div>
-    <div id="exLadder${i}" style="display:none">
-      <div style="font-size:9px;color:var(--t3);font-weight:800;text-transform:uppercase;margin-bottom:3px">До скольки повторений (пик лесенки)</div>
-      <input class="si" type="number" id="eladder${i}" value="7" oninput="updateLadderSum(${i})">
-      <div style="font-size:10px;color:var(--t3);margin-top:5px" id="eladderSum${i}">Сумма: 56 повторений</div>
-    </div>
-  </div>`);
-  cnt.value=i+1;
+  const list=$('exList');if(!list)return;
+  list.insertAdjacentHTML('beforeend',exBlockHtml({n:'',ladder:0,sets:[{r:'',w:''}]},null,null));
+  const inp=list.lastElementChild.querySelector('.exn');if(inp)inp.focus();
 }
-
 function saveWorkout(){
-  const date=$('wDate')?.value||today();
-  const type=$('wType')?.value||'chest';
-  const wid=$('wId')?.value||'';
-  const exs=[];
-  const list=$('exList');
-  if(list){
-    Array.from(list.children).forEach(block=>{
-      const idMatch=block.id&&block.id.match(/^exBlock(\d+)$/);
-      if(!idMatch) return;
-      const i=idMatch[1];
-      const n=(block.querySelector('#en'+i)?.value||'').trim();
-      if(!n) return;
-      const isLadder=block.querySelector('#el'+i)?.checked;
-      if(isLadder){
-        const peak=parseInt(block.querySelector('#eladder'+i)?.value||7);
-        exs.push({n,ladder:peak,w:0});
-      } else {
-        const s=parseInt(block.querySelector('#es'+i)?.value||3);
-        const r=parseInt(block.querySelector('#er'+i)?.value||10);
-        const w=parseFloat(block.querySelector('#ew'+i)?.value||0);
-        exs.push({n,s,r,w});
-      }
-    });
-  }
-  if(!exs.length){toast('Добавь хотя бы одно упражнение');return;}
-  if(wid){
-    const i=A.workouts.findIndex(w=>w.id===wid);
-    if(i!==-1)A.workouts[i]={...A.workouts[i],date,exs};
+  const f=collectForm();
+  const exs=f.blocks.map(blockToEx).filter(Boolean);
+  if(!exs.length){toast('Добавь упражнение и заполни повторения');return;}
+  const name=f.name.trim();
+  if(f.wid){
+    const i=A.workouts.findIndex(w=>w.id===f.wid);
+    if(i!==-1){A.workouts[i]={...A.workouts[i],date:f.date,type:f.type,exs};if(name)A.workouts[i].name=name;else delete A.workouts[i].name;}
   } else {
-    A.workouts.push({id:'w'+Date.now(),date,type,exs});
+    const w={id:'w'+Date.now(),date:f.date,type:f.type,exs};if(name)w.name=name;
+    A.workouts.push(w);
   }
-  saveState();closeSheet();render();toast(wid?'Тренировка обновлена':'Тренировка сохранена');
+  clearWkDraft();
+  saveState();closeSheet();render();toast(f.wid?'Тренировка обновлена':'Тренировка сохранена');
+}
+// ── Свернуть/развернуть действующую тренировку ──
+function minimizeWorkout(){
+  try{A._wDraft=collectForm();localStorage.setItem('pln6_draft',JSON.stringify(A._wDraft));}catch(e){}
+  closeSheet();updateWkPill();
+  toast('Тренировка свёрнута — вернуться: плашка внизу');
+}
+function resumeWorkout(){
+  if(!A._wDraft)return;
+  openWorkoutForm(null,null,A._wDraft);
+}
+function clearWkDraft(){
+  A._wDraft=null;try{localStorage.removeItem('pln6_draft');}catch(e){}
+  updateWkPill();
+}
+function discardWkDraft(e){
+  if(e)e.stopPropagation();
+  if(!confirm('Удалить свёрнутую тренировку (несохранённые данные пропадут)?'))return;
+  clearWkDraft();
+}
+function updateWkPill(){
+  if(A._wDraft===undefined){try{A._wDraft=JSON.parse(localStorage.getItem('pln6_draft')||'null');}catch(e){A._wDraft=null;}}
+  let p=$('wkPill');
+  const show=!!A._wDraft&&!($('ovl')&&$('ovl').classList.contains('on'));
+  if(!show){if(p)p.style.display='none';return;}
+  if(!p){
+    p=document.createElement('div');p.id='wkPill';
+    p.onclick=resumeWorkout;
+    document.body.appendChild(p);
+  }
+  const n=(A._wDraft.blocks||[]).filter(b=>(b.n||'').trim()).length;
+  p.innerHTML='<span>🏋 Тренировка в процессе · '+n+' упр. · развернуть ▴</span><span class="wkp-x" onclick="discardWkDraft(event)">✕</span>';
+  p.style.display='flex';
+}
+// ── Поиск по истории упражнений ──
+function openExPicker(){
+  A._pickDraft=collectForm();
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Упражнения</span><div class="sht-x" onclick="closePicker()">✕</div></div>
+    <div class="ss"><input class="si" id="exQ" placeholder="🔍 Поиск по названию" oninput="renderExPicker()" autocomplete="off"></div>
+    <div id="exPickList"></div>`);
+  renderExPicker();
+  setTimeout(()=>{const q=$('exQ');if(q)q.focus();},120);
+}
+function renderExPicker(){
+  const q=($('exQ')?.value||'').trim().toLowerCase();
+  const names=allExNames();
+  const rows=Object.keys(names).filter(n=>!q||n.toLowerCase().includes(q));
+  const box=$('exPickList');if(!box)return;
+  if(!rows.length){box.innerHTML='<div class="empty-s" style="padding:16px;text-align:center;color:var(--t3)">Ничего не найдено. Можно ввести новое название в форме.</div>';return;}
+  const today0=new Date(today()+'T00:00:00');
+  box.innerHTML=rows.map(n=>{
+    const last=lastExByName(n);
+    const days=Math.round((today0-new Date(names[n]+'T00:00:00'))/86400000);
+    const ago=days<=0?'сегодня':days+' дн. назад';
+    return `<div class="pch" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;box-sizing:border-box;margin-bottom:6px;padding:10px 14px;cursor:pointer" data-n="${escH(n)}" onclick="pickEx(this)">
+      <span style="font-size:14px;font-weight:600;pointer-events:none">${escH(n)}</span>
+      <span style="font-size:11px;color:var(--t3);pointer-events:none">${fmtD(names[n])} · ${ago}${last?' · '+prevText(last.ex):''}</span></div>`;
+  }).join('');
+}
+function pickEx(el){
+  const n=el.getAttribute('data-n');
+  const d=A._pickDraft;if(!d)return;
+  const last=lastExByName(n,d.wid);
+  const b=last?exToBlock(last.ex):{n,ladder:0,sets:[{r:'',w:''}]};
+  // значения не подставляем — только подсказки «пред.»
+  const blank={n,ladder:last&&last.ex.ladder&&isLadderName(n)?last.ex.ladder:0,sets:b.sets.map(()=>({r:'',w:''}))};
+  const empty=d.blocks.length===1&&!(d.blocks[0].n||'').trim();
+  if(empty)d.blocks=[blank];else d.blocks.push(blank);
+  A._pickDraft=null;
+  openWorkoutForm(null,null,d);
+  // подсказки пред. для добавленного упражнения
+  setTimeout(()=>{const els=document.querySelectorAll('#exList > .exb');const el=els[els.length-1];if(el)onExName(el.getAttribute('data-i'));},50);
+}
+function closePicker(){
+  const d=A._pickDraft;A._pickDraft=null;
+  if(d)openWorkoutForm(null,null,d);else closeSheet();
+}
+// ── Объединение тренировок ──
+function openMergeWorkouts(id){
+  const w=A.workouts.find(x=>x.id===id);if(!w)return;
+  const others=[...A.workouts].filter(x=>x.id!==id).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,40);
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Объединить с…</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><div class="sl">Выбери тренировки, которые добавить в «${fmtD(w.date)}». Они будут удалены, упражнения перенесутся.</div>
+    ${others.map(o=>`<label class="pch" style="display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;margin-bottom:6px;padding:10px 14px;cursor:pointer"><input type="checkbox" class="mgc" value="${o.id}" style="width:18px;height:18px"><span style="font-size:13px;flex:1">${fmtD(o.date)} · ${escH(o.name||((A.workoutTypes||[]).find(t=>t.id===o.type)||{}).l||o.type)}</span><span style="font-size:11px;color:var(--t3)">${groupExs(o.exs).length} упр.</span></label>`).join('')}
+    </div>
+    <button class="btn-s" onclick="doMerge('${id}')">Объединить</button>`);
+}
+function doMerge(id){
+  const ids=[...document.querySelectorAll('.mgc:checked')].map(x=>x.value);
+  if(!ids.length){toast('Отметь хотя бы одну тренировку');return;}
+  const t=A.workouts.find(x=>x.id===id);if(!t)return;
+  const src=A.workouts.filter(x=>ids.includes(x.id)).sort((a,b)=>a.date.localeCompare(b.date));
+  src.forEach(s=>{t.exs=t.exs.concat(JSON.parse(JSON.stringify(s.exs)));});
+  A.workouts=A.workouts.filter(x=>!ids.includes(x.id));
+  saveState();closeSheet();render();toast('Объединено: '+(ids.length+1)+' тренировки');
 }
 
 function delWorkout(id){
@@ -2528,7 +2741,7 @@ function pgMemos(){
 
   // Поле быстрой заметки
   html+=`<div style="background:var(--bg2);border-radius:var(--r);border:1.5px solid var(--bd);margin-bottom:12px;overflow:hidden">
-    <textarea id="memoInput" rows="3" placeholder="Напиши заметку..." style="width:100%;background:transparent;border:none;outline:none;padding:14px;font-size:14px;font-weight:500;color:var(--tx);font-family:inherit;resize:none;line-height:1.5"></textarea>
+    <textarea id="memoInput" rows="3" placeholder="Напиши заметку..." oninput="memoDraftSave(this.value)" style="width:100%;background:transparent;border:none;outline:none;padding:14px;font-size:14px;font-weight:500;color:var(--tx);font-family:inherit;resize:none;line-height:1.5">${escH(memoDraftGet())}</textarea>
     <div style="display:flex;gap:8px;padding:0 12px 12px">
       <button onclick="saveMemo()" style="height:34px;padding:0 16px;border-radius:10px;background:var(--blu);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:inherit">Сохранить</button>
     </div>
@@ -2542,8 +2755,8 @@ function pgMemos(){
   if(memos.length){
     html+=glHdr('Заметки',memos.length);
     memos.forEach((m,idx)=>{
-      html+=`<div style="background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd);cursor:pointer" onclick="editMemo(${idx})">
-        <div style="font-size:13px;font-weight:500;color:var(--tx);line-height:1.5;white-space:pre-wrap">${m.text}</div>
+      html+=`<div data-del="memo:${m.id}" data-grp="memo" style="background:var(--bg2);border-radius:var(--r);padding:13px;margin-bottom:8px;border:1.5px solid var(--bd);cursor:pointer" onclick="editMemo(${idx})">
+        <div style="font-size:13px;font-weight:500;color:var(--tx);line-height:1.5;white-space:pre-wrap">${escH(m.text)}</div>
         <div style="font-size:10px;color:var(--t3);margin-top:6px">${fmtDFull(m.date)}</div>
       </div>`;
     });
@@ -2552,9 +2765,10 @@ function pgMemos(){
   // Идеи и размышления
   html+=`<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 7px">
     <span style="font-size:10px;font-weight:800;color:var(--grn);letter-spacing:.09em;text-transform:uppercase">💡 Размышления (${activeIdeas.length})</span>
+    <button onclick="openNewIdeaSheet()" style="font-size:11px;font-weight:700;color:var(--grn);padding:4px 10px;background:var(--gbg);border-radius:6px;border:none;cursor:pointer;font-family:inherit">＋ Идея</button>
   </div>`;
   if(!activeIdeas.length){
-    html+=`<div style="text-align:center;padding:12px;color:var(--t3);font-size:13px">Нет идей — нажми ＋ чтобы добавить</div>`;
+    html+=`<div style="text-align:center;padding:12px;color:var(--t3);font-size:13px">Нет идей — нажми «＋ Идея»</div>`;
   } else {
     activeIdeas.forEach(t=>{html+=card(t);});
   }
@@ -2567,13 +2781,194 @@ function pgMemos(){
   return html;
 }
 
+
+// ══════════ СВОРАЧИВАНИЕ БЛОКОВ ══════════
+function isFolded(k,def){if(!A._fold)A._fold={};return (k in A._fold)?A._fold[k]:!!def;}
+function toggleFold(k,def){isFolded(k,def);A._fold[k]=!isFolded(k,def);render();}
+function foldHdr(label,count,color,key,def){
+  const f=isFolded(key,def);
+  return `<div class="gl fold" onclick="toggleFold('${key}',${def?1:0})"><span style="color:${color||'var(--t3)'}">${label}</span><span class="gl-n">${count}</span><span class="gl-chev${f?'':' open'}">∨</span></div>`;
+}
+// ══════════ ВЫПОЛНЕННЫЕ: год → месяц → неделя → день ══════════
+function doneTreeHtml(done){
+  const sortKey=t=>t.doneAt||t.dd||'';
+  const list=[...done].sort((a,b)=>sortKey(b).localeCompare(sortKey(a)));
+  if(!list.length)return `<div class="empty" style="padding:20px"><div class="empty-ic" style="font-size:28px">✅</div><div class="empty-t">Пока ничего</div></div>`;
+  const tod=today(),curY=tod.slice(0,4),curM=tod.slice(0,7),curW=getMondayOf(tod);
+  const years={};
+  list.forEach(t=>{
+    const k=sortKey(t)||'0000-00-00';
+    const y=k.slice(0,4),m=k.slice(0,7),w=getMondayOf(k),d=k;
+    ((((years[y]=years[y]||{})[m]=years[y][m]||{})[w]=years[y][m][w]||{})[d]=years[y][m][w][d]||[]).push(t);
+  });
+  const cnt=o=>Array.isArray(o)?o.length:Object.values(o).reduce((s,x)=>s+cnt(x),0);
+  let h='';
+  Object.keys(years).sort().reverse().forEach(y=>{
+    const yk='dy'+y;h+=foldHdr('📆 '+(y==='0000'?'Без даты':y),cnt(years[y]),'var(--t2)',yk,y!==curY);
+    if(isFolded(yk,y!==curY))return;
+    Object.keys(years[y]).sort().reverse().forEach(m=>{
+      const mk='dm'+m;const mi=parseInt(m.slice(5,7))-1;
+      h+=foldHdr('🗓 '+(RUMF[mi]||m),cnt(years[y][m]),'var(--blu)',mk,m!==curM);
+      if(isFolded(mk,m!==curM))return;
+      Object.keys(years[y][m]).sort().reverse().forEach(w=>{
+        const wk='dw'+w;const we=addDays(6,w);
+        const lbl='Неделя '+fmtD(w)+' – '+fmtD(we);
+        h+=foldHdr(lbl,cnt(years[y][m][w]),'var(--t3)',wk,w!==curW);
+        if(isFolded(wk,w!==curW))return;
+        Object.keys(years[y][m][w]).sort().reverse().forEach(d=>{
+          const ts=years[y][m][w][d];
+          h+=`<div class="gl" style="padding-left:14px"><span style="color:var(--t3)">${fmtD(d)||'Без даты'}</span><span class="gl-n">${ts.length}</span></div>`;
+          ts.forEach(t=>{
+            const cat=getCat(t.cat);
+            h+=`<div class="done-card" data-del="task:${t.id}" data-grp="done" onclick="openEdit(${t.id})">
+              <div class="done-chk">✓</div>
+              <div class="done-body"><div class="done-title">${escH(t.title)}</div>
+              <div class="done-meta"><span class="tag" style="background:${cat.bg};color:${cat.c}">${cat.l}</span></div></div>
+            </div>`;
+          });
+        });
+      });
+    });
+  });
+  return h;
+}
+// ══════════ ОЧИСТКА ВЫПОЛНЕННЫХ (в настройках, с периодом) ══════════
+function doneOlderThan(days){
+  const cut=days>0?addDays(-days,today()):'9999-99-99';
+  return A.tasks.filter(t=>t.s==='done'&&((t.doneAt||t.dd||'0000')<cut));
+}
+function openClearDone(){
+  const opts=[[0,'Все выполненные'],[7,'Старше недели'],[30,'Старше месяца'],[90,'Старше 3 месяцев'],[180,'Старше полугода'],[365,'Старше года']];
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Очистить выполненные</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><div class="sl">За какой период удалить?</div>
+    ${opts.map(o=>`<div class="pch" style="display:flex;justify-content:space-between;width:100%;box-sizing:border-box;margin-bottom:6px;padding:12px 14px;cursor:pointer" onclick="doClearDone(${o[0]})"><span style="font-weight:600">${o[1]}</span><span style="color:var(--t3);font-size:12px">${doneOlderThan(o[0]).length} шт.</span></div>`).join('')}
+    </div>`);
+}
+function doClearDone(days){
+  const del=doneOlderThan(days);
+  if(!del.length){toast('Нечего удалять');return;}
+  if(!confirm('Удалить '+del.length+' выполненных задач?'))return;
+  const ids=new Set(del.map(t=>t.id));
+  A.tasks=A.tasks.filter(t=>!ids.has(t.id));
+  saveState();closeSheet();render();toast('Удалено: '+del.length);
+}
+// ══════════ ЗАМЕТКИ ══════════
+function openNewMemo(){
+  openSheet(`<div class="sht-hdr"><span class="sht-ttl">Новая заметка</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+    <div class="ss"><textarea class="si" id="memoNewText" rows="8" placeholder="Напиши заметку..." style="font-size:15px;line-height:1.6" oninput="memoDraftSave(this.value)">${escH(memoDraftGet())}</textarea></div>
+    <button class="btn-s" onclick="saveMemoSheet()">Добавить заметку</button>`);
+  setTimeout(()=>{const t=$('memoNewText');if(t)t.focus();},150);
+}
+function memoDraftGet(){try{return localStorage.getItem('pln6_memodraft')||'';}catch(e){return '';}}
+function memoDraftSave(v){try{localStorage.setItem('pln6_memodraft',v);}catch(e){}}
+function saveMemoSheet(){
+  const text=($('memoNewText')?.value||'').trim();
+  if(!text){toast('Введи текст заметки');return;}
+  if(!A.memos)A.memos=[];
+  A.memos.unshift({id:Date.now(),text,date:today()});
+  memoDraftSave('');saveState();closeSheet();render();toast('Заметка добавлена');
+}
+function openNewIdeaSheet(){
+  A.edit={cat:'ideas',p:'blue',s:'todo',dl:'',note:''};
+  showTaskSheet(false);
+}
+// ══════════ ДОЛГОЕ НАЖАТИЕ: выделить → удалить / перетащить ══════════
+function lpDelete(kind,id){
+  const names={task:'задачу',memo:'заметку',atask:'задачу по авто',svc:'запись истории',wk:'тренировку'};
+  if(!confirm('Удалить '+(names[kind]||'элемент')+'?'))return;
+  if(kind==='task'){A.tasks=A.tasks.filter(t=>String(t.id)!==String(id));delete A.reminders[id];}
+  else if(kind==='memo'){A.memos=(A.memos||[]).filter(m=>String(m.id)!==String(id));}
+  else if(kind==='atask'){A.autoTasks=(A.autoTasks||[]).filter(t=>String(t.id)!==String(id));}
+  else if(kind==='svc'){A.autoService=(A.autoService||[]).filter(s=>String(s.id)!==String(id));}
+  else if(kind==='wk'){A.workouts=A.workouts.filter(w=>String(w.id)!==String(id));}
+  lpClear();saveState();render();toast('Удалено');
+}
+let _lp={timer:null,el:null,sx:0,sy:0,sel:null,drag:false,startY:0,origTop:0,lastTouch:0};
+function lpClear(){
+  if(_lp.sel){_lp.sel.classList.remove('lp-sel');_lp.sel.style.transform='';}
+  _lp.sel=null;_lp.drag=false;
+  const b=$('lpBar');if(b)b.style.display='none';
+}
+function lpShowBar(t){
+  let b=$('lpBar');
+  if(!b){b=document.createElement('div');b.id='lpBar';document.body.appendChild(b);}
+  const [kind,id]=t.dataset.del.split(':');
+  const canMove=['task','memo','atask'].includes(kind);
+  b.innerHTML=(canMove?'<span class="lpb-h">Тяни, чтобы изменить порядок</span>':'')+
+    `<button class="lpb-del" onclick="lpDelete('${kind}','${id}')">🗑 Удалить</button><button class="lpb-ok" onclick="lpClear()">Готово</button>`;
+  b.style.display='flex';
+}
+function lpSelect(t){
+  lpClear();_lp.sel=t;t.classList.add('lp-sel');
+  try{if(navigator.vibrate)navigator.vibrate(15);}catch(e){}
+  lpShowBar(t);
+}
+function lpStart(x,y,t){
+  _lp.el=t;_lp.sx=x;_lp.sy=y;clearTimeout(_lp.timer);
+  _lp.timer=setTimeout(()=>{lpSelect(t);_lp.startY=_lp.sy;_lp.origTop=t.offsetTop;_lp.armed=true;},450);
+}
+function lpMove(x,y,ev){
+  if(!_lp.sel&&_lp.timer&&(Math.abs(x-_lp.sx)>10||Math.abs(y-_lp.sy)>10)){clearTimeout(_lp.timer);_lp.timer=null;return;}
+  const t=_lp.sel;if(!t||!_lp.armed)return;
+  const kind=t.dataset.del.split(':')[0];
+  if(!['task','memo','atask'].includes(kind))return;
+  if(!_lp.drag&&Math.abs(y-_lp.startY)>6){_lp.drag=true;t.classList.add('lp-drag');}
+  if(!_lp.drag)return;
+  if(ev&&ev.cancelable)ev.preventDefault();
+  const same=c=>c&&c.dataset&&c.dataset.del&&c.dataset.grp===t.dataset.grp&&c.dataset.del.split(':')[0]===kind;
+  t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';
+  let r=t.getBoundingClientRect(),c=r.top+r.height/2;
+  let nx=t.nextElementSibling;
+  while(same(nx)){const nr=nx.getBoundingClientRect();if(c>nr.top+nr.height/2){t.parentNode.insertBefore(nx,t);nx=t.nextElementSibling;t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
+  let pv=t.previousElementSibling;
+  while(same(pv)){const pr=pv.getBoundingClientRect();if(c<pr.top+pr.height/2){t.parentNode.insertBefore(t,pv);pv=t.previousElementSibling;t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
+}
+function lpEnd(){
+  clearTimeout(_lp.timer);_lp.timer=null;
+  const t=_lp.sel;
+  if(t&&_lp.drag){
+    t.classList.remove('lp-drag');t.style.transform='';
+    lpPersist(t);_lp.drag=false;
+    lpClear();render();toast('Порядок сохранён');
+  }
+  if(t)_lp.blockUntil=Date.now()+450; // «клик» после отпускания пальца не должен открывать элемент
+  _lp.armed=false;
+}
+function lpPersist(t){
+  const kind=t.dataset.del.split(':')[0];
+  const arr=kind==='task'?A.tasks:kind==='memo'?A.memos:kind==='atask'?A.autoTasks:null;
+  if(!arr)return;
+  const ids=[...t.parentNode.children].filter(c=>c.dataset&&c.dataset.del&&c.dataset.del.split(':')[0]===kind&&c.dataset.grp===t.dataset.grp).map(c=>c.dataset.del.split(':')[1]);
+  const slots=[];arr.forEach((x,i)=>{if(ids.includes(String(x.id)))slots.push(i);});
+  const byId={};arr.forEach(x=>{byId[String(x.id)]=x;});
+  ids.forEach((id,k)=>{if(slots[k]!=null&&byId[id])arr[slots[k]]=byId[id];});
+  saveState();
+}
+(function(){
+  const tgt=e=>e.target&&e.target.closest?e.target.closest('[data-del]'):null;
+  document.addEventListener('touchstart',e=>{_lp.lastTouch=Date.now();const t=tgt(e);if(!t||e.touches.length!==1)return;lpStart(e.touches[0].clientX,e.touches[0].clientY,t);},{passive:true});
+  document.addEventListener('touchmove',e=>{if(e.touches.length)lpMove(e.touches[0].clientX,e.touches[0].clientY,e);},{passive:false});
+  document.addEventListener('touchend',lpEnd,{passive:true});
+  document.addEventListener('touchcancel',()=>{clearTimeout(_lp.timer);},{passive:true});
+  document.addEventListener('mousedown',e=>{if(Date.now()-_lp.lastTouch<600||e.button!==0)return;const t=tgt(e);if(t)lpStart(e.clientX,e.clientY,t);});
+  document.addEventListener('mousemove',e=>{if(Date.now()-_lp.lastTouch<600)return;if(_lp.timer||_lp.sel)lpMove(e.clientX,e.clientY,e);});
+  document.addEventListener('mouseup',e=>{if(Date.now()-_lp.lastTouch<600)return;lpEnd();});
+  // подавить «клик» сразу после долгого нажатия; тап мимо снимает выделение
+  document.addEventListener('click',e=>{
+    const onBar=e.target.closest&&e.target.closest('#lpBar');
+    if(!onBar&&_lp.blockUntil&&Date.now()<_lp.blockUntil){e.stopPropagation();e.preventDefault();return;}
+    if(_lp.sel&&!(e.target.closest&&e.target.closest('#lpBar')))lpClear();
+  },true);
+  document.addEventListener('contextmenu',e=>{if(tgt(e))e.preventDefault();});
+})();
+
 function saveMemo(){
   const inp=$('memoInput');
   const text=(inp?.value||'').trim();
   if(!text){toast('Введи текст');return;}
   if(!A.memos) A.memos=[];
   A.memos.unshift({id:Date.now(),text,date:today()});
-  saveState();render();toast('Заметка сохранена');
+  memoDraftSave('');saveState();render();toast('Заметка сохранена');
 }
 
 function editMemo(idx){
@@ -2581,7 +2976,7 @@ function editMemo(idx){
   const m=A.memos[idx];
   openSheet(`<div class="sht-hdr"><span class="sht-ttl">Заметка</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
     <div class="ss">
-      <textarea class="si" id="memoEditText" rows="6" style="font-size:14px;line-height:1.6">${m.text}</textarea>
+      <textarea class="si" id="memoEditText" rows="6" style="font-size:14px;line-height:1.6">${escH(m.text)}</textarea>
     </div>
     <button class="btn-s" onclick="updateMemo(${idx})">Сохранить</button>
     <button class="btn-d" onclick="deleteMemo(${idx})">🗑 Удалить заметку</button>`);
@@ -2601,10 +2996,6 @@ function deleteMemo(idx){
   saveState();closeSheet();render();toast('Заметка удалена');
 }
 
-function openNewMemo(){
-  // FAB открывает форму новой идеи
-  openNewIdea();
-}
 
 // ═══════════════════════════════════════════════════════════
 // PAGE: GUIDE
@@ -2798,7 +3189,7 @@ function openSheet(html){
 }
 function closeSheet(){
   $('ovl').classList.remove('on');
-  setTimeout(()=>{if(!$('ovl').classList.contains('on'))$('sht').innerHTML='';},280);
+  setTimeout(()=>{if(!$('ovl').classList.contains('on'))$('sht').innerHTML='';updateWkPill();},280);
 }
 function schedRem(id,title,ts){
   if(!('Notification' in window)) return;
@@ -2868,6 +3259,7 @@ function importBackup(){
       A.autoService=data.autoService||A.autoService;
       A.workoutTypes=data.workoutTypes||A.workoutTypes;
       A.memos=data.memos||A.memos;
+      migrateLadderNames();
       saveState();applyTheme(A.theme);render();
       toast('✅ Данные восстановлены');
     }catch(err){toast('❌ Ошибка чтения файла');}
