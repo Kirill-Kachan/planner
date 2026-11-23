@@ -589,6 +589,14 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .pcal-d.ok{background:var(--gbg)}.pcal-d.ok i{color:var(--grn)}
 body.glass-on{background:radial-gradient(60% 38% at 15% 8%,color-mix(in srgb,var(--acc) 40%,transparent),transparent),radial-gradient(55% 40% at 95% 55%,color-mix(in srgb,var(--pur) 32%,transparent),transparent),radial-gradient(60% 40% at 10% 95%,color-mix(in srgb,var(--grn) 22%,transparent),transparent),var(--bg)!important;background-attachment:fixed}
 body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-card,body.glass-on .auto-task,body.glass-on .auto-svc-entry,body.glass-on .wt,body.glass-on .pcal,body.glass-on .exb,body.glass-on .qsbar,body.glass-on .ws-wrap,body.glass-on .sh,body.glass-on #sht,body.glass-on #lpBar{backdrop-filter:saturate(170%) blur(var(--gl-blur,28px));-webkit-backdrop-filter:saturate(170%) blur(var(--gl-blur,28px))}
+
+.swp-card{position:relative;overflow:visible!important}
+.swp-card{transition:transform .22s cubic-bezier(.4,0,.2,1)}
+.swp-act{position:absolute;left:100%;top:0;bottom:0;margin-left:8px;display:flex;gap:6px}
+.swp-act button{flex:1;border:none;border-radius:14px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;padding:0 6px}
+.swp-ok{background:var(--grn)}.swp-del{background:var(--red)}
+.pg{overflow-x:hidden}
+#lpBar{z-index:220!important}
 </style>
 </head>
 <body>
@@ -1207,7 +1215,7 @@ function pgPay(){
     occ.forEach(o=>{
       if(o.date!==lastD){lastD=o.date;const dd=new Date(o.date+'T00:00:00');h+=`<div class="gl" style="${o.date===tod?'color:var(--yel)':''}"><span>${RUDF[dd.getDay()]}, ${dd.getDate()} ${RUM[dd.getMonth()]}</span><span class="gl-n">${fmtMoney(sum(occ.filter(x=>x.date===o.date)))}</span></div>`;}
       const pd=paid(o),ov=!pd&&o.date<tod;
-      h+=`<div class="tc ${pd?'pg':ov?'pr':'py'}" data-del="pay:${o.p.id}" data-grp="pay" onclick="openPay('${o.p.id}')">
+      h+=`<div class="tc ${pd?'pg':ov?'pr':'py'}" data-del="pay:${o.p.id}" data-grp="pay" data-date="${o.date}" onclick="openPay('${o.p.id}')">
         <div class="tc-chk${pd?' on':''}" onclick="event.stopPropagation();togglePaid('${o.p.id}','${o.date}')"></div>
         <div class="tc-body"><div class="tc-title${pd?' done':''}">${escH(o.p.title)}</div>
         <div class="tc-tags"><span class="tag" style="background:var(--bg3);color:var(--tx);font-weight:800">${fmtMoney(o.p.amount)}</span>${o.p.rep&&o.p.rep!=='none'?`<span class="tag">🔁 ${({week:'еженедельно',month:'ежемесячно',year:'ежегодно'})[o.p.rep]}</span>`:''}${ov?`<span class="tag" style="color:var(--red);font-weight:800">⚠️ просрочено</span>`:''}</div>
@@ -3124,35 +3132,91 @@ function lpDelete(kind,id){
   else if(kind==='wk'){A.workouts=A.workouts.filter(w=>String(w.id)!==String(id));}
   else if(kind==='pay'){A.payments=(A.payments||[]).filter(x=>String(x.id)!==String(id));}
   else if(kind==='wait'){A.waits=(A.waits||[]).filter(x=>String(x.id)!==String(id));}
-  lpClear();saveState();render();toast('Удалено');
+  _lp.swOpen=null;lpClear();saveState();render();toast('Удалено');
 }
 const LP_MOVE=['task','memo','atask','wait'];
-let _lp={timer:null,el:null,sx:0,sy:0,sel:null,drag:false,startY:0,origTop:0,lastTouch:0};
+let _lp={timer:null,el:null,sx:0,sy:0,sel:null,drag:false,startY:0,origTop:0,lastTouch:0,sw:null,swMode:false,swOpen:null};
+function lpFab(show){const f=$('fab');if(!f)return;f.style.display=show?'flex':'none';}
 function lpClear(){
-  if(_lp.sel){_lp.sel.classList.remove('lp-sel');_lp.sel.style.transform='';}
-  _lp.sel=null;_lp.drag=false;
+  if(_lp.sel){_lp.sel.classList.remove('lp-sel','lp-drag');_lp.sel.style.transform='';}
+  _lp.sel=null;_lp.drag=false;_lp.armed=false;
   const b=$('lpBar');if(b)b.style.display='none';
+  lpFab(['tasks','workouts','auto','memos','pay'].includes(A.nav));
 }
 function lpShowBar(t){
   let b=$('lpBar');
   if(!b){b=document.createElement('div');b.id='lpBar';document.body.appendChild(b);}
   const [kind,id]=t.dataset.del.split(':');
   const canMove=LP_MOVE.includes(kind);
-  b.innerHTML=(canMove?'<span class="lpb-h">Тяни, чтобы изменить порядок</span>':'')+
-    `<button class="lpb-del" onclick="lpDelete('${kind}','${id}')">🗑 Удалить</button><button class="lpb-ok" onclick="lpClear()">Готово</button>`;
+  b.innerHTML=(canMove?'<span class="lpb-h">Тяни блок вверх/вниз, чтобы изменить порядок</span>':'<span class="lpb-h">Выбрано</span>')+
+    `<button class="lpb-del" onclick="lpDelete('${kind}','${id}')">🗑 Удалить</button><button class="lpb-ok" onclick="lpClear()">Отмена</button>`;
   b.style.display='flex';
+  lpFab(false);
 }
 function lpSelect(t){
-  lpClear();_lp.sel=t;t.classList.add('lp-sel');
+  lpClear();lpSwipeClose();_lp.sel=t;t.classList.add('lp-sel');
   try{if(navigator.vibrate)navigator.vibrate(15);}catch(e){}
   lpShowBar(t);
 }
+// ── действия по свайпу влево (как в Почте) ──
+function lpActions(kind,t){
+  const id=t.dataset.del.split(':')[1];
+  const a=[];
+  if(kind==='task')a.push(['ok','✓ Готово',`lpDone('task','${id}')`]);
+  if(kind==='wait')a.push(['ok','✓ Получен',`lpDone('wait','${id}')`]);
+  if(kind==='pay')a.push(['ok','✓ Оплачено',`lpDone('pay','${id}','${t.dataset.date||''}')`]);
+  a.push(['del','🗑 Удалить',`lpDelete('${kind}','${id}')`]);
+  return a;
+}
+function lpDone(kind,id,date){
+  if(kind==='task'){const t=A.tasks.find(x=>String(x.id)===String(id));if(t){t.s='done';t.doneAt=today();}}
+  else if(kind==='wait'){const w=(A.waits||[]).find(x=>String(x.id)===String(id));if(w){w.done=true;w.doneAt=today();}}
+  else if(kind==='pay'){const p=(A.payments||[]).find(x=>String(x.id)===String(id));if(p){(p.paid=p.paid||{})[date]=true;}}
+  lpSwipeClose();saveState();render();toast('Готово');
+}
+function lpSwipeClose(){
+  const o=_lp.swOpen;if(!o)return;
+  o.style.transform='';const ac=o.querySelector(':scope > .swp-act');if(ac)setTimeout(()=>ac.remove(),200);
+  _lp.swOpen=null;
+}
+const SW_W=150;
+function lpSwipeBegin(t){
+  const kind=t.dataset.del.split(':')[0];
+  if(_lp.swOpen&&_lp.swOpen!==t)lpSwipeClose();
+  let ac=t.querySelector(':scope > .swp-act');
+  if(!ac){
+    ac=document.createElement('div');ac.className='swp-act';
+    ac.innerHTML=lpActions(kind,t).map(x=>`<button class="swp-${x[0]}" onclick="event.stopPropagation();${x[2]}">${x[1]}</button>`).join('');
+    t.appendChild(ac);
+  }
+  ac.style.width=(lpActions(kind,t).length*SW_W/2)+'px';
+  _lp.swW=lpActions(kind,t).length*SW_W/2+8;
+  t.classList.add('swp-card');
+}
 function lpStart(x,y,t){
-  _lp.el=t;_lp.sx=x;_lp.sy=y;clearTimeout(_lp.timer);
-  _lp.timer=setTimeout(()=>{lpSelect(t);_lp.startY=_lp.sy;_lp.origTop=t.offsetTop;_lp.armed=true;},450);
+  _lp.sx=x;_lp.sy=y;_lp.swMode=false;clearTimeout(_lp.timer);_lp.timer=null;
+  if(_lp.sel){ // выбран блок: тянуть можно только его
+    if(t===_lp.sel){_lp.startY=y;_lp.origTop=t.offsetTop;_lp.armed=true;}
+    return;
+  }
+  if(_lp.swOpen&&_lp.swOpen!==t)lpSwipeClose();
+  _lp.el=t;
+  _lp.timer=setTimeout(()=>{_lp.timer=null;lpSelect(t);_lp.startY=_lp.sy;_lp.origTop=t.offsetTop;_lp.armed=true;},450);
 }
 function lpMove(x,y,ev){
-  if(!_lp.sel&&_lp.timer&&(Math.abs(x-_lp.sx)>10||Math.abs(y-_lp.sy)>10)){clearTimeout(_lp.timer);_lp.timer=null;return;}
+  const dx=x-_lp.sx,dy=y-_lp.sy;
+  if(_lp.timer){
+    if(Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)&&_lp.el){ // горизонтальный свайп
+      clearTimeout(_lp.timer);_lp.timer=null;_lp.swMode=true;lpSwipeBegin(_lp.el);
+    } else if(Math.abs(dy)>10||Math.abs(dx)>10){clearTimeout(_lp.timer);_lp.timer=null;return;}
+  }
+  if(_lp.swMode&&_lp.el){
+    if(ev&&ev.cancelable)ev.preventDefault();
+    const base=_lp.swOpen===_lp.el?-_lp.swW:0;
+    _lp.el.style.transition='none';
+    _lp.el.style.transform='translateX('+Math.max(-_lp.swW-30,Math.min(0,base+dx))+'px)';
+    return;
+  }
   const t=_lp.sel;if(!t||!_lp.armed)return;
   const kind=t.dataset.del.split(':')[0];
   if(!LP_MOVE.includes(kind))return;
@@ -3160,22 +3224,32 @@ function lpMove(x,y,ev){
   if(!_lp.drag)return;
   if(ev&&ev.cancelable)ev.preventDefault();
   const same=c=>c&&c.dataset&&c.dataset.del&&c.dataset.grp===t.dataset.grp&&c.dataset.del.split(':')[0]===kind;
-  t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';
+  const place=()=>{t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';};
+  place();
   let r=t.getBoundingClientRect(),c=r.top+r.height/2;
   let nx=t.nextElementSibling;
-  while(same(nx)){const nr=nx.getBoundingClientRect();if(c>nr.top+nr.height/2){t.parentNode.insertBefore(nx,t);nx=t.nextElementSibling;t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
+  while(same(nx)){const nr=nx.getBoundingClientRect();if(c>nr.top+nr.height/2){t.parentNode.insertBefore(nx,t);nx=t.nextElementSibling;place();r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
   let pv=t.previousElementSibling;
-  while(same(pv)){const pr=pv.getBoundingClientRect();if(c<pr.top+pr.height/2){t.parentNode.insertBefore(t,pv);pv=t.previousElementSibling;t.style.transform='translateY('+((y-_lp.startY)-(t.offsetTop-_lp.origTop))+'px)';r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
+  while(same(pv)){const pr=pv.getBoundingClientRect();if(c<pr.top+pr.height/2){t.parentNode.insertBefore(t,pv);pv=t.previousElementSibling;place();r=t.getBoundingClientRect();c=r.top+r.height/2;}else break;}
 }
 function lpEnd(){
   clearTimeout(_lp.timer);_lp.timer=null;
+  if(_lp.swMode&&_lp.el){
+    const el=_lp.el;el.style.transition='';
+    const m=(el.style.transform.match(/-?[\d.]+/)||['0'])[0];
+    const cur=parseFloat(m)||0;
+    if(cur<-_lp.swW/2){el.style.transform='translateX('+(-_lp.swW)+'px)';_lp.swOpen=el;}
+    else{el.style.transform='';_lp.swOpen=null;const ac=el.querySelector(':scope > .swp-act');if(ac)setTimeout(()=>ac.remove(),200);}
+    _lp.swMode=false;_lp.blockUntil=Date.now()+450;
+    return;
+  }
   const t=_lp.sel;
   if(t&&_lp.drag){
     t.classList.remove('lp-drag');t.style.transform='';
     lpPersist(t);_lp.drag=false;
     lpClear();render();toast('Порядок сохранён');
-  }
-  if(t)_lp.blockUntil=Date.now()+450; // «клик» после отпускания пальца не должен открывать элемент
+    _lp.blockUntil=Date.now()+450;
+  } else if(t){_lp.blockUntil=Date.now()+450;}
   _lp.armed=false;
 }
 function lpPersist(t){
@@ -3190,18 +3264,23 @@ function lpPersist(t){
 }
 (function(){
   const tgt=e=>e.target&&e.target.closest?e.target.closest('[data-del]'):null;
-  document.addEventListener('touchstart',e=>{_lp.lastTouch=Date.now();const t=tgt(e);if(!t||e.touches.length!==1)return;lpStart(e.touches[0].clientX,e.touches[0].clientY,t);},{passive:true});
+  const inAct=e=>e.target&&e.target.closest&&e.target.closest('.swp-act');
+  document.addEventListener('touchstart',e=>{_lp.lastTouch=Date.now();if(inAct(e))return;const t=tgt(e);
+    if(!t){if(_lp.swOpen)lpSwipeClose();return;}
+    if(e.touches.length!==1)return;lpStart(e.touches[0].clientX,e.touches[0].clientY,t);},{passive:true});
   document.addEventListener('touchmove',e=>{if(e.touches.length)lpMove(e.touches[0].clientX,e.touches[0].clientY,e);},{passive:false});
   document.addEventListener('touchend',lpEnd,{passive:true});
-  document.addEventListener('touchcancel',()=>{clearTimeout(_lp.timer);},{passive:true});
-  document.addEventListener('mousedown',e=>{if(Date.now()-_lp.lastTouch<600||e.button!==0)return;const t=tgt(e);if(t)lpStart(e.clientX,e.clientY,t);});
-  document.addEventListener('mousemove',e=>{if(Date.now()-_lp.lastTouch<600)return;if(_lp.timer||_lp.sel)lpMove(e.clientX,e.clientY,e);});
+  document.addEventListener('touchcancel',()=>{clearTimeout(_lp.timer);_lp.timer=null;},{passive:true});
+  document.addEventListener('mousedown',e=>{if(Date.now()-_lp.lastTouch<600||e.button!==0||inAct(e))return;const t=tgt(e);if(!t){if(_lp.swOpen)lpSwipeClose();return;}lpStart(e.clientX,e.clientY,t);});
+  document.addEventListener('mousemove',e=>{if(Date.now()-_lp.lastTouch<600)return;if(_lp.timer||_lp.sel||_lp.swMode||(e.buttons&&_lp.el))lpMove(e.clientX,e.clientY,e);});
   document.addEventListener('mouseup',e=>{if(Date.now()-_lp.lastTouch<600)return;lpEnd();});
-  // подавить «клик» сразу после долгого нажатия; тап мимо снимает выделение
   document.addEventListener('click',e=>{
     const onBar=e.target.closest&&e.target.closest('#lpBar');
-    if(!onBar&&_lp.blockUntil&&Date.now()<_lp.blockUntil){e.stopPropagation();e.preventDefault();return;}
-    if(_lp.sel&&!(e.target.closest&&e.target.closest('#lpBar')))lpClear();
+    if(onBar||inAct(e))return;
+    // пока блок выбран — любые другие нажатия игнорируются (снять выбор: перетащить или «Отмена»/«Удалить»)
+    if(_lp.sel){e.stopPropagation();e.preventDefault();return;}
+    if(_lp.blockUntil&&Date.now()<_lp.blockUntil){e.stopPropagation();e.preventDefault();return;}
+    if(_lp.swOpen){e.stopPropagation();e.preventDefault();lpSwipeClose();}
   },true);
   document.addEventListener('contextmenu',e=>{if(tgt(e))e.preventDefault();});
 })();
