@@ -593,8 +593,10 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .swp-card{position:relative;overflow:visible!important}
 .swp-card{transition:transform .22s cubic-bezier(.4,0,.2,1)}
 .swp-act{position:absolute;left:100%;top:0;bottom:0;margin-left:8px;display:flex;gap:6px}
-.swp-act button{flex:1;border:none;border-radius:14px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit;color:#fff;padding:0 6px}
-.swp-ok{background:var(--grn)}.swp-del{background:var(--red)}
+.swp-act button{flex:1;min-width:0;border-radius:var(--r);font-size:13px;font-weight:700;letter-spacing:.01em;cursor:pointer;font-family:inherit;padding:0 4px;background:var(--bg2);-webkit-tap-highlight-color:transparent}
+.swp-act button:active{transform:scale(.96)}
+.swp-ok{color:var(--grn);border:1.5px solid rgba(38,212,103,.45)!important;background:var(--gbg)!important}
+.swp-del{color:var(--red);border:1.5px solid rgba(255,59,80,.45)!important;background:var(--rbg)!important}
 .pg{overflow-x:hidden}
 #lpBar{z-index:220!important}
 </style>
@@ -3156,16 +3158,15 @@ function lpShowBar(t){
 function lpSelect(t){
   lpClear();lpSwipeClose();_lp.sel=t;t.classList.add('lp-sel');
   try{if(navigator.vibrate)navigator.vibrate(15);}catch(e){}
-  lpShowBar(t);
 }
 // ── действия по свайпу влево (как в Почте) ──
 function lpActions(kind,t){
   const id=t.dataset.del.split(':')[1];
   const a=[];
-  if(kind==='task')a.push(['ok','✓ Готово',`lpDone('task','${id}')`]);
-  if(kind==='wait')a.push(['ok','✓ Получен',`lpDone('wait','${id}')`]);
-  if(kind==='pay')a.push(['ok','✓ Оплачено',`lpDone('pay','${id}','${t.dataset.date||''}')`]);
-  a.push(['del','🗑 Удалить',`lpDelete('${kind}','${id}')`]);
+  if(kind==='task')a.push(['ok','Готово',`lpDone('task','${id}')`]);
+  if(kind==='wait')a.push(['ok','Получен',`lpDone('wait','${id}')`]);
+  if(kind==='pay')a.push(['ok','Оплачено',`lpDone('pay','${id}','${t.dataset.date||''}')`]);
+  a.push(['del','Удалить',`lpDelete('${kind}','${id}')`]);
   return a;
 }
 function lpDone(kind,id,date){
@@ -3179,7 +3180,7 @@ function lpSwipeClose(){
   o.style.transform='';const ac=o.querySelector(':scope > .swp-act');if(ac)setTimeout(()=>ac.remove(),200);
   _lp.swOpen=null;
 }
-const SW_W=150;
+const SW_W=176;
 function lpSwipeBegin(t){
   const kind=t.dataset.del.split(':')[0];
   if(_lp.swOpen&&_lp.swOpen!==t)lpSwipeClose();
@@ -3195,9 +3196,9 @@ function lpSwipeBegin(t){
 }
 function lpStart(x,y,t){
   _lp.sx=x;_lp.sy=y;_lp.swMode=false;clearTimeout(_lp.timer);_lp.timer=null;
-  if(_lp.sel){ // выбран блок: тянуть можно только его
-    if(t===_lp.sel){_lp.startY=y;_lp.origTop=t.offsetTop;_lp.armed=true;}
-    return;
+  if(_lp.sel){
+    if(t===_lp.sel){_lp.startY=y;_lp.origTop=t.offsetTop;_lp.armed=true;return;}
+    lpClear(); // нажали на другой блок — выделение исчезает
   }
   if(_lp.swOpen&&_lp.swOpen!==t)lpSwipeClose();
   _lp.el=t;
@@ -3266,19 +3267,18 @@ function lpPersist(t){
   const tgt=e=>e.target&&e.target.closest?e.target.closest('[data-del]'):null;
   const inAct=e=>e.target&&e.target.closest&&e.target.closest('.swp-act');
   document.addEventListener('touchstart',e=>{_lp.lastTouch=Date.now();if(inAct(e))return;const t=tgt(e);
-    if(!t){if(_lp.swOpen)lpSwipeClose();return;}
+    if(!t){if(_lp.swOpen)lpSwipeClose();if(_lp.sel)lpClear();return;}
     if(e.touches.length!==1)return;lpStart(e.touches[0].clientX,e.touches[0].clientY,t);},{passive:true});
   document.addEventListener('touchmove',e=>{if(e.touches.length)lpMove(e.touches[0].clientX,e.touches[0].clientY,e);},{passive:false});
   document.addEventListener('touchend',lpEnd,{passive:true});
   document.addEventListener('touchcancel',()=>{clearTimeout(_lp.timer);_lp.timer=null;},{passive:true});
-  document.addEventListener('mousedown',e=>{if(Date.now()-_lp.lastTouch<600||e.button!==0||inAct(e))return;const t=tgt(e);if(!t){if(_lp.swOpen)lpSwipeClose();return;}lpStart(e.clientX,e.clientY,t);});
+  document.addEventListener('mousedown',e=>{if(Date.now()-_lp.lastTouch<600||e.button!==0||inAct(e))return;const t=tgt(e);if(!t){if(_lp.swOpen)lpSwipeClose();if(_lp.sel)lpClear();return;}lpStart(e.clientX,e.clientY,t);});
   document.addEventListener('mousemove',e=>{if(Date.now()-_lp.lastTouch<600)return;if(_lp.timer||_lp.sel||_lp.swMode||(e.buttons&&_lp.el))lpMove(e.clientX,e.clientY,e);});
   document.addEventListener('mouseup',e=>{if(Date.now()-_lp.lastTouch<600)return;lpEnd();});
   document.addEventListener('click',e=>{
     const onBar=e.target.closest&&e.target.closest('#lpBar');
     if(onBar||inAct(e))return;
-    // пока блок выбран — любые другие нажатия игнорируются (снять выбор: перетащить или «Отмена»/«Удалить»)
-    if(_lp.sel){e.stopPropagation();e.preventDefault();return;}
+    if(_lp.sel&&!(e.target.closest&&e.target.closest('[data-del]')===_lp.sel&&_lp.blockUntil&&Date.now()<_lp.blockUntil))lpClear();
     if(_lp.blockUntil&&Date.now()<_lp.blockUntil){e.stopPropagation();e.preventDefault();return;}
     if(_lp.swOpen){e.stopPropagation();e.preventDefault();lpSwipeClose();}
   },true);
