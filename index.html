@@ -614,6 +614,16 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .act-b.on{background:var(--acc);color:#fff}
 .act-st{display:flex;justify-content:space-between;padding:8px 6px 0;font-size:12px;color:var(--t2);font-weight:600}
 .act-st b{font-size:15px;font-weight:900;margin-right:3px}
+.rg-row{display:flex;justify-content:space-around;margin:2px 0 12px}
+.rg{text-align:center}
+.rg-l{font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
+.qsbar.rg-row{padding:10px 16px 0}
+.mr-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.mr{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--bd);border-radius:12px;padding:8px 14px}
+.mr-l{flex:1;font-size:12px;font-weight:800;color:var(--tx);text-transform:uppercase;letter-spacing:.05em}
+.mr-v{text-align:right;line-height:1.1;white-space:nowrap}
+.mr-v b{font-size:19px;font-weight:800}
+.mr-v small{font-size:11px;color:var(--t3);font-weight:600;margin-left:8px}
 </style>
 </head>
 <body>
@@ -1529,11 +1539,8 @@ function pgTasks(){
   const selTasks=A.tasks.filter(t=>t.s!=='done'&&(t.dl===A.selDate||(t.dd===A.selDate&&!t.dl)));
   const selDone=A.tasks.filter(t=>t.s==='done'&&(t.doneAt===A.selDate||t.dd===A.selDate)).length;
   const allOverdue=A.tasks.filter(t=>isOver(t)).length; // всегда актуально
-  const qsbar=`<div class="qsbar">
-    <div class="qs"><div class="qs-n" style="color:var(--yel)">${selTasks.length}</div><div class="qs-l">На день</div></div>
-    <div class="qs" onclick="setNav('report')" style="cursor:pointer"><div class="qs-n" style="color:var(--red)">${allOverdue}</div><div class="qs-l">⚠️ Просроч.</div></div>
-    <div class="qs" onclick="setNav('report')" style="cursor:pointer"><div class="qs-n" style="color:var(--grn)">${selDone}</div><div class="qs-l">Готово →</div></div>
-  </div>`;
+  const qsTot=selTasks.length+selDone;
+  const qsbar=`<div class="qsbar rg-row">${ringHtml(qsTot?selDone/qsTot:0,'var(--yel)',selTasks.length,'Осталось')}${ringHtml(Math.min(1,allOverdue/10),'var(--red)',allOverdue,'Просрочено',"setNav('report')")}${ringHtml(qsTot?selDone/qsTot:0,'var(--grn)',selDone,'Готово',"setNav('report')")}</div>`;
 
   // Cat filter
   const activeCat=A.cats.find(c=>c.id===A.filterCat);
@@ -1770,6 +1777,36 @@ function fmtExPrev(ex){
 }
 
   
+// ── WHOOP-подобные компоненты: кольцо и строка метрики ──
+function ringHtml(pct,color,val,label,onclick){
+  const R=34,C=2*Math.PI*R,f=Math.max(0,Math.min(1,pct||0));
+  return `<div class="rg"${onclick?` onclick="${onclick}" style="cursor:pointer"`:''}>
+    <svg viewBox="0 0 84 84" width="74" height="74"><circle cx="42" cy="42" r="${R}" fill="none" stroke="var(--bg3)" stroke-width="8"/>
+    <circle cx="42" cy="42" r="${R}" fill="none" stroke="${color}" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 42 42)"/>
+    <text x="42" y="42" text-anchor="middle" dominant-baseline="central" font-size="${String(val).length>3?17:22}" font-weight="800" fill="var(--tx)" font-family="inherit">${val}</text></svg>
+    <div class="rg-l">${label}</div></div>`;
+}
+const MI={
+  wk:'<path d="M6.5 6.5v11M17.5 6.5v11M3.5 9v6M20.5 9v6M6.5 12h11"/>',
+  ex:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+  set:'<path d="M12 3 3 8l9 5 9-5-9-5zM3 13l9 5 9-5"/>',
+  ton:'<path d="M6 8h12l2 12H4L6 8zM9 8a3 3 0 0 1 6 0"/>',
+  rep:'<path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>',
+  rest:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
+};
+function metricRow(ic,label,val,prev,unit){
+  let ar='';
+  if(prev!=null){ar=val>prev?'<span style="color:var(--grn)">▲</span>':val<prev?'<span style="color:var(--yel)">▼</span>':'<span style="color:var(--t3)">●</span>';}
+  return `<div class="mr"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--t2)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${MI[ic]}</svg>
+    <span class="mr-l">${label}</span>
+    <span class="mr-v"><b>${fmtNum(val)}${unit||''}</b>${prev!=null?`<small>${fmtNum(prev)}${unit||''} ${ar}</small>`:''}</span></div>`;
+}
+function fmtNum(n){return Math.round(n*10)/10===Math.round(n)?String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'\u00a0'):String(Math.round(n*10)/10).replace('.',',');}
+function wkStats(list){
+  let ex=0,sets=0,reps=0,ton=0;
+  list.forEach(w=>{ex+=groupExs(w.exs).length;ton+=wVol(w);w.exs.forEach(e=>{sets+=e.ladder?1:(e.s||(e.sets?e.sets.length:1));reps+=totalReps(e)||0;});});
+  return{n:list.length,ex,sets,reps,ton};
+}
 function pgWorkouts(){
   if(!A._expandedWk) A._expandedWk=new Set();
 
@@ -1863,14 +1900,23 @@ function buildCard(w, defaultOpen){
 
   const PER=[['w','Неделя'],['m','Месяц'],['q','3 мес.'],['y','Год'],['a','Всё']];
   const per=A._wkPer||'w';
-  const t0=today();
-  const from=per==='w'?wkMon:per==='m'?t0.slice(0,8)+'01':per==='q'?addDays(-90,t0):per==='y'?t0.slice(0,5)+'01-01':'0000-00-00';
-  const inPer=A.workouts.filter(w=>w.date>=from);
-  const exCnt=inPer.reduce((n,w)=>n+groupExs(w.exs).length,0);
-  const ton=inPer.reduce((n,w)=>n+wVol(w),0);
-  const tonS=ton>=1000?(Math.round(ton/100)/10).toString().replace('.',',')+' т':Math.round(ton)+' кг';
-  html+=`<div class="act-bar"><div class="act-seg">${PER.map(x=>`<span class="act-b${x[0]===per?' on':''}" onclick="setWkPer('${x[0]}')">${x[1]}</span>`).join('')}</div>
-    <div class="act-st"><span><b style="color:var(--blu)">${inPer.length}</b> трен.</span><span><b style="color:var(--pur)">${exCnt}</b> упр.</span><span><b style="color:var(--yel)">${tonS}</b></span></div></div>`;
+  const t0=today(),y0=+t0.slice(0,4),m0=+t0.slice(5,7);
+  const pm=m0===1?[y0-1,12]:[y0,m0-1];
+  const from=per==='w'?wkMon:per==='m'?t0.slice(0,8)+'01':per==='q'?addDays(-90,t0):per==='y'?y0+'-01-01':'0000-00-00';
+  const pfrom=per==='w'?addDays(-7,wkMon):per==='m'?pm[0]+'-'+pad(pm[1])+'-01':per==='q'?addDays(-180,t0):per==='y'?(y0-1)+'-01-01':null;
+  const inP=A.workouts.filter(w=>w.date>=from);
+  const pP=pfrom?A.workouts.filter(w=>w.date>=pfrom&&w.date<from):null;
+  const cur=wkStats(inP),prv=pP&&pP.length?wkStats(pP):null;
+  const GR=['Грудь','Спина','Плечи','Бицепс','Трицепс','Пресс','Ноги'];
+  const hit=new Set();inP.forEach(w=>w.exs.forEach(e=>{const m=muscleOf(e.n);if(GR.includes(m))hit.add(m);}));
+  const lastD=sorted.length?sorted[0].date:null;
+  const restD=lastD?Math.round((new Date(t0+'T00:00:00')-new Date(lastD+'T00:00:00'))/86400000):null;
+  const tonS=cur.ton>=1000?(Math.round(cur.ton/100)/10).toString().replace('.',',')+'т':String(Math.round(cur.ton));
+  const mx=(a,b)=>Math.max(a,b||0,1);
+  html+=`<div class="act-seg" style="margin-bottom:14px">${PER.map(x=>`<span class="act-b${x[0]===per?' on':''}" onclick="setWkPer('${x[0]}')">${x[1]}</span>`).join('')}</div>
+  <div class="rg-row">${ringHtml(cur.n/mx(cur.n,prv&&prv.n),'var(--blu)',cur.n,'Тренировки')}${ringHtml(cur.ton/mx(cur.ton,prv&&prv.ton),'var(--pur)',tonS,'Объём')}${ringHtml(hit.size/GR.length,'var(--grn)',hit.size+'/'+GR.length,'Мышцы')}</div>
+  <div class="mr-list">${metricRow('wk','Тренировки',cur.n,prv&&prv.n)}${metricRow('ex','Упражнения',cur.ex,prv&&prv.ex)}${metricRow('set','Подходы',cur.sets,prv&&prv.sets)}${metricRow('rep','Повторения',cur.reps,prv&&prv.reps)}${metricRow('ton','Тоннаж, кг',cur.ton,prv&&prv.ton)}${restD!=null?metricRow('rest','Дней без тренировки',restD,null):''}</div>
+`;
 
   if(thisWeek.length){
     html+=glHdr('Эта неделя',thisWeek.length,'var(--grn)');
