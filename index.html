@@ -608,6 +608,12 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .swp-del{color:var(--red);border:1.5px solid rgba(255,59,80,.45)!important;background:var(--rbg)!important}
 .pg{overflow-x:hidden}
 #lpBar{z-index:220!important}
+.act-bar{margin-bottom:10px}
+.act-seg{display:flex;gap:4px;background:var(--bg3);border-radius:11px;padding:3px}
+.act-b{flex:1;text-align:center;padding:6px 2px;border-radius:9px;font-size:12px;font-weight:700;color:var(--t2);cursor:pointer;white-space:nowrap}
+.act-b.on{background:var(--acc);color:#fff}
+.act-st{display:flex;justify-content:space-between;padding:8px 6px 0;font-size:12px;color:var(--t2);font-weight:600}
+.act-st b{font-size:15px;font-weight:900;margin-right:3px}
 </style>
 </head>
 <body>
@@ -1297,7 +1303,6 @@ function waitsHtml(){
   let h=`<div class="gl fold" onclick="toggleFold('t_wait',0)"><span style="color:var(--pur)">⏳ Жду ответа</span><span class="gl-n">${list.length}</span>
     <button class="gl-add" onclick="event.stopPropagation();openWait()">＋</button><span class="gl-chev${f?'':' open'}" style="margin-left:6px">∨</span></div>`;
   if(f)return h;
-  if(!list.length)h+=`<div style="text-align:center;padding:10px;color:var(--t3);font-size:12px">Никого не жду. «＋» — добавить: от кого ждёшь, что именно и на каком этапе</div>`;
   list.forEach(w=>{
     const d=waitDays(w);
     const col=d>=14?'var(--red)':d>=7?'var(--yel)':'var(--t3)';
@@ -1856,11 +1861,16 @@ function buildCard(w, defaultOpen){
     </div>
   </div><div class="pg">`;
 
-  html+=`<div class="rc" style="margin-bottom:12px"><div class="rc-t">Активность</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkCount}</div><div class="rs-l">Эта неделя</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnCount}</div><div class="rs-l">Месяц</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
-  </div></div>`;
+  const PER=[['w','Неделя'],['m','Месяц'],['q','3 мес.'],['y','Год'],['a','Всё']];
+  const per=A._wkPer||'w';
+  const t0=today();
+  const from=per==='w'?wkMon:per==='m'?t0.slice(0,8)+'01':per==='q'?addDays(-90,t0):per==='y'?t0.slice(0,5)+'01-01':'0000-00-00';
+  const inPer=A.workouts.filter(w=>w.date>=from);
+  const exCnt=inPer.reduce((n,w)=>n+groupExs(w.exs).length,0);
+  const ton=inPer.reduce((n,w)=>n+wVol(w),0);
+  const tonS=ton>=1000?(Math.round(ton/100)/10).toString().replace('.',',')+' т':Math.round(ton)+' кг';
+  html+=`<div class="act-bar"><div class="act-seg">${PER.map(x=>`<span class="act-b${x[0]===per?' on':''}" onclick="setWkPer('${x[0]}')">${x[1]}</span>`).join('')}</div>
+    <div class="act-st"><span><b style="color:var(--blu)">${inPer.length}</b> трен.</span><span><b style="color:var(--pur)">${exCnt}</b> упр.</span><span><b style="color:var(--yel)">${tonS}</b></span></div></div>`;
 
   if(thisWeek.length){
     html+=glHdr('Эта неделя',thisWeek.length,'var(--grn)');
@@ -1877,6 +1887,7 @@ function buildCard(w, defaultOpen){
   return html;
 }
 
+function setWkPer(k){A._wkPer=k;render();}
 function toggleWkCard(id){
   if(!A._expandedWk) A._expandedWk=new Set();
   if(A._expandedWk.has(id)) A._expandedWk.delete(id);
