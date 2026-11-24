@@ -625,6 +625,11 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .mr-v{text-align:right;line-height:1.1;white-space:nowrap}
 .mr-v b{font-size:19px;font-weight:800}
 .mr-v small{font-size:11px;color:var(--t3);font-weight:600;margin-left:8px}
+.hd-lbl{font-size:14px;font-weight:600;color:var(--t2)}
+.hd-date{font-size:30px;font-weight:800;letter-spacing:-.01em;line-height:1.1;cursor:pointer}
+.hd-wx{font-size:16px;font-weight:600;color:var(--t2);margin-top:8px;cursor:pointer}
+.hd-wx i{font-style:normal;opacity:.6;margin:0 2px}
+.hd-ic{font-size:17px}
 </style>
 </head>
 <body>
@@ -1604,22 +1609,17 @@ function pgTasks(){
   cnt+=`</div>`;
 
   const dayLabel=isToday?'Сегодня':RUDF[new Date(A.selDate+'T00:00:00').getDay()];
-  const weather=A.weather
-    ?`<div class="weather-pill" onclick="fetchWeather()" title="Обновить">
-        <span class="weather-ic">${A.weather.icon}</span>
-        <div><div class="weather-temp">${A.weather.temp}°</div><div class="weather-desc">${A.weather.desc||''}</div></div>
-      </div>`
-    :`<div class="weather-pill">
-        <span class="weather-ic" style="animation:none;opacity:.5">🌤</span>
-        <div><div class="weather-temp" style="opacity:.4">—°</div><div class="weather-desc">загрузка...</div></div>
-      </div>`;
+  const sd=new Date(A.selDate+'T00:00:00');
+  const MSH=['янв.','февр.','мар.','апр.','мая','июн.','июл.','авг.','сент.','окт.','нояб.','дек.'];
+  const wx=A.weather;
+  const wxLine=wx&&wx.temp!=null
+    ?`${wx.city?escH(wx.city)+' <i>·</i> ':''}<span class="hd-ic">${wx.icon}</span> ${wx.temp}°C`
+    :(wx&&wx.city?escH(wx.city):'<span style="opacity:.5">погода…</span>');
 
   return `<div class="ph">
-    <div class="ph-row" style="margin-bottom:8px">
-      <div class="ph-h1">${dayLabel}</div>
-      <div class="ph-acts">${weather}</div>
-    </div>
-    <div class="ph-sub" style="margin-bottom:0">${fmtDFull(A.selDate)}</div>
+    <div class="hd-lbl">${dayLabel}</div>
+    <div class="hd-date" onclick="A.selDate=today();render()">${sd.getDate()} ${MSH[sd.getMonth()]}</div>
+    <div class="hd-wx" onclick="fetchWeather(true)">${wxLine}</div>
   </div>
   ${strip}${qsbar}${cfHtml}${cnt}`;
 }
@@ -3578,18 +3578,44 @@ async function fullSync(){
 // ═══════════════════════════════════════════════════════════
 // WEATHER
 // ═══════════════════════════════════════════════════════════
-async function fetchWeather(){
+function wxLoad(){try{return JSON.parse(localStorage.getItem('pln6_wx')||'null');}catch(e){return null;}}
+function wxSave(o){try{localStorage.setItem('pln6_wx',JSON.stringify(o));}catch(e){}}
+// Координаты: берём из кэша; новое определение — только если разрешение уже выдано
+// (без повторного запроса) или кэша ещё нет (первый раз). Ручное обновление — тап по строке погоды.
+async function getGeo(force){
+  const cache=(wxLoad()||{}).geo||null;
+  let st='prompt';try{st=(await navigator.permissions.query({name:'geolocation'})).state;}catch(e){}
+  if(cache&&!force&&st!=='granted')return cache;
+  if(st==='denied')return cache;
   try{
-    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:5000}));
-    const {latitude:lat,longitude:lon}=pos.coords;
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-    const data=await r.json();
-    const wc=data.current_weather.weathercode;
-    const temp=Math.round(data.current_weather.temperature);
-    const icons={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',61:'🌧',71:'🌨',80:'🌦',95:'⛈',99:'⛈'};
+    const pos=await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:8000,maximumAge:3600000}));
+    const g={lat:pos.coords.latitude,lon:pos.coords.longitude,city:cache&&cache.city};
+    const moved=!cache||Math.abs(cache.lat-g.lat)>0.05||Math.abs(cache.lon-g.lon)>0.05;
+    if(moved||!g.city){
+      try{
+        const r=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${g.lat}&longitude=${g.lon}&localityLanguage=ru`);
+        const j=await r.json();
+        const c=j.city||j.locality||'';
+        g.city=c?c+(j.principalSubdivision&&j.principalSubdivision!==c?', '+j.principalSubdivision:''):'';
+      }catch(e){g.city=moved?'':g.city;}
+    }
+    return g;
+  }catch(e){return cache;}
+}
+async function fetchWeather(force){
+  try{
+    const g=await getGeo(force===true);
+    if(!g)return;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${g.lat}&longitude=${g.lon}&current_weather=true`);
+    const cw=(await r.json()).current_weather;
+    const wc=cw.weathercode,day=cw.is_day!==0;
+    const temp=Math.round(cw.temperature);
+    const icons={0:day?'☀️':'🌙',1:day?'🌤':'🌙',2:day?'⛅':'☁️',3:'☁️',45:'🌫',48:'🌫',51:'🌦',61:'🌧',71:'🌨',80:'🌦',95:'⛈',99:'⛈'};
     const icon=icons[wc]||icons[Math.floor(wc/10)*10]||'🌡';
-    A.weather={temp,icon};render();
-  }catch(e){toast('Не удалось получить погоду');}
+    A.weather={temp,icon,city:g.city||''};
+    wxSave({...A.weather,geo:g});
+    if(A.nav==='tasks'&&!$('ovl').classList.contains('on'))render();
+  }catch(e){/* тихо: без уведомлений */}
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3760,7 +3786,8 @@ document.addEventListener('visibilitychange',()=>{
 // При фокусе окна (PWA)
 window.addEventListener('focus', checkDateUpdate);
 
-// Weather auto-refresh every 30 min
+// Weather: сразу показываем кэш, обновляем тихо
+{const _w=wxLoad();if(_w&&_w.temp!=null)A.weather=_w;}
 fetchWeather().catch(()=>{});
 setInterval(()=>fetchWeather().catch(()=>{}), 30*60*1000);
 
