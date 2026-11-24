@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Планы">
@@ -169,7 +169,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
 
 /* ── PAGE HEADER ────────────────────────────── */
-.ph{padding:52px 16px 0}
+.ph{padding:calc(max(env(safe-area-inset-top,0px),20px) + 10px) 16px 0}
 /* Page transition */
 @keyframes pgIn{from{opacity:0;transform:translateY(22px) scale(.982)}to{opacity:1;transform:translateY(0) scale(1)}}
 .pg,.ph,.ws-wrap,.qsbar,.cf-wrap{animation:pgIn .65s cubic-bezier(.4,0,.2,1)}
@@ -630,6 +630,7 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .hd-wx{font-size:16px;font-weight:600;color:var(--t2);margin-top:8px;cursor:pointer}
 .hd-wx i{font-style:normal;opacity:.6;margin:0 2px}
 .hd-ic{font-size:17px}
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:calc(env(safe-area-inset-top,0px) + 6px);background:linear-gradient(var(--bg) 35%,transparent);z-index:40;pointer-events:none}
 </style>
 </head>
 <body>
