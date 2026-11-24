@@ -39,20 +39,21 @@
   --bd:rgba(255,220,150,.07);--bd2:rgba(255,220,150,.13);
   --tx:#f0e6cc;--t2:#a09070;--t3:#6a5a40;
 }
+html{--sab:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{font-family:'Inter',sans-serif;color:var(--tx);max-width:960px;margin:0 auto;display:flex;flex-direction:column;transition:background .2s,color .2s}
+body{position:fixed;top:0;bottom:0;left:0;right:0;width:100%;font-family:'Inter',sans-serif;color:var(--tx);max-width:960px;margin:0 auto;display:flex;flex-direction:column;transition:background .2s,color .2s}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
-#app{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 12px)}
+#app{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 12px + var(--sab,0px)*.55)}
 #app::-webkit-scrollbar{width:4px}
 #app::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── BOTTOM NAV ─────────────────────────────── */
 /* ══ BOTTOM NAV ══════════════════════════════════════ */
 .nav{
-  position:fixed;bottom:14px;left:50%;
+  position:fixed;bottom:calc(14px + var(--sab,0px)*.45);left:50%;
   transform:translateX(-50%) translateZ(0);
   -webkit-transform:translateX(-50%) translateZ(0);
   will-change:transform;
@@ -380,7 +381,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .empty-s{font-size:12px;color:var(--t3);line-height:1.5}
 
 /* ── FAB ─────────────────────────────────────── */
-.fab{position:fixed;bottom:calc(var(--nav-h) + 20px);right:16px;
+.fab{position:fixed;bottom:calc(var(--nav-h) + 20px + var(--sab,0px)*.45);right:16px;
   width:54px;height:54px;border-radius:18px;
   background:rgba(26,143,255,.22);
   backdrop-filter:blur(20px) saturate(200%);
