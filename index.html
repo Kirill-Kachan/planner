@@ -614,6 +614,7 @@ body.glass-on .rc,body.glass-on .tc,body.glass-on .wk-card,body.glass-on .done-c
 .act-b.on{background:var(--acc);color:#fff}
 .act-st{display:flex;justify-content:space-between;padding:8px 6px 0;font-size:12px;color:var(--t2);font-weight:600}
 .act-st b{font-size:15px;font-weight:900;margin-right:3px}
+:root{--rg1:#7f9cc0;--rg2:#9c91c6;--rg3:#74a99c}
 .rg-row{display:flex;justify-content:space-around;margin:2px 0 12px}
 .rg{text-align:center}
 .rg-l{font-size:11px;font-weight:800;color:var(--t2);text-transform:uppercase;letter-spacing:.07em;margin-top:4px}
@@ -1540,7 +1541,7 @@ function pgTasks(){
   const selDone=A.tasks.filter(t=>t.s==='done'&&(t.doneAt===A.selDate||t.dd===A.selDate)).length;
   const allOverdue=A.tasks.filter(t=>isOver(t)).length; // всегда актуально
   const qsTot=selTasks.length+selDone;
-  const qsbar=`<div class="qsbar rg-row">${ringHtml(qsTot?selDone/qsTot:0,'var(--yel)',selTasks.length,'Осталось')}${ringHtml(Math.min(1,allOverdue/10),'var(--red)',allOverdue,'Просрочено',"setNav('report')")}${ringHtml(qsTot?selDone/qsTot:0,'var(--grn)',selDone,'Готово',"setNav('report')")}</div>`;
+  const qsbar=`<div class="qsbar rg-row">${ringHtml(qsTot?selDone/qsTot:0,'var(--rg1)',selTasks.length,'Осталось')}${ringHtml(Math.min(1,allOverdue/10),'var(--rg2)',allOverdue,'Просрочено',"setNav('report')")}${ringHtml(qsTot?selDone/qsTot:0,'var(--rg3)',selDone,'Готово',"setNav('report')")}</div>`;
 
   // Cat filter
   const activeCat=A.cats.find(c=>c.id===A.filterCat);
@@ -1792,6 +1793,8 @@ const MI={
   set:'<path d="M12 3 3 8l9 5 9-5-9-5zM3 13l9 5 9-5"/>',
   ton:'<path d="M6 8h12l2 12H4L6 8zM9 8a3 3 0 0 1 6 0"/>',
   rep:'<path d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>',
+  ok:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>',
+  add:'<path d="M12 5v14M5 12h14"/>',
   rest:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'
 };
 function metricRow(ic,label,val,prev,unit){
@@ -1914,7 +1917,7 @@ function buildCard(w, defaultOpen){
   const tonS=cur.ton>=1000?(Math.round(cur.ton/100)/10).toString().replace('.',',')+'т':String(Math.round(cur.ton));
   const mx=(a,b)=>Math.max(a,b||0,1);
   html+=`<div class="act-seg" style="margin-bottom:14px">${PER.map(x=>`<span class="act-b${x[0]===per?' on':''}" onclick="setWkPer('${x[0]}')">${x[1]}</span>`).join('')}</div>
-  <div class="rg-row">${ringHtml(cur.n/mx(cur.n,prv&&prv.n),'var(--blu)',cur.n,'Тренировки')}${ringHtml(cur.ton/mx(cur.ton,prv&&prv.ton),'var(--pur)',tonS,'Объём')}${ringHtml(hit.size/GR.length,'var(--grn)',hit.size+'/'+GR.length,'Мышцы')}</div>
+  <div class="rg-row">${ringHtml(cur.n/mx(cur.n,prv&&prv.n),'var(--rg1)',cur.n,'Тренировки')}${ringHtml(cur.ton/mx(cur.ton,prv&&prv.ton),'var(--rg2)',tonS,'Объём')}${ringHtml(hit.size/GR.length,'var(--rg3)',hit.size+'/'+GR.length,'Мышцы')}</div>
   <div class="mr-list">${metricRow('wk','Тренировки',cur.n,prv&&prv.n)}${metricRow('ex','Упражнения',cur.ex,prv&&prv.ex)}${metricRow('set','Подходы',cur.sets,prv&&prv.sets)}${metricRow('rep','Повторения',cur.reps,prv&&prv.reps)}${metricRow('ton','Тоннаж, кг',cur.ton,prv&&prv.ton)}${restD!=null?metricRow('rest','Дней без тренировки',restD,null):''}</div>
 `;
 
@@ -2162,17 +2165,18 @@ function pgReport(){
     </div>
   </div><div class="pg">`;
 
-  html+=`<div class="rc"><div class="rc-t">Задачи — эта неделя</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--grn)">${wkDone}</div><div class="rs-l">Выполнено</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkAdded}</div><div class="rs-l">Добавлено</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(wkDone,wkAdded)}%</div><div class="rs-l">Закрыто</div></div>
-  </div></div>`;
-
-  html+=`<div class="rc"><div class="rc-t">Задачи — этот месяц</div><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--grn)">${mnDone}</div><div class="rs-l">Выполнено</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${mnAdded}</div><div class="rs-l">Добавлено</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--t2)">${pct(mnDone,mnAdded)}%</div><div class="rs-l">Закрыто</div></div>
-  </div></div>`;
+  const PER=[['w','Неделя'],['m','Месяц'],['y','Год'],['a','Всё']];
+  const per=A._repPer||'w',t0=today(),y0=+t0.slice(0,4),m0=+t0.slice(5,7);
+  const pm=m0===1?[y0-1,12]:[y0,m0-1];
+  const from=per==='w'?wk:per==='m'?mn:per==='y'?y0+'-01-01':'0000-00-00';
+  const pfrom=per==='w'?addDays(-7,wk):per==='m'?pm[0]+'-'+pad(pm[1])+'-01':per==='y'?(y0-1)+'-01-01':null;
+  const cnt=(f,t)=>({d:done.filter(x=>x.doneAt&&x.doneAt>=f&&(!t||x.doneAt<t)).length,a:tasks.filter(x=>x.dd&&x.dd>=f&&(!t||x.dd<t)).length});
+  const cu=cnt(from),pr=pfrom?cnt(pfrom,from):null;
+  const hasPr=pr&&(pr.d||pr.a);
+  const ovd=tasks.filter(x=>isOver(x)).length;
+  html+=`<div class="act-seg" style="margin-bottom:14px">${PER.map(x=>`<span class="act-b${x[0]===per?' on':''}" onclick="A._repPer='${x[0]}';render()">${x[1]}</span>`).join('')}</div>
+  <div class="rg-row">${ringHtml(pct(cu.d,cu.a)/100,'var(--rg1)',pct(cu.d,cu.a)+'%','Закрыто')}${ringHtml(cu.d/Math.max(cu.d,cu.a,1),'var(--rg3)',cu.d,'Выполнено')}${ringHtml(active.length?ovd/active.length:0,'var(--rg2)',ovd,'Просрочено')}</div>
+  <div class="mr-list">${metricRow('ok','Выполнено',cu.d,hasPr?pr.d:null)}${metricRow('add','Добавлено',cu.a,hasPr?pr.a:null)}${metricRow('ex','Активных сейчас',active.length,null)}${metricRow('rest','Просрочено сейчас',ovd,null)}</div>`;
 
   // ── Выполненные: свёртывание по нажатию на заголовок, год → месяц → неделя → день
   const doneOpen=A._doneOpen||false;
@@ -2183,12 +2187,6 @@ function pgReport(){
   // ── Workout stats
   const wkWs=A.workouts.filter(w=>w.date>=wk);
   const mnWs=A.workouts.filter(w=>w.date>=mn);
-  html+=glHdr('Тренировки',A.workouts.length);
-  html+=`<div class="rc"><div class="rs-row">
-    <div class="rs"><div class="rs-n" style="color:var(--blu)">${wkWs.length}</div><div class="rs-l">Эта неделя</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--pur)">${mnWs.length}</div><div class="rs-l">Месяц</div></div>
-    <div class="rs"><div class="rs-n" style="color:var(--yel)">${A.workouts.length}</div><div class="rs-l">Всего</div></div>
-  </div></div>`;
 
 
   html+=trainStatsHtml();
