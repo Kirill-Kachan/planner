@@ -42,18 +42,18 @@
 html{--sab:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:100lvh;font-family:'Inter',sans-serif;color:var(--tx);max-width:960px;margin:0 auto;display:flex;flex-direction:column;transition:background .2s,color .2s}
+body{position:fixed;top:0;left:0;right:0;width:100%;height:100vh;height:calc(100lvh + var(--gap,0px));font-family:'Inter',sans-serif;color:var(--tx);max-width:960px;margin:0 auto;display:flex;flex-direction:column;transition:background .2s,color .2s}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 
-#app{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 12px + var(--sab,0px)*.55)}
+#app{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;padding-bottom:calc(var(--nav-h) + 12px + var(--sab,0px)*.4)}
 #app::-webkit-scrollbar{width:4px}
 #app::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
 /* ── BOTTOM NAV ─────────────────────────────── */
 /* ══ BOTTOM NAV ══════════════════════════════════════ */
 .nav{
-  position:fixed;bottom:calc(14px + var(--sab,0px)*.45);left:50%;
+  position:fixed;bottom:calc(10px + var(--sab,0px)*.3 - var(--gap,0px));left:50%;
   transform:translateX(-50%) translateZ(0);
   -webkit-transform:translateX(-50%) translateZ(0);
   will-change:transform;
@@ -381,7 +381,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .empty-s{font-size:12px;color:var(--t3);line-height:1.5}
 
 /* ── FAB ─────────────────────────────────────── */
-.fab{position:fixed;bottom:calc(var(--nav-h) + 20px + var(--sab,0px)*.45);right:16px;
+.fab{position:fixed;bottom:calc(var(--nav-h) + 20px + var(--sab,0px)*.3 - var(--gap,0px));right:16px;
   width:54px;height:54px;border-radius:18px;
   background:rgba(26,143,255,.22);
   backdrop-filter:blur(20px) saturate(200%);
@@ -551,7 +551,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 .exb-addEx{width:100%;height:44px;border-radius:12px;background:var(--acc);color:#fff;font-size:14px;font-weight:800;margin-top:2px;border:none;cursor:pointer;font-family:inherit}
 .exb-find{width:100%;height:38px;border-radius:12px;background:var(--bg3);color:var(--t2);font-size:12px;font-weight:700;margin-top:8px;border:1.5px solid var(--bd2);cursor:pointer;font-family:inherit}
 .exb-fill{width:100%;height:36px;border-radius:10px;background:var(--bbg);color:var(--acc);font-size:12px;font-weight:700;margin-bottom:10px;border:none;cursor:pointer;font-family:inherit}
-#wkPill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 18px);z-index:90;background:var(--acc);color:#fff;border-radius:22px;padding:10px 16px;font-size:13px;font-weight:700;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.35);cursor:pointer;max-width:92vw}
+#wkPill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 18px - var(--gap,0px));z-index:90;background:var(--acc);color:#fff;border-radius:22px;padding:10px 16px;font-size:13px;font-weight:700;gap:12px;align-items:center;box-shadow:0 6px 24px rgba(0,0,0,.35);cursor:pointer;max-width:92vw}
 #wkPill .wkp-x{opacity:.85;padding:0 2px;font-size:14px}
 
 .gl.fold{cursor:pointer;display:flex;align-items:center;gap:8px}
@@ -561,7 +561,7 @@ input,textarea,select{font-family:inherit;color:var(--tx);background:var(--bg3)}
 [data-del]{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .lp-sel{outline:2px solid var(--acc);outline-offset:1px;border-radius:var(--r);position:relative;z-index:5;box-shadow:0 8px 28px rgba(0,0,0,.45)}
 .lp-drag{transition:none!important;opacity:.95}
-#lpBar{position:fixed;left:12px;right:12px;bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 14px);z-index:95;background:var(--bg2);border:1.5px solid var(--bd2);border-radius:16px;padding:10px 12px;display:none;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
+#lpBar{position:fixed;left:12px;right:12px;bottom:calc(var(--nav-h,80px) + env(safe-area-inset-bottom) + 14px - var(--gap,0px));z-index:95;background:var(--bg2);border:1.5px solid var(--bd2);border-radius:16px;padding:10px 12px;display:none;align-items:center;gap:8px;box-shadow:0 8px 30px rgba(0,0,0,.45)}
 #lpBar .lpb-h{flex:1;font-size:11px;color:var(--t2)}
 #lpBar button{height:36px;padding:0 14px;border-radius:10px;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
 #lpBar .lpb-del{background:var(--rbg);color:var(--red);margin-left:auto}
@@ -3788,6 +3788,20 @@ document.addEventListener('visibilitychange',()=>{
 // При фокусе окна (PWA)
 window.addEventListener('focus', checkDateUpdate);
 
+// Полный экран на iOS: слой web-view иногда короче экрана (снизу чёрная полоса).
+// Измеряем разницу и растягиваем body/меню на неё.
+function fitScreen(){
+  try{
+    const st=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+    const gap=Math.round(screen.height-window.innerHeight);
+    const g=(st&&gap>0&&gap<120)?gap:0;
+    document.documentElement.style.setProperty('--gap',g+'px');
+  }catch(e){}
+}
+fitScreen();
+window.addEventListener('resize',fitScreen);
+window.addEventListener('orientationchange',()=>setTimeout(fitScreen,300));
+window.addEventListener('pageshow',fitScreen);
 // Weather: сразу показываем кэш, обновляем тихо
 {const _w=wxLoad();if(_w&&_w.temp!=null)A.weather=_w;}
 fetchWeather().catch(()=>{});
