@@ -1301,7 +1301,7 @@ function waitsHtml(){
   const done=(A.waits||[]).filter(w=>w.done);
   const f=isFolded('t_wait',0);
   let h=`<div class="gl fold" onclick="toggleFold('t_wait',0)"><span style="color:var(--pur)">⏳ Жду ответа</span><span class="gl-n">${list.length}</span>
-    <button class="gl-add" onclick="event.stopPropagation();openWait()">＋</button><span class="gl-chev${f?'':' open'}" style="margin-left:6px">∨</span></div>`;
+    <span class="gl-chev${f?'':' open'}" style="margin-left:auto">∨</span></div>`;
   if(f)return h;
   list.forEach(w=>{
     const d=waitDays(w);
@@ -1324,7 +1324,7 @@ function waitsHtml(){
 function openWait(id){
   const w=id?(A.waits||[]).find(x=>String(x.id)===String(id)):null;
   const log=w&&w.log&&w.log.length?`<div class="ss"><div class="sl">История этапов</div>${w.log.slice().reverse().map(l=>`<div style="font-size:12px;color:var(--t2);padding:4px 0;border-top:1px solid var(--bd)"><span style="color:var(--t3)">${fmtD(l.d)}</span> · ${escH(l.s)}</div>`).join('')}</div>`:'';
-  openSheet(`<div class="sht-hdr"><span class="sht-ttl">${w?'Жду ответа':'Новое ожидание'}</span><div class="sht-x" onclick="closeSheet()">✕</div></div>
+  openSheet(`<div class="sht-hdr">${w?'<span class="sht-ttl">Жду ответа</span>':kindSeg('wait')}<div class="sht-x" onclick="closeSheet()">✕</div></div>
     <div class="ss"><div class="sl">От кого / откуда</div><input class="si" id="wtWho" placeholder="Компания, человек, ведомство" value="${w?escH(w.who||''):''}"></div>
     <div class="ss"><div class="sl">Что жду</div><input class="si" id="wtWhat" placeholder="Письмо, ответ, решение, деньги…" value="${w?escH(w.what||''):''}"></div>
     <div class="ss"><div class="sl">Этап процесса</div><input class="si" id="wtStage" placeholder="Например: документы отправлены" value="${w?escH(w.stage||''):''}"></div>
@@ -2276,6 +2276,9 @@ function resetWorkouts(){
   render();
   toast('✅ История тренировок загружена — 12 тренировок');
 }
+function kindSeg(k){
+  return `<div class="act-seg" style="flex:1;margin-right:10px"><span class="act-b${k==='task'?' on':''}" onclick="openNew()">Задача</span><span class="act-b${k==='wait'?' on':''}" onclick="openWait()">Жду ответа</span></div>`;
+}
 function openNew(){
   A.edit={cat:A.filterCat!=='all'?A.filterCat:'tasks',p:'yellow',s:'todo',dl:A.selDate!==today()?A.selDate:'',note:''};
   showTaskSheet(false);
@@ -2327,7 +2330,7 @@ function showTaskSheet(isEdit){
 
   openSheet(`
     <div class="sht-hdr">
-      <span class="sht-ttl">${isEdit?'Редактировать':'Новая задача'}</span>
+      ${isEdit?'<span class="sht-ttl">Редактировать</span>':kindSeg('task')}
       <div class="sht-x" onclick="closeSheet()">✕</div>
     </div>
     <div class="ss"><div class="sl">Название</div>
